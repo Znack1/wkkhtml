@@ -525,10 +525,7 @@ export class BaseLayerConfig {
 
 BaseLayerConfig._instance = null;
 
-BaseLayerConfig.map_view_init_centerPoint = [108.5525, 34.32];
-BaseLayerConfig.map_view_init_initLevel = 6;
-BaseLayerConfig.map_view_maxLevel = 23;
-BaseLayerConfig.map_view_minLevel = 2;
+
 
 
 

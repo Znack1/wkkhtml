@@ -43,7 +43,9 @@ export class LayerManager {
         this.drawGeometryLayer.curMap = this.currentMap;
 
 
-        this.baseLayer.showVisibleLayer(MapBaseLayerType.Vector);
+        // this.baseLayer.showVisibleLayer(MapBaseLayerType.Vector);
+        this.baseLayer.showVisibleLayer(window.BASE_CONFIG.DefaultMapBaseLayerType);
+        
     }
 
 
@@ -55,10 +57,10 @@ export class LayerManager {
 
         let mapSrcURLs = new Array();
         ezMap.MapSrcURL = mapSrcURLs;
-        ezMap.CenterPoint = BaseLayerConfig.map_view_init_centerPoint;
-        ezMap.MapInitLevel = parseFloat(BaseLayerConfig.map_view_init_initLevel);
-        ezMap.MapMaxLevel = parseFloat(BaseLayerConfig.map_view_maxLevel);
-        ezMap.MapMinLevel = parseFloat(BaseLayerConfig.map_view_minLevel);      
+        ezMap.CenterPoint = window.BASE_CONFIG.map_view_init_centerPoint;
+        ezMap.MapInitLevel = parseFloat(window.BASE_CONFIG.map_view_init_initLevel);
+        ezMap.MapMaxLevel = parseFloat(window.BASE_CONFIG.map_view_maxLevel);
+        ezMap.MapMinLevel = parseFloat(window.BASE_CONFIG.map_view_minLevel);      
     }
 
 

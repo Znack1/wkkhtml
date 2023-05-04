@@ -14,5 +14,9 @@ window.BASE_CONFIG = {
 	"tdt_service_public_base_url":"http://api.tianditu.gov.cn",
 	"tdt_xyz_public_base_url":"https://t{0-7}.tianditu.gov.cn/DataServer?",
 	"defaultToken": "f6616fa13df718e2cd6280af4c45f5a2",
-	"DefaultMapBaseLayerType": "Vector" // 默认加载地图底图类型Image,Vector,Ter
+	"DefaultMapBaseLayerType": "Image", // 默认加载地图底图类型Image,Vector,Ter
+	"map_view_init_centerPoint":[108.5525, 34.32],
+	"map_view_init_initLevel":6,
+	"map_view_maxLevel":23,
+	"map_view_minLevel":2
 };
