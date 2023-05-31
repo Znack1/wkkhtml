@@ -82,20 +82,9 @@ export const MapOverlayType = {
 
 export class StatisticsOverlayInfo {
     constructor() {
-
+        this.id = null;
         //overlay标题
         this.title = null;
-
-
-        //是否使用统计信息
-        this.useStatistics = false;
-
-
-        //污染源个数
-        this.pollutionCount = 0;
-
-        //排污口个数
-        this.outfallCount = 0;
 
         //属性数组
         this.attributes = new Array();
@@ -105,5 +94,67 @@ export class StatisticsOverlayInfo {
 
         this.videos = new Array();
     }
+
+      /**
+     * 获取属性和附件信息
+     * @param {*} feature 
+     * @param {*} fieldItems 
+     * @param {*} sourceName 
+     * @param {*} succeedCallback 
+     */
+      getAttributesAndAttachments(properties, fieldItems) {
+
+      
+        let attributes = this._getAttributesEx(properties, fieldItems);
+
+        this.attributes = attributes;
+
+        this.photos = properties.imgPaths;
+        this.videos = properties.videoPaths;
+    }
+
+
+
+
+        _getAttributes(feature, fieldItems) {
+            let attributes = new Array();
+            if (!feature || !fieldItems) return attributes;
+
+            let properties = feature.getProperties();
+
+            let attriItem = null;
+            _.each(fieldItems, (fieldItem) => {
+                if (properties[fieldItem.name]) {
+                    attriItem = {};
+                    //别名
+                    attriItem.key = fieldItem.aliasName;
+                    attriItem.value = properties[fieldItem.name];
+                    attributes.push(attriItem);
+                }
+            })
+
+            return attributes
+        }
+
+
+
+        _getAttributesEx(properties,fieldItems){
+            let attributes = new Array();
+            if (!properties || !fieldItems) return attributes;
+
+
+            let attriItem = null;
+            _.each(fieldItems, (fieldItem) => {
+                if (properties[fieldItem.name]) {
+                    attriItem = {};
+                    //别名
+                    attriItem.key = fieldItem.aliasName;
+                    attriItem.value = properties[fieldItem.name];
+                    attributes.push(attriItem);
+                }
+            })
+
+            return attributes;
+        }
 
 }

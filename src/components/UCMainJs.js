@@ -4,17 +4,23 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-04 16:02:42
+ * @LastEditTime: 2023-05-31 13:45:03
  * @input: no param
  * @out: no param
  */
-import {  MapTools } from '../common/maptoolJs.js'
+import { MapTools } from '../common/maptoolJs.js'
 import { FieldItems } from "../model/FieldItemJs";
 import { BaseLayerConfig } from '../config/BaseLayerConfig.js';
 import { DrawGeometryPartType } from '../utility/ol/DrawGeometryUtilityJs.js';
 import { GeometryExtentUtility } from '../utility/ol/GeometryExtentUtility.js';
 import { MapBaseLayerType } from './mainMap/layer/MapBaseLayer';
 import { MapOverlayInfo, MapOverlayType } from "./mainMap/UCMapOverlayJs"
+import AxiosConfig from "@/config/AxiosConfigJs";
+import draw_marker from "../assets/images/draw_marker.png";
+import _ from 'lodash'
+import { LayerFeatureType } from './mainMap/layer/LayerFeatureType.js';
+import { LayerCatalogItems } from '@/model/LayerCatalogItem.js';
+import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
 export class UCMainEventManager {
   constructor() {
     this.ucMain = null;
@@ -22,8 +28,11 @@ export class UCMainEventManager {
     this.ucMapTool = null;
     this.ucBaseLayerSwitch = null;
     this.ucCustomMapScale = null;
+    this.ucRightPanel = null;
+    this.ucLeftMenu = null;
     this.printBtn = null; // 打印按钮
     this.editPoint = false; // 是否是编辑
+    this.checkedNodes = [];
   }
 
   /**
@@ -37,6 +46,74 @@ export class UCMainEventManager {
 
     // 切换底图
     this._addBaseLayerSwitchListener();
+
+    // 左侧监听
+    this._addUCLeftMenuListener();
+
+  }
+
+  _addUCLeftMenuListener() {
+    let self = this;
+    this.ucLeftMenu.on_checkLayer((nodes) => {
+      let node = nodes[0]
+      if (node.checked) {
+        this.checkedNodes.push(...nodes);
+
+      } else {
+        _.remove(this.checkedNodes, (node) => {
+          let findItem = _.find(nodes, (n) => {
+            return n.id == node.id;
+          })
+          return findItem;
+        });
+        // let layerArray = self.ucMap.curMap.getLayers();
+        // layerArray.remove(node.layer);
+      }
+
+      this.getPageData();
+
+    })
+
+    // 图层目录树
+    this.ucLeftMenu.on_nodeCheckChangeHandler((node) => {
+      let self = this;
+      if (!node) return;
+      let layerItem = node;
+      if (!layerItem) return;
+
+      //清除弹窗
+      self.ucMap.clearOverlays();
+      self._changeLayerItemVisible(
+        layerItem,
+        layerItem.defaultVisible
+      );
+    })
+  }
+
+  // 获取页面数据更新
+  getPageData() {
+    let self = this;
+    let params = {
+      type: this.checkedNodes[0].parentId,
+      twoType: _.map(this.checkedNodes, "name"),
+      qvbie: this.ucMain.curStat.value || ''
+    }
+    self.ucMain.loading = true;
+    AxiosConfig.spatialdecision
+      .post(ServiceUrlConfig.point_allPoint, params)
+      .then((res) => {
+        self.ucMain.loading = false;
+
+        let datas = res.data.data.pointEntities;
+        self.ucMap.layerMgr.poiLayer.clear();
+        self.ucMap.layerMgr.poiLayer.addMarkers(datas);
+
+        // 更新右侧面板
+        self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
+      }).catch((error) => {
+        self.ucMain.loading = false;
+
+      })
 
   }
 
@@ -72,8 +149,11 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-
-      // self._on_showOverlay(features, e.coordinate);
+      let level = self.ucMap.getZoomLevel();
+      if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
+        self.twinklePoint(features[0])
+      }
+      self._on_showOverlay(features, e.coordinate);
 
     });
 
@@ -114,6 +194,30 @@ export class UCMainEventManager {
     });
   }
 
+  // 地图要素闪烁
+  twinklePoint(feature, count) {
+    count = count || 0;
+    let defaultStyle = feature.getStyle();
+    let iconStyle = new ol.style.Style({
+      image: new ol.style.Icon(({
+        anchor: [0.5, 8],
+        anchorXUnits: 'fraction',
+        anchorYUnits: 'pixels',
+        src: draw_marker
+      }))
+    });
+
+    feature.setStyle(iconStyle)
+
+    setTimeout(() => {
+      count++;
+      feature.setStyle(defaultStyle)
+      if (count < 2) {
+        this.twinklePoint(feature, count)
+      }
+    }, 500);
+
+  }
 
   /**
    *添加工具栏监听
@@ -146,7 +250,7 @@ export class UCMainEventManager {
           self.ucMap.curMap.getView().setZoom(BaseLayerConfig.map_view_init_initLevel);
           self.ucMap.curMap.getView().setCenter(BaseLayerConfig.map_view_init_centerPoint);
           break;
-        case MapTools.ZoomIn:
+        case MapTools.mapEventCode.ZoomIn:
           self.ucMap.plusZoomLevel();
           break;
         case MapTools.mapEventCode.ZoomOut:
@@ -194,8 +298,8 @@ export class UCMainEventManager {
     if (drawItem.type == DrawGeometryPartType.point) {
       // self.ucMap.layerMgr.drawGeometryLayer.clear();
       self.ucMap.layerMgr.drawGeometryLayer.addDrawPoint(drawItem);
-      if(self.editPoint){
-        
+      if (self.editPoint) {
+
         self._on_showOverlay(drawItem.coordinates);
       }
     } else if (drawItem.type == DrawGeometryPartType.polyline) {
@@ -213,29 +317,70 @@ export class UCMainEventManager {
 
 
   // 显示showOverLay
-  _on_showOverlay (coordinate) {
+  _on_showOverlay(features,coordinate) {
     //清除地图上的overlay
     this.ucMap.clearOverlays();
-
-
-
-    // 取第一个
-  
-    let overlay = new MapOverlayInfo();
+    if(features.length == 0){
+      return;
+    }
+    debugger
+    let feature = features[0];
+    let properties = feature.getProperties();
+    if(properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid){
+      let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
       overlay.type = MapOverlayType.featureAttriInfo;
-      overlay.features = null;
-
-    let showFields = [
-      { 'name': 'filename', 'aliasName': '名称', 'index': 1, 'type': 'string' }
-    ]
-      overlay.showFields = FieldItems.fromJsons(showFields);
-      overlay.layerItemName = "结合表";
-
-      overlay.layerItemSourceName = '结合表';
-      this.ucMap.showOverlayEx(overlay);
-  
+      overlay.features = [feature];
+      let showFields = _.sortBy(window.BASE_CONFIG.showFields,(field)=>{
+        return -field.index;
+      })
+      let params = {
+        gid:1
+      }
+      this.ucMain.loading = true;
+      AxiosConfig.spatialdecision
+      .get(ServiceUrlConfig.detatil_findOne,{params:params})
+      .then((res)=>{
+        this.ucMain.loading = false;
+        overlay.properties = res.data.data || {};
+        overlay.showFields = showFields;
+    
+        this.ucMap.showOverlay(overlay);
+      }).catch((error)=>{
+        this.ucMain.loading = false;
+        console.log(error)
+      })
+     
+    }
 
   }
+
+  /**
+   * 修改图层项可见状态
+   * @param {*} layerItem
+   * @param {*} visibleStatus
+   */
+  _changeLayerItemVisible(layerItem, visibleStatus) {
+
+    let self = this;
+    if (!layerItem) return;
+
+    if (visibleStatus) {
+
+      self.ucMap.layerMgr.layerItemLayer.addLayer(layerItem);
+      let findIndex = LayerCatalogItems.visibleItems.findIndexById(layerItem.id);
+      LayerCatalogItems.visibleItems.removeByIndex(findIndex);
+      LayerCatalogItems.visibleItems.push(layerItem);
+
+    } else {
+      let findVisibleIndex = LayerCatalogItems.visibleItems.findIndexById(layerItem.id);
+      if (findVisibleIndex != -1) {
+        layerItem.defaultVisible = false;
+        LayerCatalogItems.visibleItems.removeByIndex(findVisibleIndex);
+        this.ucMap.layerMgr.layerItemLayer.addLayer(layerItem);
+      }
+    }
+  }
+
 
 }

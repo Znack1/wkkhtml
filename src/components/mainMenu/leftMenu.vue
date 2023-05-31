@@ -1,35 +1,146 @@
+<!--
+ * @Descripttion: 
+ * @version: 
+ * @Author: zkc
+ * @Date: 2023-05-04 16:33:30
+ * @LastEditors: zkc
+ * @LastEditTime: 2023-05-29 09:59:14
+-->
 <template>
   <div class="divMenuBox">
-    左侧目录面板
+    <div class="topContent">
+      <UCLeftPanel ref="ucLeftPanel"></UCLeftPanel>
+    </div>
+    <div class="bottomContent">
+    <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
+
+    </div>
   </div>
 </template>
 <script>
-
+import { EventManageCode } from '../EventManage';
+import UCLayerCatalogTree from './UCLayerCatalogTree.vue';
+import UCLeftPanel from './UCLeftPanel.vue';
 export default {
   name: "UCLefuMenu",
   props: {},
 
   data() {
     return {
+      treeOption: {
+        'baseUrl': "http://223.71.70.150:8022/spatial-v0.1",
+        'showCheckbox': false,
+      },
+      showCheckbox: true,
     };
   },
 
   components: {
- 
+    UCLayerCatalogTree,
+    UCLeftPanel
   },
   computed: {},
 
-  mounted() {},
+  mounted() {
+    this.init();
+  },
 
   methods: {
+    init(){
+      this.$refs.ucLayerTree.init();
+    },
    
+    /**
+     * @name: zkc
+     * @msg: 树节点被点击 共三个参数
+     * @param {*} data ：传递给 data 属性的数组中该节点所对应的对象
+     * @param {*} nodeData 节点对应的 Node
+     * @param {*} nodeCompoment 节点组件本身
+     * @return {*}
+     */
+     _nodeClickHandler (nodeData) {
+      console.log(nodeData);
+    },
+
+
+    /**
+     * @name: zkc
+    * @msg: checkbox 选择事件
+     * @param {*} nodeData 树节点
+     * @param {*} checked 是否被选中
+     * @param {*} indeterminate  节点的子树中是否有被选中的节点
+     * @return {*}
+     */
+    _nodeCheckChangeHandler (nodeData) {
+      // if (nodeData.defaultVisible) {
+      //   console.log("选中------------" + nodeData.name)
+      // } else {
+      //   console.log("取消选中------------" + nodeData.name)
+      // }
+      this.$emit(EventManageCode.letMenuTreeCheckChange,nodeData)
+    },
+    // 选择监听
+    on_nodeCheckChangeHandler(callback){
+      if(callback){
+        this.$on(EventManageCode.letMenuTreeCheckChange,callback)
+      }
+    },
+
+
+
+    /**
+     * @name: zkc
+     * @msg: 树节点名称点击
+     * @param {*} nodeData 树节点本身
+     * @return {*}
+     */
+    _nodeNameClick (nodeData) {
+
+      console.log("节点名称点击----start");
+      console.log(nodeData);
+      console.log("节点名称点击----end");
+
+    },
+
+    /**
+    * @name: zkc
+    * @msg: 树节点名称双击
+    * @param {*} nodeData 树节点本身
+    * @return {*}
+    */
+    _nodeNameDbClickHandler (nodeData) {
+      console.log("节点名称双击----start");
+      console.log(nodeData);
+      console.log("节点名称双击----end");
+    },
+
+    on_checkLayer(callback){
+      if(this.$refs.ucLeftPanel){
+        this.$refs.ucLeftPanel.on_checkLayer(callback)
+      }
+    }
   },
 };
 </script>
   
   <style lang="less" scoped>
 .divMenuBox{
-  
+  text-align: left;
+    padding: 20px 15px;
+    height: 100%;
+    .div_leftTree{
+      height: 100%;
+      width:100%;
+    }
+    .topContent{
+      height:60%;
+      width:100%
+    }
+    .bottomContent{
+      height:calc(40% - 20px);
+      width:100%;
+      margin-top:10px;
+    }
 }
 </style>
   

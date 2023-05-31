@@ -199,68 +199,80 @@ a:hover {
     color: #4785CE;
     outline: 0;
 }
+
 /* margin间距 */
-.mr0{
+.mr0 {
     margin-right: 0px;
 }
-.mr5{
+
+.mr5 {
     margin-right: 5px;
 }
-.mr10{
+
+.mr10 {
     margin-right: 10px;
 }
-.mr20{
+
+.mr20 {
     margin-right: 20px;
 }
 
 /* border-radius */
-.borderRadius0{
-border-radius: 0;
+.borderRadius0 {
+    border-radius: 0;
 }
 
-.borderRadius5{
+.borderRadius5 {
     border-radius: 5px;
 }
-.borderRadius10{
+
+.borderRadius10 {
     border-radius: 10px;
 }
 
 /* 字体大小 */
-.f12{
+.f12 {
     font-size: 12px;
 }
 
-.f14{
+.f14 {
     font-size: 14px;
 }
-.f16{
+
+.f16 {
     font-size: 16px;
 }
-.f18{
+
+.f18 {
     font-size: 18px;
 }
-.f20{
+
+.f20 {
     font-size: 20px;
 }
-.f24{
+
+.f24 {
     font-size: 24px;
 }
-.f32{
+
+.f32 {
     font-size: 32px;
 }
-.f40{
+
+.f40 {
     font-size: 40px;
 }
 
 /* 背景颜色 */
-.bg_white{
+.bg_white {
     background: white;
 }
 
-.bg_black{
+.bg_black {
     background: black;
 }
-.bg_323232{
+
+.bg_323232 {
     background: #323232;
 }
 
@@ -270,15 +282,16 @@ border-radius: 0;
 }
 
 /* 头部的日志详情样式 */
-  .modeDetail{
-    width:60%;
-    height:60vh
-  }
-  .modeDetail .el-message-box__content{
-      height:calc(100% - 80px);
-  }
+.modeDetail {
+    width: 60%;
+    height: 60vh
+}
 
- 
+.modeDetail .el-message-box__content {
+    height: calc(100% - 80px);
+}
+
+
 
 
 /* 滚动条的整体样式 */
@@ -291,7 +304,7 @@ border-radius: 0;
 
 /* 滚动条的滚动轨迹 */
 
- ::-webkit-scrollbar-track {
+::-webkit-scrollbar-track {
     border-radius: 8px;
     background-color: rgb(255, 255, 255);
     -webkit-box-shadow: 0 0 5px rgba(204, 204, 204, 1) inset;
@@ -300,17 +313,48 @@ border-radius: 0;
 
 /* 滚动条上面的小滑块 */
 
- ::-webkit-scrollbar-thumb {
+::-webkit-scrollbar-thumb {
     border-radius: 8px;
     -webkit-box-shadow: inset 0 0 5px rgba(255, 0, 0, 0.2);
     background-color: rgb(180, 180, 180);
 }
 
 
-.el-table--enable-row-hover .el-table__body tr:hover>td{
-	background-color: #9FB6CD;
+.el-table--enable-row-hover .el-table__body tr:hover>td {
+    background-color: #9FB6CD;
 }
-  .el-table .selectRow {
-      background: #9fb6cd;
-    }
-    
+
+.el-table .selectRow {
+    background: #9fb6cd;
+}
+
+.configPage .treeName {
+   
+}
+
+.el-tree-node__content>label.el-checkbox {
+    margin-right: 0;
+}
+
+.custom-tree-node .el-button+.el-button {
+    margin-left: 4px;
+}
+
+.treeName {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    /* width: calc(100% - 40px); */
+    display: inline-block;
+    line-height: 20px;
+    font-size: 16px;
+    word-break: break-word;
+    vertical-align: middle;
+}
+
+.el-tree-node__content {
+    overflow: hidden;
+}
+.custom-tree-node{
+    width: calc(100% - 30px);
+}

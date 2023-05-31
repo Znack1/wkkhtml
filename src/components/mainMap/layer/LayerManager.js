@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 14:44:23
- * @LastEditTime: 2022-11-17 14:24:25
+ * @LastEditTime: 2023-05-29 22:02:25
  * @LastEditors: zkc
  */
 
@@ -10,7 +10,8 @@ import { MapBaseLayer, MapBaseLayerType } from './MapBaseLayer.js';
 import { OLLayerUtility } from '../../../utility/ol/OLLayerUtility.js';
 import { BaseLayerConfig } from '../../../config/BaseLayerConfig.js';
 import { DrawGeometryLayer } from './DrawGeometryLayer'
-
+import { LayerCatalogItemLayer } from './LayerCatalogItemLayer.js';
+import { POISearchLayer } from './POISearchLayer'
 /**
  * 图层管理
  */
@@ -26,7 +27,8 @@ export class LayerManager {
 
         // 绘制图层
         this.drawGeometryLayer = new DrawGeometryLayer();
-    
+        this.layerItemLayer = new LayerCatalogItemLayer();
+        this.poiLayer = new POISearchLayer();
     }
 
 
@@ -41,7 +43,8 @@ export class LayerManager {
 
         this.baseLayer.curMap = this.currentMap; 
         this.drawGeometryLayer.curMap = this.currentMap;
-
+        this.layerItemLayer.curMap = this.currentMap;
+        this.poiLayer.curMap = this.currentMap;
 
         // this.baseLayer.showVisibleLayer(MapBaseLayerType.Vector);
         this.baseLayer.showVisibleLayer(window.BASE_CONFIG.DefaultMapBaseLayerType);

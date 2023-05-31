@@ -4,13 +4,13 @@
  * @Author: zkc
  * @Date: 2021-01-06 11:15:31
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-04 16:14:10
+ * @LastEditTime: 2023-05-29 21:06:23
  * @input: no param
  * @out: no param
 -->
 <template>
   <div id="app">
-    <UCHeader ref="ucHeader" class="divHeaderBox"></UCHeader>
+    <UCHeader ref="ucHeader" class="divHeaderBox" ></UCHeader>
     <div class="divRouter">
       <router-view />
     </div>
@@ -63,6 +63,7 @@ export default {
   color: #2c3e50;
   width: 100%;
   height: 100%;
+  overflow: hidden;
   .divRouter {
     width: 100%;
     height: calc(100% - 60px);

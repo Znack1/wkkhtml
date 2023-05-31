@@ -1,10 +1,10 @@
 /*
  * @Author: your name
  * @Date: 2019-11-16 10:50:08
- * @LastEditTime: 2021-01-27 10:57:01
- * @LastEditors: wutt
+ * @LastEditTime: 2023-05-29 17:48:35
+ * @LastEditors: zkc
  * @Description: In User Settings Edit
- * @FilePath: /html/src/utility/ol/VectorTileUtility.js
+ * @FilePath: /高标准农田/src/utility/ol/VectorTileUtility.js
  */
 
 import { ArrayUtility } from "../common/ArrayUtility";
@@ -21,6 +21,8 @@ export class VectorTileUtility {
 
         this.serviceName = null;
 
+        this.tilematrixSuffix = "EPSG:4326:";  //
+
         //示例：[{minLevel:1,maxLevel:10},{minLevel:14,maxLevel:16}]
         this.imageLevelRanges = [];
 
@@ -35,7 +37,7 @@ export class VectorTileUtility {
     /**
      * 创建图层
      */
-    createLayers() {
+    createLayers () {
 
         let olLayers = new Array();
 
@@ -52,8 +54,7 @@ export class VectorTileUtility {
     }
 
 
-    createWMTSLayers() {
-
+    createWMTSLayers () {
         let olLayers = new Array();
 
         if (this.imageLevelRanges && this.imageLevelRanges.length > 0) {
@@ -76,7 +77,7 @@ export class VectorTileUtility {
     }
 
 
-    createVTLayers() {
+    createVTLayers () {
         let olLayers = new Array();
 
         if (this.vtLevelRanges && this.vtLevelRanges.length > 0) {
@@ -98,7 +99,7 @@ export class VectorTileUtility {
         return olLayers;
     }
 
-    setVisible(visibleStatus) {
+    setVisible (visibleStatus) {
 
         if (!this.layers || this.layers.length == 0) return;
 
@@ -112,13 +113,13 @@ export class VectorTileUtility {
     }
 
 
-    createVTLayer(minLevel, maxLevel, layerExtent) {
+    createVTLayer (minLevel, maxLevel, layerExtent) {
 
 
         let initStyle = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: '#12563b'
-                    // color: 'rgba(255,255,1,0.5)'
+                // color: 'rgba(255,255,1,0.5)'
             }),
             stroke: new ol.style.Stroke({
                 color: 'blue',
@@ -162,31 +163,33 @@ export class VectorTileUtility {
             });
         }
 
-        let params = {
-            'REQUEST': 'GetTile',
-            'SERVICE': 'WMTS',
-            'VERSION': '1.0.0',
-            'LAYER': this.serviceName,
-            'STYLE': 'default',
-            'TILEMATRIX': '{z}',
-            'TILEMATRIXSET': this.epsg,
-            'FORMAT': 'application/x-protobuf;type=mapbox-vector',
-            'TILECOL': '{x}',
-            'TILEROW': '{y}'
-        };
+        // let params = {
+        //     'REQUEST': 'GetTile',
+        //     'SERVICE': 'WMTS',
+        //     'VERSION': '1.0.0',
+        //     'LAYER': this.serviceName,
+        //     'STYLE': 'default',
+        //     'TILEMATRIX': '{z}',
+        //     'TILEMATRIXSET': this.epsg,
+        //     'FORMAT': 'application/x-protobuf;type=mapbox-vector',
+        //     'TILECOL': '{x}',
+        //     'TILEROW': '{y}'
+        // };
 
         //创建数据源
         let url = this.wmtsUrl;
+        // if(!url){
+        //     return;
+        // }
+        // if (!url.endsWith("?")) {
+        //     url = url + "?"
+        // }
 
-        if (!url.endsWith("?")) {
-            url = url + "?"
-        }
+        // for (let param in params) {
+        //     url = url + param + '=' + params[param] + '&';
+        // }
 
-        for (let param in params) {
-            url = url + param + '=' + params[param] + '&';
-        }
-
-        url = url.slice(0, -1);
+        // url = url.slice(0, -1);
 
 
         let self = this;
@@ -194,7 +197,7 @@ export class VectorTileUtility {
         let olSource = new ol.source.VectorTile({
             crossOrigin: '*',
             url: url,
-            format: new ol.format.MVT({ featureClass: ol.Feature }),
+            format: new ol.format.MVT(),
             projection: projection,
             tileGrid: new ol.tilegrid.WMTS({
                 extent: layerExtent,
@@ -205,17 +208,29 @@ export class VectorTileUtility {
             }),
             wrapX: false,
 
-            tileUrlFunction: function(tileMarker, pixelRatio, proj) {
+            tileUrlFunction: function (tileMarker, pixelRatio, proj) {
                 if (!tileMarker) return;
 
                 let tileLevel = tileMarker[0];
                 if (tileLevel > maxLevel || tileLevel < minLevel) {
                     return;
                 }
+              
+                let tileUrl = null;
+                if (self.tilematrixSuffix){
+                    tileUrl = url.replace('{z}', self.tilematrixSuffix + ':' + String(tileLevel))
+                        .replace('{x}', Math.abs(String(tileMarker[1])))
+                        .replace('{y}', Math.abs(String(tileMarker[2] + 1)));
+                }else{
+                    tileUrl = url.replace('{z}', String(tileLevel))
+                        .replace('{x}', String(tileMarker[1]))
+                        .replace('{y}', String(tileMarker[2] + 1));
+                }
 
-                let tileUrl = url.replace('{z}', String(tileLevel))
-                    .replace('{x}', String(tileMarker[1]))
-                    .replace('{y}', String(tileMarker[2] + 1));
+                console.log(tileUrl)
+
+                console.log(self.tilematrixSuffix)
+               
 
                 // //隐藏时间戳
                 // tileUrl+='&time=' + Date.now();
@@ -280,13 +295,17 @@ export class VectorTileUtility {
         return olLayer;
     }
 
-    createImageLayer(minLevel, maxLevel, layerOlExtent) {
+    createImageLayer (minLevel, maxLevel, layerOlExtent) {
 
-        let matrixIds = OLVectorTileConstants.tdt4326_matrixIds; // ['EPSG:4326:0', 'EPSG:4326:1', 'EPSG:4326:2', 'EPSG:4326:3', 'EPSG:4326:4', 'EPSG:4326:5', 'EPSG:4326:6', 'EPSG:4326:7', 'EPSG:4326:8', 'EPSG:4326:9', 'EPSG:4326:10', 'EPSG:4326:11', 'EPSG:4326:12', 'EPSG:4326:13', 'EPSG:4326:14', 'EPSG:4326:15', 'EPSG:4326:16', 'EPSG:4326:17', 'EPSG:4326:18', 'EPSG:4326:19', 'EPSG:4326:20', 'EPSG:4326:21'];
+        //  let matrixIds = OLVectorTileConstants.tdt4326_matrixIds;
+        // ['EPSG:4326:0', 'EPSG:4326:1', 'EPSG:4326:2', 'EPSG:4326:3', 'EPSG:4326:4', 'EPSG:4326:5', 'EPSG:4326:6', 'EPSG:4326:7', 'EPSG:4326:8', 'EPSG:4326:9', 'EPSG:4326:10', 'EPSG:4326:11', 'EPSG:4326:12', 'EPSG:4326:13', 'EPSG:4326:14', 'EPSG:4326:15', 'EPSG:4326:16', 'EPSG:4326:17', 'EPSG:4326:18', 'EPSG:4326:19', 'EPSG:4326:20', 'EPSG:4326:21'];
+        let matrixIds = null;
         let projection = null;
         let resolutions = null;
-
-        if (this.epsg.indexOf("4326") || this.epsg.indexOf("4490")) {
+        let vtOrigin = null;
+        if (this.epsg.indexOf("4326") != -1 || this.epsg.indexOf("4490") != -1) {
+            vtOrigin = OLVectorTileConstants.epsg4326_origin;
+            matrixIds = OLVectorTileConstants.tdt4326_matrixIds;
             resolutions = OLVectorTileConstants.tdt4326_resolutions;
             projection = new ol.proj.Projection({
                 code: 'EPSG:4326',
@@ -294,6 +313,8 @@ export class VectorTileUtility {
                 axisOrientation: 'neu'
             });
         } else {
+            vtOrigin = OLVectorTileConstants.epsg3857_origin;
+            matrixIds = OLVectorTileConstants.epsg3857_matrixIds;
             resolutions = OLVectorTileConstants.epsg3857_resolutionsEx;
             projection = new ol.proj.Projection({
                 code: 'EPSG:3857',
@@ -348,14 +369,13 @@ export class VectorTileUtility {
         visibleMinResolution = visibleMinResolution * 0.8;
 
         let olSource = new ol.source.WMTS({
-            crossOrigin: '*',
             url: url,
             projection: projection,
             format: 'image/png',
             tileGrid: new ol.tilegrid.WMTS({
                 extent: layerOlExtent,
                 tileSize: OLVectorTileConstants.tileSize, // [256, 256],
-                origin: OLVectorTileConstants.epsg4326_origin, // [-180.0, 90.0],
+                origin: vtOrigin, // [-180.0, 90.0],
                 resolutions: wmtsResolutions,
                 matrixIds: wmtsMatrixIds,
             }),
@@ -363,6 +383,7 @@ export class VectorTileUtility {
         });
 
         //创建wmts瓦片图层
+        // eslint-disable-next-line no-undef
         let olLayer = new ol.layer.Tile({
             source: olSource,
             maxResolution: visibleMaxResolution,
@@ -373,7 +394,7 @@ export class VectorTileUtility {
     }
 
 
-    static findFeaturesByLayerProperty(features, layerProperty) {
+    static findFeaturesByLayerProperty (features, layerProperty) {
         let findFeatures = new Array();
 
         if (!features || !layerProperty) return findFeatures;
@@ -477,6 +498,7 @@ export const OLVectorTileConstants = {
 
 
     epsg3857_resolutionsEx: [
+	    78271.516963999893*2,
         78271.516963999893,
         39135.758482000099,
         19567.879240999901,

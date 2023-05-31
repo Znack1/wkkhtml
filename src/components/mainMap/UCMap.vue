@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 13:52:03
- * @LastEditTime: 2022-09-23 11:09:44
+ * @LastEditTime: 2023-05-18 21:45:27
  * @LastEditors: zkc
  -->
 <!--  -->
@@ -14,7 +14,6 @@
     ></div>
 
   <UCMapOverlay ref="ucOverlay" v-show="false"></UCMapOverlay>
-    <div @click="cl">测量开始</div>
 
   </div>
 
@@ -84,7 +83,7 @@ export default {
       // this.layerMgr.ucMapOverLay = this.$refs.ucOverlay;
       this.layerMgr.init();
       this.layerMgr.addLayers();
-
+      debugger
       this.$refs.ucOverlay.curMap = this.curMap;
       this.$refs.ucOverlay.init();
 
@@ -212,6 +211,7 @@ export default {
     },
 
     plusZoomLevel() {
+      
       let zoomLevel = this.getZoomLevel();
       let plusLevel = zoomLevel + 1;
       this.setZoomLevel(plusLevel);
@@ -337,7 +337,7 @@ export default {
   margin: 0;
   padding: 0;
   width: 100%;
-  height: 100vh;
+  height: 100%;
   overflow: hidden;
   // background: #0f1467;
   background: #f6f6f4;

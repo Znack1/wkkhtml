@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-17 15:07:49
- * @LastEditTime: 2022-07-26 17:37:35
+ * @LastEditTime: 2023-05-31 09:28:44
  * @LastEditors: zkc
  */
 
@@ -47,7 +47,7 @@ export class SystemConfig {
 SystemConfig._instance = null;
 
 //请求时默认的token值
-SystemConfig.token = "f6616fa13df718e2cd6280af4c45f5a2";
+SystemConfig.token = window.BASE_CONFIG.defaultToken;
 
 
 //网页宽度

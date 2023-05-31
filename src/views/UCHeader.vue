@@ -4,14 +4,14 @@
  * @Author: zkc
  * @Date: 2021-03-23 10:01:24
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-04 16:05:18
+ * @LastEditTime: 2023-05-04 21:27:23
  * @input: no param
  * @out: no param
 -->
 <template>
   <div class="divHeader">
       <div class="divLogoBox">
-        <!-- <img src="../assets/images/logo.png" style="height:49px;" /> -->
+        <img src="../assets/images/logo.png" style="height:49px;" />
       </div>
   </div>
 </template> 

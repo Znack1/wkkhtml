@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-24 17:08:40
  * @LastEditors: zkc
- * @LastEditTime: 2022-11-17 17:32:19
+ * @LastEditTime: 2023-05-18 21:43:27
  * @input: no param
  * @out: no param
 -->
@@ -97,16 +97,16 @@ export default {
 <style lang="less" scoped>
 .mapTool {
   background: white;
-  border: 1px solid #ccc;
   i {
-    font-size: 40px;
-    padding: 10px;
-    border-top: 1px solid #ccc;
-    // float: left;
+    font-size: 20px;
+    border-bottom: 1px solid #ccc;
     cursor: pointer;
-    display: block;
-    color: rgb(0, 183, 255);
+    display: inline-block;
+    color: #00b7ff;
     background: #fff;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 8px;
   }
   .editMapBtn:hover,
   .editMapBtn.active {

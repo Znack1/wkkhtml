@@ -4,20 +4,20 @@
  * @Author: zkc
  * @Date: 2021-03-23 15:57:10
  * @LastEditors: zkc
- * @LastEditTime: 2022-11-18 15:44:51
+ * @LastEditTime: 2023-05-31 11:16:19
  * @input: no param
  * @out: no param
 -->
 <!--  -->
 <template>
   <div id="divMapOverlay">
-    <UCAttriInfos ref="ucAttriInfos"></UCAttriInfos>
+    <UCStatisticsOverlay ref="ucStatOverlay"></UCStatisticsOverlay>
   </div>
 </template>
 
 <script>
-import { MapOverlayType, OverlayLayoutInfo } from './UCMapOverlayJs';
-import UCAttriInfos from './UCOverlayTemplate/UCAttriInfos.vue'
+import { MapOverlayType, OverlayLayoutInfo, StatisticsOverlayInfo } from './UCMapOverlayJs';
+import UCStatisticsOverlay from "./UCOverlayTemplate/UCStatisticsOverlay.vue";
 export default {
   name: "UCMapOverlay",
   data () {
@@ -28,64 +28,61 @@ export default {
   },
 
   components: {
-    UCAttriInfos
+    UCStatisticsOverlay
   },
 
   computed: {},
 
   mounted () {
-    this.$refs.ucAttriInfos.on_canelPanel(()=>{
-      this.clearOverlays();
-    })
+    // this.$refs.ucAttriInfos.on_canelPanel(()=>{
+    //   this.clearOverlays();
+    // })
    },
 
   methods: {
     init () { },
 
-    showOverlay (overlayInfo) {
+    showOverlay(overlayInfo) {
+      debugger
       let self = this;
       if (!overlayInfo) return;
       self.overlayInfo = overlayInfo;
-      if (overlayInfo.type == MapOverlayType.featureAttriInfo) {
-        let resultItem = overlayInfo.feature.get("bindingObject");
-        var info = {
-          id: resultItem.id,
-          attributes: []
-        };
+      if (
+        overlayInfo.type == MapOverlayType.featureAttriInfo
+      ) {
+        let info = new StatisticsOverlayInfo();
+        info.id = overlayInfo.properties.gid;
+        info.title = overlayInfo.properties.mc;
+        info.getAttributesAndAttachments(
+          overlayInfo.properties,
+          overlayInfo.showFields
+        );
 
-        _.each(resultItem, (o, k) => {
-          let tempFieldItem = overlayInfo.showFields.findByName(k);
-          if (tempFieldItem) {
-            let attriItem = {};
-            //别名
-            attriItem.key = tempFieldItem.aliasName;
-            attriItem.value = o;
-            info.attributes.push(attriItem);
-          }
-        });
-        self._initucAttributesCallbackHandler(overlayInfo.position, info);
-      }
+        
+        self._initAttriAndPhotosCallbackHandler(overlayInfo.position, info);
+      } 
     },
 
-    showOverlayEx (overlayInfo) {
-      let self = this;
-      if (!overlayInfo) return;
-      self.overlayInfo = overlayInfo;
-      if (overlayInfo.type == MapOverlayType.featureAttriInfo) {
-        self._initucAttributesCallbackHandler(overlayInfo.position);
-      }
-    },
-
-
-    // 详情点击
-    _initucAttributesCallbackHandler (position, objectInfo) {
+ 
+    // 点击详情
+    _initAttriAndPhotosCallbackHandler(position, objectInfo) {
       let divMapOverlayElement = document.getElementById("divMapOverlay");
 
-      if (!this.$refs.ucAttriInfos) {
+      if (!this.$refs.ucStatOverlay) {
         this.clearOverlays();
       }
 
+      // 无属性则不显示
+      if (
+        objectInfo.attributes.length == 0 &&
+        objectInfo.videos.length == 0 &&
+        objectInfo.photos.length == 0
+      ) {
+        return;
+      }
+
       let overlayLayout = this._createOverlayLayout();
+
       divMapOverlayElement.append(overlayLayout.divElement);
 
       //新建overlay
@@ -100,10 +97,8 @@ export default {
 
       let self = this;
 
-      this.$refs.ucAttriInfos.init(objectInfo, function () {
-        overlayLayout.contentElement.appendChild(
-          self.$refs.ucAttriInfos.$el
-        ); // = innerHtml;
+      this.$refs.ucStatOverlay.init(objectInfo, function() {
+        overlayLayout.contentElement.appendChild(self.$refs.ucStatOverlay.$el); // = innerHtml;
 
         //设置overlay的显示位置
         overlayLayout.ucOverlay.setPosition(position);
@@ -168,7 +163,7 @@ export default {
 
 <style lang="less">
 .ol-overlay-popup {
-  position: absolute;
+  position: absolute; 
   background-color: rgba(255, 255, 255, 1);
   -webkit-filter: drop-shadow(0 1px 4px rgba(255, 255, 255, 1));
   filter: drop-shadow(0 1px 4px rgba(255, 255, 255, 1));

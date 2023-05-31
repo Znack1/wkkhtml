@@ -3,7 +3,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-17 15:07:49
- * @LastEditTime: 2022-11-17 10:38:31
+ * @LastEditTime: 2023-05-31 10:13:15
  * @LastEditors: zkc
  */
 
@@ -76,4 +76,10 @@ ServiceUrlConfig.subjectgroup_selectByFilter = null;
 ServiceUrlConfig.subject_base_url = null;
 
 ServiceUrlConfig.datasourceinfo_fullparseshapefile = null;
+
+ServiceUrlConfig.layercataloggroup_getlayercatalog = "/layercataloggroup/getlayercatalog"; // 查询目录树
+ServiceUrlConfig.point_allPoint="/point/allPoint" ; // 获取所有点位
+ServiceUrlConfig.firstDir_allDir = "/firstDir/allDir" ;// 获取左上目录树
+ServiceUrlConfig.nextDir_allInformation = "nextDir/allInformation"; // 左下目录树
+ServiceUrlConfig.detatil_findOne = "/detatil/findOne" // 获取要素详情
 

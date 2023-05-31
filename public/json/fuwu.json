@@ -1,0 +1,47 @@
+{
+    "code": 200,
+    "msg": "操作成功。",
+    "data": [
+        {
+            "id": "e879f47fa9964811bb9dae2018aede6c",
+            "name": "全国一级河流数据",
+            "description": null,
+            "groupId": "adef7ca938114b1ebb75c3a909b8ff3d",
+            "type": "vectorTile",
+            "defaultVisible": "true",
+            "opacity": "1",
+            "visibleMinLevel": "0",
+            "visibleMaxLevel": "22",
+            "token": null,
+            "extent": "",
+            "initLevel": "-1",
+            "tag": "",
+            "sort": "1",
+            "edition": "default",
+            "metaDataItemString": "",
+            "serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/qghlsj_lv1s/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=qghlsj_lv1s&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+            "serviceName": "qghlsj_lv1s",
+            "serviceEpsg": "EPSG:4326",
+            "styleJsonUrl": null,
+            "sourceName": null,
+            "renderParamsString": "",
+            "showFieldsJsonString": "",
+            "filterName": null,
+            "tilematrixSuffix": null,
+            "nodeType": "item",
+            "createTime": "2023-05-26 10:05:08.070359",
+            "alias": null,
+            "checked": "false",
+            "fields": null,
+            "rendererSettingsString": "",
+            "styleName": null,
+            "tileSchemeType": "tdt_4326",
+            "rendererSettings": [{
+                "minLevel": 0,
+                "maxLevel": 20,
+                "range": "0~20",
+                "rendererType": "vectorTile"
+            }]
+        }
+    ]
+}

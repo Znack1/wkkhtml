@@ -1,143 +1,83 @@
 <!--
  * @Author: your name
- * @Date: 2020-03-15 10:18:06
- * @LastEditTime: 2022-11-18 15:32:35
+ * @Date: 2020-03-09 14:31:30
+ * @LastEditTime: 2023-05-31 13:34:58
  * @LastEditors: zkc
  * @Description: In User Settings Edit
- * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCOverlay.vue
+ * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCAttriInfos.vue
  -->
 <!--  -->
 <template>
-  <div class="divAttirbuteOverlay">
-    <div class="divTitle">基本信息</div>
-    <div class="divCard">
-        <el-row style="padding:5px 0">
-          <el-col :span="6">名称:</el-col>
-          <el-col style="word-break: break-all;text-align:left" :span="17" :offset="1">
-            <el-input size="mini" v-model="nameValue"></el-input>
-          </el-col>
-        </el-row>
-        <el-row style="padding:5px 0">
-          <el-col :span="6">地址:</el-col>
-          <el-col style="word-break: break-all;text-align:left" :span="17" :offset="1">
-            <el-input size="mini" v-model="nameValue1"></el-input>
-          </el-col>
-        </el-row>
-          <el-row style="padding:5px 0">
-            <el-col :span="6">描述:</el-col>
-            <el-col style="word-break: break-all;text-align:left" :span="17" :offset="1">
-              <el-input size="mini" v-model="nameValue2"></el-input>
-            </el-col>
-          </el-row>
-        <div style="margin-top:10px;" size="mini">
-          <el-button @click="_canelPanel">确定</el-button>
-          <!-- <el-button @click="_canelPanel">取消</el-button> -->
-        </div>
-    </div>
+  <div>
+    <ul class="ul-attrisInfo">
+        <li class="li-items" v-for="item in attributes"
+        :key="item.key">
+        <div class="div-attri-key"  :title="item.key">{{item.key.trim()}}：</div>
+        <div class="div-attri-value"  :title="item.value">{{item.value}}</div>
+      </li>
+     
+    </ul>
+
   </div>
 </template>
 
 <script>
-import { UCMapEvent } from '../UCMapJs';
 export default {
-  name: "UCPollutionOverlay",
-  data () {
+  name: "UCAttriInfos",
+  data() {
     return {
-      curInfoIdx: 0,
-      allAttrs: new Array(),
-      attributes: [{ "key": 1, value: 2 }, { "key": 1, value: 2 }, { "key": 1, value: 2 }],
-      info: null,
-      nameValue: '',
-      nameValue1: '',
-      nameValue2: '',
-      ucSetting: {
-        showDetail: false
-      }
+      attributes: new Array()
     };
   },
 
-  components: {
-  },
+  components: {},
 
   computed: {},
 
-  mounted () { },
+  mounted() {},
 
   methods: {
-    init (info, succeedCallback) {
-      // this.curInfoIdx = 0;
-      // this.allAttrs = info;
-      // this.attributes = info[this.curInfoIdx].attributes;
-      // this.ucSetting.showDetail = info.showDetail;
-
-
-      this.$nextTick(succeedCallback);
-
-
-    },
-   
-    /**
-        * 查看详情
-       */
-    _canelPanel () {
-
-      this.$emit(UCMapEvent.UCOverlay_event_canel);
-    },
-
-    on_canelPanel (callback) {
-      if (callback) {
-        this.$on(UCMapEvent.UCOverlay_event_canel, callback);
-      }
+    init(attris) {
+      this.attributes = attris;
     }
-
-
   }
 };
 </script>
+
 <style lang="less" scoped>
-.divAttirbuteOverlay {
-  background-size: 100% 100%;
-
-  padding-bottom: 10px;
-
-  .divCard {
-    width: 100%;
-    padding: 0 10px;
-    box-sizing: border-box;
-    margin: 0 auto;
-    height: 170px;
-    font-size: 14px;
-    color: #323232;
-    position: relative;
-  }
-
-  .divTitle {
-    height: 36px;
-    width: 100%;
-    line-height: 36px;
-    color: #323232;
-    font-size: 14px;
-    padding: 0 24px;
-    // border-bottom: 1px solid #86848c;
-    background: #DCDCDC;
-    box-sizing: border-box;
-    margin-bottom: 10px;
-  }
-
-  .cardEwm {
+.ul-attrisInfo {
+  padding: 0px;
+  width: 100%;
+  margin: 0;
+  padding:0 24px;
+  padding-top: 0;
+  box-sizing: border-box;
+}
+.li-items {
+  line-height: 14px;
+  list-style: none;
+  padding: 5px 0;
+  box-sizing: border-box;
+  overflow: hidden;
+  font-size: 14px;
+  color: #323232;
+  .div-attri-key {
     width: 90px;
-    height: 90px;
-    position: absolute;
-    bottom: 10px;
-    right: 20px;
+    font-weight: 300;
+    line-height: 14px;
+    float: left;
+    text-align: right;
+    font-size:14px;
+    line-height:26px;
   }
-
-  .more {
+  .div-attri-value {
+    padding-left: 6px;
+    width: calc(100% - 96px);
+    float: right;
+    text-align: left;
+    word-break: break-all;
     font-size: 14px;
-    color: #0af7dd;
-    line-height: 24px;
-    cursor: pointer;
-    display: block;
+    line-height: 26px;
   }
 }
 </style>
