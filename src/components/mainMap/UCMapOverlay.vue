@@ -43,7 +43,7 @@ export default {
     init () { },
 
     showOverlay(overlayInfo) {
-      debugger
+      
       let self = this;
       if (!overlayInfo) return;
       self.overlayInfo = overlayInfo;

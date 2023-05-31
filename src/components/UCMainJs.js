@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-31 13:45:03
+ * @LastEditTime: 2023-05-31 22:22:24
  * @input: no param
  * @out: no param
  */
@@ -66,8 +66,7 @@ export class UCMainEventManager {
           })
           return findItem;
         });
-        // let layerArray = self.ucMap.curMap.getLayers();
-        // layerArray.remove(node.layer);
+      
       }
 
       this.getPageData();
@@ -93,27 +92,33 @@ export class UCMainEventManager {
   // 获取页面数据更新
   getPageData() {
     let self = this;
-    let params = {
-      type: this.checkedNodes[0].parentId,
-      twoType: _.map(this.checkedNodes, "name"),
-      qvbie: this.ucMain.curStat.value || ''
+    if(this.checkedNodes.length == 0){
+      self.ucMap.layerMgr.poiLayer.clear();
+      self.ucRightPanel.updatePanel(null, this.ucMain.curStat)
+    }else{
+      let params = {
+        type: this.checkedNodes[0].parentId,
+        twoType: _.map(this.checkedNodes, "name"),
+        qvbie: this.ucMain.curStat.value || ''
+      }
+      self.ucMain.loading = true;
+      AxiosConfig.spatialdecision
+        .post(ServiceUrlConfig.point_allPoint, params)
+        .then((res) => {
+          self.ucMain.loading = false;
+  
+          let datas = res.data.data.pointEntities;
+          self.ucMap.layerMgr.poiLayer.clear();
+          self.ucMap.layerMgr.poiLayer.addMarkers(datas);
+  
+          // 更新右侧面板
+          self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
+        }).catch((error) => {
+          self.ucMain.loading = false;
+  
+        })
     }
-    self.ucMain.loading = true;
-    AxiosConfig.spatialdecision
-      .post(ServiceUrlConfig.point_allPoint, params)
-      .then((res) => {
-        self.ucMain.loading = false;
-
-        let datas = res.data.data.pointEntities;
-        self.ucMap.layerMgr.poiLayer.clear();
-        self.ucMap.layerMgr.poiLayer.addMarkers(datas);
-
-        // 更新右侧面板
-        self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
-      }).catch((error) => {
-        self.ucMain.loading = false;
-
-      })
+   
 
   }
 
@@ -323,7 +328,6 @@ export class UCMainEventManager {
     if(features.length == 0){
       return;
     }
-    debugger
     let feature = features[0];
     let properties = feature.getProperties();
     if(properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid){
@@ -335,7 +339,7 @@ export class UCMainEventManager {
         return -field.index;
       })
       let params = {
-        gid:1
+        gid:properties.bindingObject.gid
       }
       this.ucMain.loading = true;
       AxiosConfig.spatialdecision

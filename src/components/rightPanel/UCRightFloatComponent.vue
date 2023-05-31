@@ -50,13 +50,23 @@ export default {
 
   computed: {},
 
-  mounted() {},
+  mounted() {
+    this._initEvents();
+  },
 
   methods: {
     /**
      * 初始化
      */
     updatePanel(data, curStat) {
+      if(!data){
+        let barObj = {
+          data: [],
+        };
+        this.$refs.ucBarXComponent.initChart(barObj);
+        this.$refs.ucDistributionTable.update([], []);
+        return;
+      }
       // echart
       if (data.map) {
         let barObj = {
@@ -117,7 +127,7 @@ export default {
         this.$refs.ucDistributionTable.update(tableDatas, headers);
       }
 
-      this._initEvents();
+     
     },
 
     handleChange(val) {

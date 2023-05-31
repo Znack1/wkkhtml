@@ -44,7 +44,7 @@ export default {
 
   methods: {
     init(statInfo, succeedCallback) {
-      debugger
+      
       this.info = statInfo;
       if (statInfo) {
         this.$refs.ucAttriInfos.init(statInfo.attributes);
@@ -113,14 +113,18 @@ export default {
 
 .divTitle {
   height: 36px;
-  width: 100%;
+  width: 95%;
   line-height: 36px;
   color: #323232;
   font-size: 16px;
   padding: 0 24px;
+  padding-left:10px;
   border-bottom: 1px solid #86848c;
   box-sizing: border-box;
   margin-bottom: 10px;
 text-align: left;
+text-overflow: ellipsis;
+    white-space: nowrap;
+    overflow: hidden;
 }
 </style>

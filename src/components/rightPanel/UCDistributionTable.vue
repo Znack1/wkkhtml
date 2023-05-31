@@ -20,7 +20,7 @@
           </template>
         </el-table-column>
 
-        <el-table-column v-for="header in ucsetting.headers" :key="header.props"
+        <el-table-column v-for="(header,idx) in ucsetting.headers" :key="idx"
           :prop="header.props"
           :label="header.name"
           align="center"

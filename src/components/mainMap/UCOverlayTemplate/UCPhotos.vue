@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-09 15:10:45
- * @LastEditTime: 2023-05-31 11:27:52
+ * @LastEditTime: 2023-05-31 21:13:10
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCPhotos.vue
@@ -46,10 +46,13 @@
 
     methods: {
       init(photoAttachments) {
-        debugger
+        
         if (!photoAttachments || photoAttachments.length == 0) return;
 
-        this.photos = photoAttachments;
+        this.photos = []
+        _.each(photoAttachments,(photo)=>{
+          this.photos.push(window.BASE_CONFIG.flie_base_ip + photo)
+        });
 
 
         if (this.photos.length > this.ucsetting.partImgCount) {

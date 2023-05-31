@@ -26,10 +26,7 @@ export default {
       charts: "",
       barObj: {
           data: [
-            { value: 3353, name: "兰州市", type: "2015-2016变化量" },
-            { value: 3210, name: "嘉峪关市", type: "2015-2016变化量" },
-            { value: 2234, name: "金昌市", type: "2015-2016变化量" },
-            { value: 1135, name: "白银市", type: "2015-2016变化量" },
+           
           ],
           color: [
             "#397BE6 ",
@@ -148,6 +145,17 @@ export default {
         });
         idx++;
       });
+      if(serObj.length == 0){
+        serObj = [{
+          name: '统计',
+          type: "bar",
+          smooth: true,
+          symbol: "circle", //标记的图形为实心圆
+          symbolSize: 10, //标记的大小
+          barMaxWidth: 30,
+          data: []
+        }]
+      }
       this.charts = echarts.init(this.$refs.myChart); // 获取echart对象
       let option = {
         tooltip: {

@@ -11,6 +11,7 @@
 window.BASE_CONFIG = {
 	// 公网
 	"spatialdecision_public_base_url": "http://223.71.70.150:9977/qgwkk",
+	"flie_base_ip":"http://223.71.70.150:9977",
 	"tdt_service_public_base_url":"http://api.tianditu.gov.cn",
 	"tdt_xyz_public_base_url":"https://t{0-7}.tianditu.gov.cn/DataServer?",
 	"defaultToken": "d3182ea02e2a9c206f78d45793bb11ac",

@@ -83,7 +83,7 @@ export default {
       // this.layerMgr.ucMapOverLay = this.$refs.ucOverlay;
       this.layerMgr.init();
       this.layerMgr.addLayers();
-      debugger
+      
       this.$refs.ucOverlay.curMap = this.curMap;
       this.$refs.ucOverlay.init();
 
