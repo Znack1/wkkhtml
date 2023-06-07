@@ -1,6 +1,6 @@
 @font-face {
   font-family: "iconfont"; /* Project id  */
-  src: url('iconfont.ttf?t=1668762924792') format('truetype');
+  src: url('iconfont.ttf?t=1686013406206') format('truetype');
 }
 
 .iconfont {
@@ -11,83 +11,99 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-.icon-left-layer:before {
-  content: "\e634";
+.icon-juliceliang:before {
+  content: "\e655";
 }
 
-.icon-NzmV1nzmGrid:before {
-  content: "\e60e";
+.icon-qita:before {
+  content: "\e643";
 }
 
-.icon-fangda:before {
-  content: "\e639";
+.icon-government:before {
+  content: "\e64b";
 }
 
-.icon-pingyi:before {
-  content: "\e813";
+.icon-tuceng:before {
+  content: "\e63b";
 }
 
-.icon-plus:before {
-  content: "\e656";
+.icon-guanbi:before {
+  content: "\e617";
 }
 
-.icon-xiugai:before {
-  content: "\e62c";
+.icon-ditu:before {
+  content: "\e66c";
 }
 
-.icon-shanchu:before {
-  content: "\e612";
+.icon-mianjiceliang:before {
+  content: "\e630";
 }
 
-.icon-NMStubiao-:before {
-  content: "\e623";
+.icon-duihao:before {
+  content: "\e604";
 }
 
-.icon-fuwei:before {
-  content: "\e62e";
+.icon-huanjingyujing:before {
+  content: "\eb3a";
 }
 
-.icon-ceju:before {
-  content: "\e69b";
+.icon-dengji:before {
+  content: "\e645";
 }
 
-.icon-suoxiao1:before {
-  content: "\e79f";
+.icon-shui:before {
+  content: "\e611";
 }
 
-.icon-duobianxing:before {
-  content: "\e61b";
+.icon-zuobiao:before {
+  content: "\e65f";
 }
 
-.icon-cemian:before {
-  content: "\e60f";
+.icon-ditu1:before {
+  content: "\e60c";
 }
 
-.icon-fangda1111:before {
-  content: "\e607";
+.icon-chart-trend-full:before {
+  content: "\e8bf";
 }
 
 .icon-qingchu:before {
-  content: "\e8b4";
+  content: "\e621";
 }
 
-.icon-checkbox:before {
-  content: "\ea70";
+.icon-kuangshan:before {
+  content: "\e60d";
 }
 
-.icon-didian:before {
-  content: "\e63e";
+.icon-kuangshan1:before {
+  content: "\e609";
 }
 
-.icon-polyline:before {
-  content: "\e6bb";
+.icon-zhengtitubiaosvg_liuyu:before {
+  content: "\e631";
 }
 
-.icon-daochu:before {
-  content: "\e651";
+.icon-tuli:before {
+  content: "\e6ae";
 }
 
-.icon-guangqi_tuli:before {
-  content: "\e6bc";
+.icon-weibiaoti-1:before {
+  content: "\e680";
+}
+
+.icon-jinshufeijinshukuangshan:before {
+  content: "\e61f";
+}
+
+.icon-weikuangku:before {
+  content: "\e63c";
+}
+
+.icon-wuranyuan:before {
+  content: "\e646";
+}
+
+.icon-zaijian:before {
+  content: "\eaaf";
 }
 

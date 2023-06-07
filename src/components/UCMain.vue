@@ -4,16 +4,14 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-30 16:13:14
+ * @LastEditTime: 2023-06-06 10:01:10
  * @input: no param
  * @out: no param
 -->
 <template>
   <div class="divContainer" v-loading="loading">
-    <div class="leftpanel" style="opcity: 0">
-      <LeftMenu ref="ucLeftMenu"></LeftMenu>
-    </div>
-    <div class="contentbox">
+      <LeftMenu ref="ucLeftMenu" class="leftpanel"></LeftMenu>
+
       <UCMap ref="ucMap"></UCMap>
       <!-- 右侧控制端 -->
       <UCBaseLayerSwitch
@@ -42,7 +40,7 @@
       </UCRightFloatComponent>
 
       <!-- 工具条 -->
-      <UCMapTool ref="ucMapTool" class="mapTool"  :style="{ right: ucSetting.rightPanelVisiable ? '410px' : '10px' }"></UCMapTool>
+      <UCMapTool ref="ucMapTool" class="mapTool"></UCMapTool>
       <div class="div_exportBtn">
         <el-dropdown @command="handleCommand">
           <el-button type="primary" size="small">
@@ -54,7 +52,6 @@
           </el-dropdown-menu>
         </el-dropdown>
       </div>
-    </div>
   </div>
 </template>
 
@@ -105,10 +102,13 @@ export default {
         this.$refs.ucMap.init(mapOptions, false);
       }
       let toolFlag = [
-        MapTools.mapEventCode.MeasureArea,
+        MapTools.mapEventCode.District,
+        MapTools.mapEventCode.River,
+        MapTools.mapEventCode.DrawPolygon,
+        MapTools.mapEventCode.Location,
         MapTools.mapEventCode.MeasureLine,
-        MapTools.mapEventCode.ZoomIn,
-        MapTools.mapEventCode.ZoomOut,
+        MapTools.mapEventCode.MeasureArea,
+        MapTools.mapEventCode.ClearMap
       ];
       this.$refs.ucMapTool.init(toolFlag);
       this._initEvents();
@@ -161,23 +161,11 @@ export default {
 .divContainer {
   width: 100%;
   height: 100%;
-
-  .leftpanel {
-    width: 320px;
-    height: 100%;
-    float: left;
-  }
-
-  .contentbox {
-    width: calc(100% - 322px);
-    float: right;
-    height: 100%;
-    position: relative;
-
+  position: relative;
     .mapTool {
       position: absolute;
-    right: 10px;
-    top: 10px;
+      left: 340px;
+      top: 10px;
     }
 
     .leftpanel {
@@ -186,7 +174,9 @@ export default {
       left: 10px;
       width: 320px;
       bottom: 10px;
-      float: left;
+      height: calc(100% - 20px);
+    background: white;
+    z-index:2
     }
 
     .baseLayerSwitch {
@@ -197,7 +187,7 @@ export default {
 
     .divScale {
       position: absolute;
-      left: 10px;
+      left: 330px;
       bottom: 10px;
       background: rgba(255, 255, 255, 1);
       padding: 10px;
@@ -206,7 +196,7 @@ export default {
     .divRightLeftFloat {
       width: 400px;
       position: absolute;
-      right: 20px;
+      right: 10px;
       top: 10px;
       height: calc(100% - 20px);
       transition: all 0.5s;
@@ -231,6 +221,5 @@ export default {
       left: 10px;
       top: 10px;
     }
-  }
 }
 </style>

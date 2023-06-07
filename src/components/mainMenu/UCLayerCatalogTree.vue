@@ -214,7 +214,7 @@ export default {
   background: rgba(255, 255, 255, 0.5);
 }
 .el-tree-node__label {
-  font-size: 16px;
+  font-size: 14px;
 }
 
 /deep/ .el-button {

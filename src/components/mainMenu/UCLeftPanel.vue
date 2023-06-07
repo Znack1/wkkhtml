@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-29 21:05:27
+ * @LastEditTime: 2023-06-06 10:29:36
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -207,37 +207,13 @@ export default {
 
         // 如果是选中  则取消其他
         if(val && data.type == "group"){
-          // let treeNodes = _.filte(this.treeNodes,(node)=>{
-          //   let parentNode = data
-          //   while (this.getParentNode(parentNode.parentId, this.treeNodes)){
-          //     parentNode = this.getParentNode(parentNode.parentId, this.treeNodes)
-          //   }
-          //   let curParentNode = node;
-          //   while (this.getParentNode(curParentNode.parentId, this.treeNodes)){
-          //     curParentNode = this.getParentNode(curParentNode.parentId, this.treeNodes)
-          //   }
-          //   return parentNode.id !=curParentNode.id;
-          // })
           this.setUnChecked(this.treeNodes);
         }
       
        
-        // 如果是选中状态则展开 其他关闭
-        // _.each(this.treeNodes, (treeNode) => {
-        //   if (treeNode.type == "group") {
-        //     this.$refs.tree.store.nodesMap[treeNode.id].expanded = false;
-        //   }
-        // });
         // 本节点关闭或者展开
         this.$refs.tree.store.nodesMap[data.id].expanded = val;
-      //   let node =  this.getParentNode(data.parentId, this.treeNodes);
-        
-      //   // 父级节点全部展开
-      //   while (node){
-      //    this.$refs.tree.store.nodesMap[node.id].expanded = true;
-      //    node = this.getParentNode(node.parentId, this.treeNodes);
-         
-      //  }
+      
       }
 
       if (data.type != "group") {
@@ -272,27 +248,6 @@ export default {
 
     // 设置其他根节点不选中
     setUnChecked(treeNodes) {
-      // let node = this.getParentNode(node.parentId, this.treeNodes);
-      // _.each(treeNodes, (node) => {
-      //       let fristParent = this.getParentNode(node.parentId, this.treeNodes)
-      //       let parentNode = this.curCheckedNode;
-      //       while (this.getParentNode(parentNode.parentId, this.treeNodes)){
-      //         parentNode = this.getParentNode(parentNode.parentId, this.treeNodes)
-      //       }
-      //       let curParentNode = node;
-      //       while (this.getParentNode(curParentNode.parentId, this.treeNodes)){
-      //         curParentNode = this.getParentNode(curParentNode.parentId, this.treeNodes)
-      //       }
-      //       // 不在一个根节点的|| ((parentNode.id ==curParentNode.id) && fristParent.id != this.curCheckedNode.id)
-      //   if (parentNode.id !=curParentNode.id ) {
-      //     node.checked = false;
-      //     if (node.type == "group") {
-      //       this.$refs.tree.store.nodesMap[node.id].expanded = false;
-      //       this.setUnChecked(node.children);
-      //     }
-      //   }
-       
-      // });
       let parentNode = this.curCheckedNode;
       while (this.getParentNode(parentNode.parentId, this.treeNodes)){
           parentNode = this.getParentNode(parentNode.parentId, this.treeNodes)
@@ -376,31 +331,8 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.collTitle {
-  width: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  /deep/ .el-collapse-item__arrow {
-    display: none;
-  }
-}
-.liItem {
-  width: calc(100% - 20px);
-  margin: 0 auto;
-  display: flex;
-  height: 30px;
 
-  justify-content: flex-start;
-  align-items: center;
-  .namebox {
-    margin-left: 5px;
-    font-size: 14px;
-  }
-  .switchbox {
-    margin-left: auto;
-  }
-}
+
 .collapsePanel {
   .custom-tree-node {
     display: flex;
@@ -416,6 +348,6 @@ export default {
   }
 }
 /deep/ .el-tree-node__expand-icon {
-    display: none!important;
+  pointer-events: none;
   }
 </style>

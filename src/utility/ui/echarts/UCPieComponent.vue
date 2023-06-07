@@ -223,39 +223,4 @@ export default {
   }
 };
 </script>
-<style>
-.el-row {
-  margin-bottom: 10px;
-}
-.panel-title {
-  line-height: 24px;
-  font-size: 16px;
-  padding-left: 16px;
-  position: relative;
-  color: white;
-}
-.panel-title::before {
-  content: "";
-  width: 4px;
-  height: 16px;
-  position: absolute;
-  left: 4px;
-  top: 2px;
-  background: #3072f6;
-}
-.pub_btn {
-  padding: 4px 8px;
-  line-height: 16px;
-  border-radius: 10px;
-  font-size: 12px;
-  color: rgb(192, 192, 192);
-  text-align: center;
-  margin: 0 5px;
-  background: rgba(255, 255, 255, 0.3);
-}
 
-.btn_active {
-  background: #3072f6;
-  color: white;
-}
-</style>

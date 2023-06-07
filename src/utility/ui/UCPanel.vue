@@ -1,7 +1,15 @@
+<!--
+ * @Author: your name
+ * @Date: 2020-04-12 21:10:29
+ * @LastEditTime: 2023-06-06 09:37:22
+ * @LastEditors: zkc
+ * @Description: In User Settings Edit
+ * @FilePath: \html\src\utility\ui\UCPanel.vue
+-->
 <template>
   <div class="divPanel">
     <el-row type="flex" class="rowBg">
-      <el-col :span="18" class="panel-title">{{ Title }}</el-col>
+      <el-col :span="18" class="panel-title"><i class="iconfont" :class="iconClass"></i>{{ Title }}</el-col>
     </el-row>
   </div>
 </template>
@@ -13,7 +21,7 @@ export default {
 
     };
   },
-  props: ['Title'],
+  props: ['Title','iconClass'],
   methods: {},
   computed: {
    
@@ -22,32 +30,20 @@ export default {
 </script>
 <style lang="less" scoped>
 .divPanel {
-  background: white;
+  background: #3D81EF;
+  color:white;
 }
-.divPanel /deep/ .el-row {
-  margin-bottom: 10px;
-}
+
 .divPanel .rowBg{
-  padding: 10px;
+  padding:8px 5px;
 }
-.divPanel .pd10 {
-  padding: 10px;
+.divPanel .iconfont {
+ margin-left: 5px;
+ margin-right:5px;
 }
 .divPanel .panel-title {
   line-height: 22px;
-  font-size: 14px;
-  padding-left: 16px;
-  position: relative;
-  color: #323232;
-}
-.divPanel .panel-title::before {
-  content: "";
-  width: 4px;
-  height: 16px;
-  position: absolute;
-  left: 4px;
-  top: 2px;
-  background: #3072f6;
+  font-size: 16px;
 }
 
 </style>

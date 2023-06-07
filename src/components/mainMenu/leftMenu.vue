@@ -4,14 +4,16 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-29 09:59:14
+ * @LastEditTime: 2023-06-06 09:39:19
 -->
 <template>
   <div class="divMenuBox">
     <div class="topContent">
-      <UCLeftPanel ref="ucLeftPanel"></UCLeftPanel>
+      <UCPanel Title="业务数据图层" iconClass="icon-zuobiao"></UCPanel>
+      <UCLeftPanel ref="ucLeftPanel" style="padding:10px;"></UCLeftPanel>
     </div>
     <div class="bottomContent">
+      <UCPanel Title="业务数据图层" iconClass="icon-zuobiao"></UCPanel>
     <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
 
     </div>
@@ -21,6 +23,7 @@
 import { EventManageCode } from '../EventManage';
 import UCLayerCatalogTree from './UCLayerCatalogTree.vue';
 import UCLeftPanel from './UCLeftPanel.vue';
+import UCPanel from '../../utility/ui/UCPanel.vue'
 export default {
   name: "UCLefuMenu",
   props: {},
@@ -37,7 +40,8 @@ export default {
 
   components: {
     UCLayerCatalogTree,
-    UCLeftPanel
+    UCLeftPanel,
+    UCPanel
   },
   computed: {},
 
@@ -126,11 +130,12 @@ export default {
   <style lang="less" scoped>
 .divMenuBox{
   text-align: left;
-    padding: 20px 15px;
+    padding:0;
     height: 100%;
     .div_leftTree{
       height: 100%;
       width:100%;
+      padding:10px;
     }
     .topContent{
       height:60%;
