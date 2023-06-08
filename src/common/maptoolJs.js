@@ -10,8 +10,8 @@
  */
 export const MapTools = {
     mapTools: [
-        { name: "行政区划", icon: 'icon-government', eventCode: 'district', active: false, marginTop: 0, show: true },
-        { name: "河流流域", icon: 'icon-zhengtitubiaosvg_liuyu', eventCode: 'river', active: false, marginTop: 0, show: true },
+        { name: "行政区划", icon: 'icon-government', eventCode: 'sheng', active: false, marginTop: 0, show: true },
+        { name: "河流流域", icon: 'icon-zhengtitubiaosvg_liuyu', eventCode: 'ssly', active: false, marginTop: 0, show: true },
         { name: "绘制多边形", icon: 'icon-duobianxing', eventCode: 'polygon', active: false, marginTop: 0, show: true },
         { name: "坐标定位", icon: 'icon-zuobiao', eventCode: 'location', active: false, marginTop: 0, show: true },
         { name: "测距", icon: 'icon-juliceliang', eventCode: 'measureLine', active: false, marginTop: 0, show: true },
@@ -19,8 +19,8 @@ export const MapTools = {
         { name: "清除绘制", icon: 'icon-qingchu', eventCode: 'clearMap', active: false, marginTop: 0, show: true },
     ],
     mapEventCode: {
-        District:'district',
-        River:'river',
+        District:'sheng',
+        River:'ssly',
         Location:'location',
         MeasureLine: "measureLine",
         MeasureArea: 'measureArea',

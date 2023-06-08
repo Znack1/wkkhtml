@@ -4,18 +4,23 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-06 09:39:19
+ * @LastEditTime: 2023-06-08 09:30:23
 -->
 <template>
   <div class="divMenuBox">
     <div class="topContent">
       <UCPanel Title="业务数据图层" iconClass="icon-zuobiao"></UCPanel>
-      <UCLeftPanel ref="ucLeftPanel" style="padding:10px;"></UCLeftPanel>
+      <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+        <UCLeftPanel ref="ucLeftPanel" style="padding:10px;"></UCLeftPanel>
+      </vuescroll>
+      
     </div>
     <div class="bottomContent">
       <UCPanel Title="业务数据图层" iconClass="icon-zuobiao"></UCPanel>
-    <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
-
+      <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+        <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
+      </vuescroll>
+     
     </div>
   </div>
 </template>
@@ -24,6 +29,7 @@ import { EventManageCode } from '../EventManage';
 import UCLayerCatalogTree from './UCLayerCatalogTree.vue';
 import UCLeftPanel from './UCLeftPanel.vue';
 import UCPanel from '../../utility/ui/UCPanel.vue'
+import vuescroll from "vuescroll";
 export default {
   name: "UCLefuMenu",
   props: {},
@@ -41,7 +47,8 @@ export default {
   components: {
     UCLayerCatalogTree,
     UCLeftPanel,
-    UCPanel
+    UCPanel,
+    vuescroll
   },
   computed: {},
 

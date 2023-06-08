@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 13:52:03
- * @LastEditTime: 2023-05-18 21:45:27
+ * @LastEditTime: 2023-06-08 21:26:05
  * @LastEditors: zkc
  -->
 <!--  -->
@@ -284,6 +284,7 @@ export default {
      *  画图形  isClear 是否清空地图 boolean
      */
     drawRange(type, isClearMap) {
+      
       let self = this;
       let drawUtil = new DrawGeometryUtility();
       drawUtil.curMap = this.curMap;

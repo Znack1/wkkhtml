@@ -2,8 +2,7 @@
 <template>
   <div class="divRightFloat">
     <div style="height: calc(100% - 0px); box-shadow: 4px 1px 18px 3px #8a8a8a">
-      <vuescroll style="width: 100%; height: 100%">
-        <el-collapse
+        <!-- <el-collapse
           v-model="activeNames"
           @change="handleChange"
           style="width: 100%; height: 100%"
@@ -23,8 +22,24 @@
               class="table"
             ></UCDistributionTable>
           </el-collapse-item>
-        </el-collapse>
-      </vuescroll>
+        </el-collapse> -->
+        <div class="topContent echartbox">
+          <UCPanel Title="监管等级" iconClass="icon-chart-trend-full"></UCPanel>
+          <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+            <UCBarXComponent ref="ucBarXComponent"></UCBarXComponent>
+          </div>
+         
+        </div>
+        <div class="bottomContent tableContent">
+          <UCPanel Title="数据统计" iconClass="icon-chart-trend-full"></UCPanel>
+          <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+            <UCDistributionTable
+              ref="ucDistributionTable"
+              class="table"
+            ></UCDistributionTable>
+        </vuescroll>
+         
+        </div>
     </div>
   </div>
 </template>
@@ -32,6 +47,7 @@
 <script>
 import UCBarXComponent from "../../utility/ui/echarts/UCBarXComponent.vue";
 import UCDistributionTable from "./UCDistributionTable.vue";
+import UCPanel from '../../utility/ui/UCPanel.vue'
 import vuescroll from "vuescroll";
 import _ from "lodash";
 export default {
@@ -46,7 +62,7 @@ export default {
     };
   },
 
-  components: { UCBarXComponent, UCDistributionTable, vuescroll },
+  components: { UCBarXComponent, UCDistributionTable, vuescroll,UCPanel },
 
   computed: {},
 
@@ -59,6 +75,7 @@ export default {
      * 初始化
      */
     updatePanel(data, curStat) {
+      
       if(!data){
         let barObj = {
           data: [],
@@ -71,6 +88,7 @@ export default {
       if (data.map) {
         let barObj = {
           data: [],
+          color:['#158DFD','#9BC5F1']
         };
         data.map = _.sortBy(data.map, (o) => {
           return o.sort;
@@ -154,12 +172,15 @@ export default {
   }
   .echartbox {
     width: 100%;
-    height: 300px;
+    height: 60%;
+    max-height: 350px;
   }
   /deep/ .el-collapse-item__content {
     padding-bottom: 10px;
   }
   .tableContent {
+    height: calc(100% - 350px);
+    min-height: 40%;
     .el-collapse-item__content {
       height: 100%;
     }

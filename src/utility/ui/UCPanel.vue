@@ -44,6 +44,7 @@ export default {
 .divPanel .panel-title {
   line-height: 22px;
   font-size: 16px;
+  text-align: left;
 }
 
 </style>

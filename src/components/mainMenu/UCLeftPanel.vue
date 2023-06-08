@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-06 10:29:36
+ * @LastEditTime: 2023-06-08 21:54:01
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -264,6 +264,18 @@ export default {
       });
     },
 
+
+    //  设置节点不选中
+    setAllUnChecked(treeNodes) {
+      treeNodes = treeNodes || this.treeNodes;
+      _.each(treeNodes,(node) => {
+          node.checked = false;
+          if (node.type == "group") {
+            this.$refs.tree.store.nodesMap[node.id].expanded = false;
+            this.setAllUnChecked(node.children);
+          }
+      });
+    },
     // 设置选中展开
     getParentNode(parentId, treeNodes) {
       let node = null;

@@ -95,15 +95,6 @@ export class LayerManager {
     */
    clear(){
      
-       if (this.quickImgLayers) {
-           this.quickImgLayers.clear();
-       }
-    //    if(this.selectLayer){
-    //        this.selectLayer.clear();
-    //    }
-       if(this.moveSelectLayer){
-           this.moveSelectLayer.clear();
-       }
        if(this.markerLayer){
            this.markerLayer.getSource().clear();
        }

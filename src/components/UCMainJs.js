@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-31 22:22:24
+ * @LastEditTime: 2023-06-08 21:55:21
  * @input: no param
  * @out: no param
  */
@@ -50,7 +50,29 @@ export class UCMainEventManager {
     // 左侧监听
     this._addUCLeftMenuListener();
 
+    this._addZoomControlListener();
+
   }
+
+  /**
+     * 点击右侧图标按钮地图缩放监听
+     */
+  _addZoomControlListener() {
+    let self = this;
+    // 放大
+    this.ucZoomControl.on_zoomInClick(function() {
+        self.ucMap.plusZoomLevel();
+    });
+    // 缩放
+    this.ucZoomControl.on_zoomOutClick(function() {
+        self.ucMap.subtractionZoomLevel();
+    });
+
+    // 图例
+    this.ucZoomControl.on_showLegend(()=>{
+      self.ucMain.showLegend = !self.ucMain.showLegend;
+    })
+}
 
   _addUCLeftMenuListener() {
     let self = this;
@@ -237,7 +259,7 @@ export class UCMainEventManager {
     })
     // 工具条监听
     this.ucMapTool.on_toolClicked(function (toolItem) {
-      self.mapToolOpen = true;
+    
       self.toolEventCode = toolItem.eventCode;
       //清除弹窗
       // self.ucMap.clearOverlays();
@@ -248,6 +270,7 @@ export class UCMainEventManager {
         case MapTools.mapEventCode.DrawPolygon:
         case MapTools.mapEventCode.DrawPoint:
         case MapTools.mapEventCode.DrawPolyline:
+          self.isOpenTool = true;
           self.ucMap.drawRange(toolItem.eventCode);
           break;
         case MapTools.mapEventCode.ResetMap:
@@ -268,23 +291,31 @@ export class UCMainEventManager {
             toolItem.eventCode,
             (callbackData) => {
               // eslint-disable-next-line no-console
-              console.log(callbackData);
               self.isOpenTool = false;
             }
           );
           break;
         case MapTools.mapEventCode.ClearMap:
           self.ucMap.layerMgr.drawGeometryLayer.clear();
+          self.ucMap.clearOverlays();
+          self.ucMap.layerMgr.clear();
+          // 清除目录树选中数据
+          self.ucLeftMenu.$refs.ucLeftPanel.setAllUnChecked();
+          self.checkedNodes  = [];
+          self.getPageData();
           break;
 
-        case MapTools.mapEventCode.legend:
-          ifLgend = !ifLgend
-          self.ucMain.setLgend(ifLgend);
+        // case MapTools.mapEventCode.legend:
+        //   ifLgend = !ifLgend
+        //   self.ucMain.setLgend(ifLgend);
 
-        case MapTools.mapEventCode.editPoint:
-          self.editPoint = true;
-          self.ucMap.drawRange(MapTools.mapEventCode.DrawPoint);
-          break;
+        // case MapTools.mapEventCode.editPoint:
+        //   self.editPoint = true;
+        //   self.ucMap.drawRange(MapTools.mapEventCode.DrawPoint);
+        //   break;
+        case MapTools.mapEventCode.District:
+        case MapTools.mapEventCode.River:
+          self.ucMain.handleCommand(toolItem.eventCode)
 
       }
     })
@@ -300,6 +331,7 @@ export class UCMainEventManager {
     */
   _drawEnd(drawItem) {
     let self = this;
+    self.isOpenTool = false;
     if (drawItem.type == DrawGeometryPartType.point) {
       // self.ucMap.layerMgr.drawGeometryLayer.clear();
       self.ucMap.layerMgr.drawGeometryLayer.addDrawPoint(drawItem);

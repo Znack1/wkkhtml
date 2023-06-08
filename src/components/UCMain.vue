@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-06 10:01:10
+ * @LastEditTime: 2023-06-08 22:28:19
  * @input: no param
  * @out: no param
 -->
@@ -17,23 +17,23 @@
       <UCBaseLayerSwitch
         class="baseLayerSwitch"
         ref="ucBaseLayerSwitch"
-        :style="{ right: ucSetting.rightPanelVisiable ? '410px' : '10px' }"
+        :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '10px' }"
       ></UCBaseLayerSwitch>
-
+      <UCZoomControl class="divZoomCon" ref="ucZoomControl"></UCZoomControl>
       <!-- 比例尺，经纬度 -->
       <UCCustomMapScale
         ref="ucCustomMapScale"
         class="divScale"
       ></UCCustomMapScale>
-      <div
+      <!-- <div
         class="close_btn"
         @click="_togglePanel"
-        :style="{ right: ucSetting.rightPanelVisiable ? '400px' : '0px' }"
+        :style="{ right: ucSetting.rightPanelVisiable ? '320px' : '0px' }"
       >
         {{ ucSetting.rightPanelVisiable ? "关闭列表" : "展开列表" }}
-      </div>
+      </div> -->
       <UCRightFloatComponent
-        :style="{ right: ucSetting.rightPanelVisiable ? '0px' : '-400px' }"
+        :style="{ right: ucSetting.rightPanelVisiable ? '0px' : '-320px' }"
         class="divRightLeftFloat"
         ref="ucRightFloatComponent"
       >
@@ -41,16 +41,10 @@
 
       <!-- 工具条 -->
       <UCMapTool ref="ucMapTool" class="mapTool"></UCMapTool>
-      <div class="div_exportBtn">
-        <el-dropdown @command="handleCommand">
-          <el-button type="primary" size="small">
-            {{ curStat.name }}  
-            <i class="el-icon-arrow-down el-icon--right"></i>
-          </el-button>
-          <el-dropdown-menu slot="dropdown">
-            <el-dropdown-item v-for="item in statTypes" :key="item.value" :command="item.value">{{ item.name }}</el-dropdown-item>
-          </el-dropdown-menu>
-        </el-dropdown>
+
+      <!-- 图例 -->
+      <div v-show="showLegend" class="legendBox">
+        <img src="../assets/images/legend.png" />
       </div>
   </div>
 </template>
@@ -63,6 +57,7 @@ import { MapTools } from "../common/maptoolJs.js";
 import LeftMenu from "../components/mainMenu/leftMenu.vue";
 import UCBaseLayerSwitch from "./baseLayerSwitch/UCBaseLayerSwitch.vue";
 import UCCustomMapScale from "./customMapControls/UCCustomMapScale.vue";
+import UCZoomControl from "./customMapControls/UCZoomControl.vue";
 import UCRightFloatComponent from "./rightPanel/UCRightFloatComponent.vue";
 export default {
   name: "ucMain",
@@ -73,10 +68,12 @@ export default {
     UCCustomMapScale,
     UCRightFloatComponent,
     LeftMenu,
+    UCZoomControl
   },
   props: {},
   data() {
     return {
+      showLegend:false, // 是否显示图例
       loading: false,
       curStat:{
         name:"行政区划",
@@ -94,6 +91,7 @@ export default {
   },
   methods: {
     init() {
+     
       if (this.$refs.ucMap) {
         let mapOptions = {
           indoor: false,
@@ -101,17 +99,18 @@ export default {
         };
         this.$refs.ucMap.init(mapOptions, false);
       }
+      this._initEvents();
       let toolFlag = [
         MapTools.mapEventCode.District,
         MapTools.mapEventCode.River,
         MapTools.mapEventCode.DrawPolygon,
-        MapTools.mapEventCode.Location,
+        // MapTools.mapEventCode.Location,
         MapTools.mapEventCode.MeasureLine,
         MapTools.mapEventCode.MeasureArea,
         MapTools.mapEventCode.ClearMap
       ];
-      this.$refs.ucMapTool.init(toolFlag);
-      this._initEvents();
+      this.$refs.ucMapTool.init(toolFlag,MapTools.mapEventCode.District);
+    
     },
 
     // 切换面板显隐
@@ -121,6 +120,7 @@ export default {
 
     // 下拉菜单事件
     handleCommand(command) {
+      
      this.curStat = _.find(this.statTypes,{"value":command})
      this.eventManager.getPageData();
     },
@@ -136,15 +136,16 @@ export default {
       this.eventManager.ucBaseLayerSwitch = this.$refs.ucBaseLayerSwitch;
       this.eventManager.ucCustomMapScale = this.$refs.ucCustomMapScale;
       this.eventManager.ucLeftMenu = this.$refs.ucLeftMenu;
+      this.eventManager.ucZoomControl = this.$refs.ucZoomControl;
       this.eventManager.ucRightPanel = this.$refs.ucRightFloatComponent;
       this.eventManager.addListener();
     },
   },
 
   mounted() {
-    if(this.statTypes.length > 0){
-      this.curStat = this.statTypes[0]
-    }
+    // if(this.statTypes.length > 0){
+    //   this.curStat = this.statTypes[0]
+    // }
     this.init();
   },
 };
@@ -166,6 +167,9 @@ export default {
       position: absolute;
       left: 340px;
       top: 10px;
+      border-radius: 21px;
+    padding: 5px 10px;
+    background: rgba(0, 0, 0, 0.4);
     }
 
     .leftpanel {
@@ -187,18 +191,18 @@ export default {
 
     .divScale {
       position: absolute;
-      left: 330px;
+      left: 340px;
       bottom: 10px;
       background: rgba(255, 255, 255, 1);
       padding: 10px;
     }
 
     .divRightLeftFloat {
-      width: 400px;
+      width: 320px;
       position: absolute;
       right: 10px;
       top: 10px;
-      height: calc(100% - 20px);
+      height: calc(100% - 150px);
       transition: all 0.5s;
     }
 
@@ -216,10 +220,18 @@ export default {
       transition: all 0.5s;
       cursor: pointer;
     }
-    .div_exportBtn {
+    .divZoomCon {
       position: absolute;
-      left: 10px;
-      top: 10px;
+      left: 340px;
+      bottom: 60px;
     }
+
+    .legendBox{
+      position: absolute;
+      bottom:60px;
+      left: 365px;
+      padding:8px;
+    }
+    
 }
 </style>

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-24 17:08:40
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-18 21:43:27
+ * @LastEditTime: 2023-06-07 16:44:56
  * @input: no param
  * @out: no param
 -->
@@ -41,7 +41,7 @@ export default {
   mounted() {},
 
   methods: {
-    init(mapToolEventCodes) {
+    init(mapToolEventCodes,defaultSelectCode) {
       if (!mapToolEventCodes) return;
       for (let toolIndex = 0; toolIndex < this.mapTools.length; toolIndex++) {
         let tempTool = this.mapTools[toolIndex];
@@ -52,6 +52,12 @@ export default {
         }
       }
       this.unSelectAll();
+      if(defaultSelectCode){
+        let item = _.find(this.mapTools,{"eventCode":defaultSelectCode});
+        if(item && item.show){
+          this._toolClicked(item)
+        }
+      }
     },
 
     // 地图工具栏点击
@@ -84,6 +90,7 @@ export default {
       }
     },
 
+
     // 清空所有选中
     unSelectAll() {
       _.each(this.mapTools, (tool, toolIndex) => {
@@ -96,17 +103,19 @@ export default {
 
 <style lang="less" scoped>
 .mapTool {
-  background: white;
   i {
-    font-size: 20px;
-    border-bottom: 1px solid #ccc;
+    font-size: 16px;
+    border-bottom: 1px solid rgb(0, 0, 0);
     cursor: pointer;
     display: inline-block;
-    color: #00b7ff;
-    background: #fff;
+    background: rgb(0, 0, 0);
     height: 32px;
+    width:32px;
     line-height: 32px;
-    padding: 0 8px;
+    color: white;
+    border-radius: 16px;
+    margin: 0 3px;
+    text-align: center;
   }
   .editMapBtn:hover,
   .editMapBtn.active {
