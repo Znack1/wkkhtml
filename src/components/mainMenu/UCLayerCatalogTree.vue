@@ -142,22 +142,22 @@ export default {
 
       let layerItem = nodeData;
       if (!layerItem) return;
-      // 组件的visibleItems赋值
-      if (layerItem.defaultVisible) {
-        let findIndex = LayerCatalogItems.visibleItems.findIndexById(
-          layerItem.id
-        );
-        LayerCatalogItems.visibleItems.removeByIndex(findIndex);
-        LayerCatalogItems.visibleItems.push(layerItem);
-      } else {
-        let findVisibleIndex = LayerCatalogItems.visibleItems.findIndexById(
-          layerItem.id
-        );
-        if (findVisibleIndex != -1) {
-          layerItem.defaultVisible = false;
-          LayerCatalogItems.visibleItems.removeByIndex(findVisibleIndex);
-        }
-      }
+      // // 组件的visibleItems赋值
+      // if (layerItem.defaultVisible) {
+      //   let findIndex = LayerCatalogItems.visibleItems.findIndexById(
+      //     layerItem.id
+      //   );
+      //   LayerCatalogItems.visibleItems.removeByIndex(findIndex);
+      //   LayerCatalogItems.visibleItems.push(layerItem);
+      // } else {
+      //   let findVisibleIndex = LayerCatalogItems.visibleItems.findIndexById(
+      //     layerItem.id
+      //   );
+      //   if (findVisibleIndex != -1) {
+      //     layerItem.defaultVisible = false;
+      //     LayerCatalogItems.visibleItems.removeByIndex(findVisibleIndex);
+      //   }
+      // }
       this.$emit(
         EventManageCode.treeCheckChange,
         nodeData,

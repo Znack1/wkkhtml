@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-31 10:05:51
+ * @LastEditTime: 2023-06-13 20:57:24
  * @input: no param
  * @out: no param
  */
@@ -31,5 +31,11 @@ window.BASE_CONFIG = {
       ],
 	  "showFields":[
 		{name:'mc',aliasName:'名称',index:0,value:''}
-	  ]
+	  ],
+	  useFieldConfig:{
+		"监管等级":'hjjgdj',
+		"尾矿库等别":"wkkdb",
+		"生产状况":"sczk",
+		"主要矿种":"zykz"
+	  }
 };

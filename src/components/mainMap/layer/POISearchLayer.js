@@ -66,6 +66,59 @@ export class POISearchLayer {
     }
 
     /**
+     * 添加标记点
+     * @param {*} datas 
+     */
+    addMarkersEx(datas) {
+        let self = this;
+        if (!datas || datas.length == 0) return;
+
+        let markerFeatures = new Array();
+        let tempCoordinate = null;
+        let tempFeature = null;
+
+
+        let iconStyle = null;
+        // let pointIsGeo=false;
+        for (let Index in datas) {
+           let  tempData = datas[Index];
+            if (!tempData || tempData.features.length == 0) continue;
+
+            _.each(tempData.features,(tempPoiItem,k)=>{
+                tempCoordinate = [tempPoiItem.zxjd, tempPoiItem.zxwd];
+
+                iconStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        anchor: [0.5, 8],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'pixels',
+                        src: tempData.img || yiji
+                    }))
+                });
+                tempPoiItem.img = tempData.img || yiji;
+                tempPoiItem.selectImg = tempData.selectImg || draw_marker;
+                tempFeature = new ol.Feature({
+                    geometry: new ol.geom.Point(tempCoordinate),
+                    featureType: LayerFeatureType.treeLayerFeature,
+                    featureTypeIsOverlay: true,
+                    bindingObject: tempPoiItem
+                });
+    
+                tempFeature.setId(tempPoiItem.gid);
+                tempFeature.setStyle(iconStyle);
+                markerFeatures.push(tempFeature);
+            })
+        }
+
+        if (!this.markerLayer) {
+            this.markerLayer = this._createMarkerLayer();
+            this.curMap.addLayer(this.markerLayer, true);
+        }
+
+        this.markerLayer.getSource().addFeatures(markerFeatures);
+    }
+
+    /**
      * 修改当前poi样式
      * @param {*} poiItem 
      */

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-08 21:54:01
+ * @LastEditTime: 2023-06-13 21:23:23
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -51,9 +51,9 @@
             <img
               style="margin-right: 5px"
               v-show="data.type == 'leaf'"
-              src="../../assets/images/yiji.png"
-              width="24px"
-              height="24px"
+              :src="data.img"
+              width="18px"
+              height="18px"
             />
             <span
               class="treeName"
@@ -146,7 +146,7 @@ export default {
         {
           id: 2,
           parentId: 0,
-          name: "尾款库等别",
+          name: "尾矿库等别",
           type: "group",
           checked: false,
           children: [
@@ -182,6 +182,7 @@ export default {
         },
       ],
       curCheckedNode: null,
+      curChecked:new Array(),
     };
   },
   components: {
@@ -207,6 +208,7 @@ export default {
 
         // 如果是选中  则取消其他
         if(val && data.type == "group"){
+          this.curChecked = [];
           this.setUnChecked(this.treeNodes);
         }
       
@@ -234,8 +236,17 @@ export default {
         });
       }
       if (isFirst) {
-        console.log(checkeds);
-        this.$emit(EventManageCode.treeCheckChange,checkeds)
+        if(val){
+          this.curChecked = this.curChecked.concat(checkeds)
+        }else{
+          _.remove(this.curChecked,(o)=>{
+            let findItem = _.find(checkeds,{"id":o.id});
+            return findItem
+          })
+        }
+       
+        console.log(this.curChecked);
+        this.$emit(EventManageCode.treeCheckChange,this.curChecked)
         
       }
     },
@@ -248,6 +259,7 @@ export default {
 
     // 设置其他根节点不选中
     setUnChecked(treeNodes) {
+     
       let parentNode = this.curCheckedNode;
       while (this.getParentNode(parentNode.parentId, this.treeNodes)){
           parentNode = this.getParentNode(parentNode.parentId, this.treeNodes)
@@ -278,6 +290,7 @@ export default {
     },
     // 设置选中展开
     getParentNode(parentId, treeNodes) {
+      treeNodes = treeNodes || this.treeNodes;
       let node = null;
       for (let idx = 0; idx < treeNodes.length; idx++) {
         if (treeNodes[idx].id == parentId) {
@@ -350,6 +363,7 @@ export default {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    padding:5px 0;
     .el-tree-node__content {
       margin-bottom: 5px;
     }

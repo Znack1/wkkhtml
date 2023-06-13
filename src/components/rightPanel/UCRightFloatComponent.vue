@@ -24,7 +24,7 @@
           </el-collapse-item>
         </el-collapse> -->
         <div class="topContent echartbox">
-          <UCPanel Title="监管等级" iconClass="icon-chart-trend-full"></UCPanel>
+          <UCPanel :Title="firstName" iconClass="icon-chart-trend-full"></UCPanel>
           <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
             <UCBarXComponent ref="ucBarXComponent"></UCBarXComponent>
           </div>
@@ -54,11 +54,12 @@ export default {
   name: "UCRightFloatComponent",
   data() {
     return {
-      ucsetting: {
-        tabelName: "图表统计", // 项目分布表格名称
-        tableNameYear: "数据统计", // 历年表格名称
-      },
-      activeNames: ["1", "2"],
+      firstName:"监管等级",
+      // ucsetting: {
+      //   tabelName: "图表统计", // 项目分布表格名称
+      //   tableNameYear: "数据统计", // 历年表格名称
+      // },
+      // activeNames: ["1", "2"],
     };
   },
 

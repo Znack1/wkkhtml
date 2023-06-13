@@ -80,21 +80,21 @@ export class VectorTileUtility {
     createVTLayers () {
         let olLayers = new Array();
 
-        if (this.vtLevelRanges && this.vtLevelRanges.length > 0) {
-            let tempLevelRange = null;
+        // if (this.vtLevelRanges && this.vtLevelRanges.length > 0) {
+            // let tempLevelRange = null;
             let tempVTMinLevel = -1;
             let tempVTMaxLevel = -1;
 
-            for (let tempLevelRangeIndex = 0; tempLevelRangeIndex < this.vtLevelRanges.length; tempLevelRangeIndex++) {
-                tempLevelRange = this.vtLevelRanges[tempLevelRangeIndex];
-                tempVTMinLevel = tempLevelRange.minLevel;
-                tempVTMaxLevel = tempLevelRange.maxLevel;
+        //     for (let tempLevelRangeIndex = 0; tempLevelRangeIndex < this.vtLevelRanges.length; tempLevelRangeIndex++) {
+        //         tempLevelRange = this.vtLevelRanges[tempLevelRangeIndex];
+                tempVTMinLevel = 0;
+                tempVTMaxLevel = 22;
                 if (tempVTMinLevel >= 0 && tempVTMaxLevel >= 0 && tempVTMaxLevel >= tempVTMinLevel) {
                     let vtLayer = this.createVTLayer(tempVTMinLevel, tempVTMaxLevel, this.olExtent);
                     olLayers.push(vtLayer);
                 }
-            }
-        }
+            // }
+        // }
 
         return olLayers;
     }

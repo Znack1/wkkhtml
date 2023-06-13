@@ -1,7 +1,7 @@
 <template>
   <el-container
     class="tableAreaDist"
-    style="height: 100%; width: 96%; margin: 0 auto"
+    style="height: 100%; width: 99%; margin: 0 auto"
   >
     <el-main
       v-show="curDatas.length > 0"

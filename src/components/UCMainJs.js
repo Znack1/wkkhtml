@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-08 21:55:21
+ * @LastEditTime: 2023-06-13 22:13:49
  * @input: no param
  * @out: no param
  */
@@ -77,19 +77,7 @@ export class UCMainEventManager {
   _addUCLeftMenuListener() {
     let self = this;
     this.ucLeftMenu.on_checkLayer((nodes) => {
-      let node = nodes[0]
-      if (node.checked) {
-        this.checkedNodes.push(...nodes);
-
-      } else {
-        _.remove(this.checkedNodes, (node) => {
-          let findItem = _.find(nodes, (n) => {
-            return n.id == node.id;
-          })
-          return findItem;
-        });
-      
-      }
+      this.checkedNodes = nodes;
 
       this.getPageData();
 
@@ -97,6 +85,7 @@ export class UCMainEventManager {
 
     // 图层目录树
     this.ucLeftMenu.on_nodeCheckChangeHandler((node) => {
+      debugger
       let self = this;
       if (!node) return;
       let layerItem = node;
@@ -118,6 +107,14 @@ export class UCMainEventManager {
       self.ucMap.layerMgr.poiLayer.clear();
       self.ucRightPanel.updatePanel(null, this.ucMain.curStat)
     }else{
+      let rootParent =self.ucLeftMenu.$refs.ucLeftPanel.getParentNode(this.checkedNodes[0].parentId)
+      // 获取分类key
+      let typekey = null;
+      if(rootParent){
+        typekey = window.BASE_CONFIG.useFieldConfig[rootParent.name];
+        this.ucRightPanel.firstName = rootParent.name
+      }
+    
       let params = {
         type: this.checkedNodes[0].parentId,
         twoType: _.map(this.checkedNodes, "name"),
@@ -131,7 +128,19 @@ export class UCMainEventManager {
   
           let datas = res.data.data.pointEntities;
           self.ucMap.layerMgr.poiLayer.clear();
-          self.ucMap.layerMgr.poiLayer.addMarkers(datas);
+          // 通过key分类
+          let groupByKey = _.groupBy(datas,typekey)
+          let initDatas = [];
+          debugger
+          _.each(groupByKey,(group,key)=>{
+            initDatas.push({
+              features:group,
+              img:_.find(this.checkedNodes,{"name":key})?_.find(this.checkedNodes,{"name":key}).img:null,
+              selectImg:_.find(this.checkedNodes,{"name":key})?_.find(this.checkedNodes,{"name":key}).icon:null
+            })
+          })
+
+          self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
   
           // 更新右侧面板
           self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
@@ -176,6 +185,7 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
+      debugger
       let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
         self.twinklePoint(features[0])
@@ -224,13 +234,14 @@ export class UCMainEventManager {
   // 地图要素闪烁
   twinklePoint(feature, count) {
     count = count || 0;
+    let selectImg = feature.get("bindingObject").selectImg;
     let defaultStyle = feature.getStyle();
     let iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
         anchor: [0.5, 8],
         anchorXUnits: 'fraction',
         anchorYUnits: 'pixels',
-        src: draw_marker
+        src: selectImg
       }))
     });
 
@@ -356,13 +367,14 @@ export class UCMainEventManager {
   // 显示showOverLay
   _on_showOverlay(features,coordinate) {
     //清除地图上的overlay
-    this.ucMap.clearOverlays();
+   
     if(features.length == 0){
       return;
     }
     let feature = features[0];
     let properties = feature.getProperties();
     if(properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid){
+      this.ucMap.clearOverlays();
       let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
       overlay.type = MapOverlayType.featureAttriInfo;

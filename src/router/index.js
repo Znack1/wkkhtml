@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: zkc
+ * @Date: 2023-05-04 16:33:30
+ * @LastEditors: zkc
+ * @LastEditTime: 2023-06-13 20:42:05
+ */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
@@ -13,11 +21,16 @@ const routes = [
     path: '/',
     redirect: '/home', //必须有配置这个路径，否则转发无效
 },
-  {
-    path: '/home',
-    name: 'home',
-    component: () => import('../views/HomeView.vue')
-  }
+{
+  path: '/home',
+  name: 'home',
+  component: () => import('../views/HomeView.vue')
+},
+{
+  path: '/test',
+  name: 'test',
+  component: () => import('../views/test.vue')
+}
 ]
 
 const router = new VueRouter({

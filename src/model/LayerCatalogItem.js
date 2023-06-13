@@ -384,9 +384,8 @@ export class VectorTileLayerItem extends LayerCatalogItem {
     }
 
     createOLLayers () {
-
         let vtUtility = new VectorTileUtility();
-        vtUtility.epsg = this.serviceEPSG;
+        // vtUtility.epsg = this.serviceEPSG || vtUtility.epsg;
         vtUtility.serviceName = this.serviceName;
         vtUtility.wmtsUrl = this.serviceUrl;
         vtUtility.tilematrixSuffix = this.tilematrixSuffix
@@ -699,7 +698,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
     resetTileUrlFunction () {
 
         let vtUtility = new VectorTileUtility();
-        vtUtility.epsg = this.serviceEPSG;
+        // vtUtility.epsg = this.serviceEPSG;
         vtUtility.serviceName = this.serviceName;
         vtUtility.wmtsUrl = this.serviceUrl;
         vtUtility.tilematrixSuffix = this.tilematrixSuffix;
