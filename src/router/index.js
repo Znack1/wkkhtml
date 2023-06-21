@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-13 20:42:05
+ * @LastEditTime: 2023-06-15 13:39:42
  */
 import Vue from 'vue'
 import VueRouter from 'vue-router'
@@ -25,16 +25,11 @@ const routes = [
   path: '/home',
   name: 'home',
   component: () => import('../views/HomeView.vue')
-},
-{
-  path: '/test',
-  name: 'test',
-  component: () => import('../views/test.vue')
 }
 ]
 
 const router = new VueRouter({
-  mode: 'history', //去除#号
+  mode: 'hash', //去除#号
   base: process.env.NODE_ENV == 'development' ? '' : 'wkkhtml/',
   routes
 })

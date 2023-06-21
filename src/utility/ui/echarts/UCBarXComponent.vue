@@ -106,7 +106,6 @@ export default {
                         : newData.color[idx * 2],
                   },
                 ]),
-                barBorderRadius: value > 0 ? [10, 10, 0, 0] : [0, 0, 10, 10],
               },
             },
           });
@@ -247,7 +246,9 @@ export default {
         };
         option.grid.top = 20;
       }
-
+      if (this.charts) {
+        this.charts.clear()
+      }
       this.charts.setOption(option);
       window.addEventListener(
         "resize",
