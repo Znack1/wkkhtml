@@ -32,12 +32,13 @@
         </div>
         <div class="bottomContent tableContent">
           <UCPanel Title="数据统计" iconClass="icon-chart-trend-full"></UCPanel>
-          <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+          <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
             <UCDistributionTable
+            style="width: 100%; height: calc(100% - 50px);"
               ref="ucDistributionTable"
               class="table"
             ></UCDistributionTable>
-        </vuescroll>
+        <!-- </vuescroll> -->
          
         </div>
     </div>
@@ -76,7 +77,7 @@ export default {
      * 初始化
      */
     updatePanel(data, curStat) {
-      
+      debugger
       if(!data){
         let barObj = {
           data: [],
@@ -107,12 +108,12 @@ export default {
       if (data.linkedHashMap) {
         let idx = 0;
         let tableDatas = new Array();
-        // data.linkedHashMap = _.sortBy(data.linkedHashMap,(o)=>{
-        //   return -o.sort
-        // });
+        data.linkedHashMap = _.sortBy(data.linkedHashMap,(o)=>{
+          return o.sort
+        });
         let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
         if (curStat) {
-          headers = curStat.defalutHeader;
+          headers = _.cloneDeep(curStat.defalutHeader);
         }
 
         // 解析数据
@@ -120,7 +121,9 @@ export default {
           let temp = {
             name: map.name,
           };
-
+          map.list = _.sortBy(map.list,(o)=>{
+          return o.sort
+        });
           // {name:'区域',props:'area',width:120}
           _.each(map.list, (l, index) => {
             if (idx == 0) {

@@ -103,6 +103,7 @@ export class UCMainEventManager {
   // 获取页面数据更新
   getPageData() {
     let self = this;
+    this.ucMain.checkedNodes = this.checkedNodes;
     if(this.checkedNodes.length == 0){
       self.ucMap.layerMgr.poiLayer.clear();
       self.ucRightPanel.updatePanel(null, this.ucMain.curStat)

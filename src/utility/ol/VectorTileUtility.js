@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-11-16 10:50:08
- * @LastEditTime: 2023-05-29 17:48:35
+ * @LastEditTime: 2023-06-21 15:29:08
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /高标准农田/src/utility/ol/VectorTileUtility.js
@@ -115,7 +115,7 @@ export class VectorTileUtility {
 
     createVTLayer (minLevel, maxLevel, layerExtent) {
 
-
+debugger
         let initStyle = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: '#12563b'
