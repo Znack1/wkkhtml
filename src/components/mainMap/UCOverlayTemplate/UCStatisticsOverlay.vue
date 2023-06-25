@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-15 10:18:06
- * @LastEditTime: 2023-05-31 11:30:05
+ * @LastEditTime: 2023-06-25 14:54:04
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCOverlay.vue
@@ -10,9 +10,12 @@
 <template>
   <div class="overLayerContent">
     <div class="divTitle">{{info.title}}</div>
-    <UCAttriInfos v-show="info.attributes.length>0" ref="ucAttriInfos"></UCAttriInfos>
-    <vuescroll v-show="!ucSetting.scrollHide"  style="width:100%;height:200px" class="content_block">
+    <vuescroll   style="width:100%;height:60vh;padding:0 10px;" class="content_block">
+      <div style="text-align:left;padding:5px 0">基本信息</div>
+      <UCAttriInfos v-show="info.attributes.length>0" ref="ucAttriInfos"></UCAttriInfos>
+      <div v-show="info.photos.length>0" style="text-align:left;padding:5px 0">照片</div>
       <UCPhotos v-show="info.photos.length>0" ref="ucPhotos"></UCPhotos>
+      <div v-show="info.videos.length>0" style="text-align:left;padding:5px 0">视频</div>
       <UCVideos v-show="info.videos.length>0" ref="ucVideos"></UCVideos>
     </vuescroll>
   </div>
@@ -85,6 +88,8 @@ export default {
 <style lang="less" scoped>
 .overLayerContent {
   padding-bottom: 24px;
+  overflow: hidden;
+  padding-bottom:10px;
 }
 
 .divCount {
@@ -113,18 +118,19 @@ export default {
 
 .divTitle {
   height: 36px;
-  width: 95%;
-  line-height: 36px;
-  color: #323232;
-  font-size: 16px;
-  padding: 0 24px;
-  padding-left:10px;
-  border-bottom: 1px solid #86848c;
-  box-sizing: border-box;
-  margin-bottom: 10px;
-text-align: left;
-text-overflow: ellipsis;
+    width: 100%;
+    line-height: 36px;
+    color: #323232;
+    font-size: 16px;
+    padding: 0 24px;
+    padding-left: 10px;
+    border-bottom: 1px solid #86848c;
+    box-sizing: border-box;
+    text-align: left;
+    text-overflow: ellipsis;
     white-space: nowrap;
     overflow: hidden;
+    background: #3d81ef;
+    color: white
 }
 </style>

@@ -16,40 +16,41 @@
 </template>
 
 <script>
-import { MapOverlayType, OverlayLayoutInfo, StatisticsOverlayInfo } from './UCMapOverlayJs';
+import {
+  MapOverlayType,
+  OverlayLayoutInfo,
+  StatisticsOverlayInfo,
+} from "./UCMapOverlayJs";
 import UCStatisticsOverlay from "./UCOverlayTemplate/UCStatisticsOverlay.vue";
 export default {
   name: "UCMapOverlay",
-  data () {
+  data() {
     return {
       curMap: null,
-      overlayInfo: null
+      overlayInfo: null,
     };
   },
 
   components: {
-    UCStatisticsOverlay
+    UCStatisticsOverlay,
   },
 
   computed: {},
 
-  mounted () {
+  mounted() {
     // this.$refs.ucAttriInfos.on_canelPanel(()=>{
     //   this.clearOverlays();
     // })
-   },
+  },
 
   methods: {
-    init () { },
+    init() {},
 
     showOverlay(overlayInfo) {
-      
       let self = this;
       if (!overlayInfo) return;
       self.overlayInfo = overlayInfo;
-      if (
-        overlayInfo.type == MapOverlayType.featureAttriInfo
-      ) {
+      if (overlayInfo.type == MapOverlayType.featureAttriInfo) {
         let info = new StatisticsOverlayInfo();
         info.id = overlayInfo.properties.gid;
         info.title = overlayInfo.properties.mc;
@@ -58,12 +59,10 @@ export default {
           overlayInfo.showFields
         );
 
-        
         self._initAttriAndPhotosCallbackHandler(overlayInfo.position, info);
-      } 
+      }
     },
 
- 
     // 点击详情
     _initAttriAndPhotosCallbackHandler(position, objectInfo) {
       let divMapOverlayElement = document.getElementById("divMapOverlay");
@@ -92,12 +91,12 @@ export default {
         //是否自动平移，即假如标记在屏幕边缘，弹出时自动平移地图使弹出框完全可见
         autoPan: true,
         autoPanMargin: 100,
-        positioning: "center-right"
+        positioning: "center-right",
       });
 
       let self = this;
 
-      this.$refs.ucStatOverlay.init(objectInfo, function() {
+      this.$refs.ucStatOverlay.init(objectInfo, function () {
         overlayLayout.contentElement.appendChild(self.$refs.ucStatOverlay.$el); // = innerHtml;
 
         //设置overlay的显示位置
@@ -109,8 +108,7 @@ export default {
     /**
      * 清除地图所有overlays
      */
-    clearOverlays () {
-      
+    clearOverlays() {
       let overlayCollections = this.curMap.getOverlays();
       let overlays = new Array();
       if (overlayCollections) {
@@ -128,7 +126,7 @@ export default {
     /**
      * 创建overlay
      */
-    _createOverlayLayout () {
+    _createOverlayLayout() {
       let overlayInfo = new OverlayLayoutInfo();
 
       let closeElement = document.createElement("a");
@@ -156,14 +154,14 @@ export default {
 
       return overlayInfo;
     },
-  }
+  },
 };
 </script>
 
 
 <style lang="less">
 .ol-overlay-popup {
-  position: absolute; 
+  position: absolute;
   background-color: rgba(255, 255, 255, 1);
   -webkit-filter: drop-shadow(0 1px 4px rgba(255, 255, 255, 1));
   filter: drop-shadow(0 1px 4px rgba(255, 255, 255, 1));
@@ -173,7 +171,7 @@ export default {
   min-width: 360px;
   max-width: 400px;
   z-index: 20;
-  border-radius: 10px;
+  border-radius: 0;
   // padding-bottom: 24px;
 }
 
@@ -212,10 +210,10 @@ export default {
 
 .ol-overlay-popup-closer:after {
   content: "X";
-  color: #323232;
-  top: 5px;
+  color: #fdfdfd;
+  top: 10px;
   position: absolute;
   right: 2px;
-  font-size: 18px;
+  font-size: 14px;
 }
 </style>

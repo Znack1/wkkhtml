@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-13 22:13:49
+ * @LastEditTime: 2023-06-25 16:29:59
  * @input: no param
  * @out: no param
  */
@@ -85,7 +85,7 @@ export class UCMainEventManager {
 
     // 图层目录树
     this.ucLeftMenu.on_nodeCheckChangeHandler((node) => {
-      debugger
+      
       let self = this;
       if (!node) return;
       let layerItem = node;
@@ -132,7 +132,7 @@ export class UCMainEventManager {
           // 通过key分类
           let groupByKey = _.groupBy(datas,typekey)
           let initDatas = [];
-          debugger
+          
           _.each(groupByKey,(group,key)=>{
             initDatas.push({
               features:group,
@@ -186,7 +186,7 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-      debugger
+      
       let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
         self.twinklePoint(features[0])
@@ -216,15 +216,15 @@ export class UCMainEventManager {
       //清除地图上的overlay
 
       // self.ucMap.layerMgr.selectLayer.clear();
-      let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
-      let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
-      if (!features || features.length == 0) {
-        // 修改鼠标形状
-        self.ucMap.curMap.getTargetElement().style.cursor = 'default';
+      // let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
+      // let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
+      // if (!features || features.length == 0) {
+      //   // 修改鼠标形状
+      //   self.ucMap.curMap.getTargetElement().style.cursor = 'default';
 
-      } else {
-        self.ucMap.curMap.getTargetElement().style.cursor = 'pointer';
-      }
+      // } else {
+      //   self.ucMap.curMap.getTargetElement().style.cursor = 'pointer';
+      // }
       // 刷新右下角坐标
       self.ucCustomMapScale.refreshCoordinate(e.coordinate);
 

@@ -1,20 +1,24 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-09 15:10:45
- * @LastEditTime: 2023-05-31 21:13:10
+ * @LastEditTime: 2023-06-25 15:00:28
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCPhotos.vue
  -->
 <!--  -->
 <template>
-  <div style="padding:0 24px;margin-top:5px;">
-    <el-carousel height="200px" v-show="photoRanges.length > 0">
+  <div style="padding:0 24px;margin-top:5px;overflow: hidden;">
+    <!-- <el-carousel height="200px" v-show="photoRanges.length > 0">
       <el-carousel-item v-for="(tempRange,tempRangeIndex) in photoRanges" :key="tempRangeIndex" :interval="6000">
         <img class="perImg" :src="tempImg"
           :preview-src-list="photos" v-for="tempImg in tempRange" :key=tempImg.id />
       </el-carousel-item>
-    </el-carousel>
+    </el-carousel> -->
+     <div v-show="photoRanges.length > 0">
+        <img class="perImg" :src="tempImg"
+          :preview-src-list="photos" v-for="tempImg in photoRanges" :key=tempImg.id />
+    </div>
   </div>
 </template>
 
@@ -61,7 +65,8 @@
           this.ucsetting.moreBtnShow = false
         }
         
-        this.photoRanges = this._getPartPhotos(this.photos);
+        // this.photoRanges = this._getPartPhotos(this.photos);
+        this.photoRanges = this.photos;
       },
 
       // 获取carousel parts

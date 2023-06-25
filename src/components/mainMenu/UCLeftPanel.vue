@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-13 21:23:23
+ * @LastEditTime: 2023-06-25 16:10:23
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -200,6 +200,7 @@ export default {
 
     // 改变选中状态
     _change(val, data, checkeds) {
+      
       let isFirst = false;
       this.curCheckedNode = data;
       if (!checkeds) {
@@ -308,17 +309,6 @@ export default {
       return node;
     },
 
-    /**
-     * @name: zkc
-     * @msg: 设置node选中
-     * @param {*} nodeIds
-     * @return {*}
-     */
-    updateChecked(nodeIds, checked) {
-      if (nodeIds) {
-        this.$refs.tree.setCheckedKeys(nodeIds, checked);
-      }
-    },
 
     // 获取目录树数据
     getTreeNodes(){
@@ -327,11 +317,20 @@ export default {
       .then((res)=>{
         if(res.data.code == 200){
          let treeNodes = [];
+         
           this.treeNodes =  this.dealData(res.data.data,treeNodes);
-
+          this.$nextTick(()=>{
+            let firstNode = this.treeNodes[0]? this.treeNodes[0]:null
+          if(firstNode){
+            firstNode.checked = true;
+            this._change(true,firstNode)
+          }
+          })
+         
         }
         
       }).catch((error)=>{
+        
         this.$message.warning("获取数据失败")
       })
     },

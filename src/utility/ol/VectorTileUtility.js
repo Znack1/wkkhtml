@@ -115,7 +115,7 @@ export class VectorTileUtility {
 
     createVTLayer (minLevel, maxLevel, layerExtent) {
 
-debugger
+
         let initStyle = new ol.style.Style({
             fill: new ol.style.Fill({
                 color: '#12563b'

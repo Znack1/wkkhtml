@@ -3,6 +3,8 @@ import { OLSourceUtility } from "../../../utility/ol/OLSourceUtility.js";
 
 import yiji from "../../../assets/images/yiji1.png";
 import draw_marker from "../../../assets/images/draw_marker.png";
+import { LayerCatalogItem } from "@/model/LayerCatalogItem.js";
+import { OLLayerUtility } from "@/utility/ol/OLLayerUtility.js";
 /**
  * poi搜索图层
  */
@@ -59,7 +61,10 @@ export class POISearchLayer {
 
         if (!this.markerLayer) {
             this.markerLayer = this._createMarkerLayer();
+            this.markerLayer.set(LayerCatalogItem.sortFieldName, 1000);
             this.curMap.addLayer(this.markerLayer, true);
+            let allLayers = this.curMap.getLayers();
+            OLLayerUtility.ascLayer(allLayers, LayerCatalogItem.sortFieldName);
         }
 
         this.markerLayer.getSource().addFeatures(markerFeatures);
@@ -166,6 +171,7 @@ export class POISearchLayer {
             name: 'markerlayer',
             visible: true,
         });
+       
         return vectorLayer;
     }
 

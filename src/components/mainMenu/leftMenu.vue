@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-08 09:30:23
+ * @LastEditTime: 2023-06-21 17:33:49
 -->
 <template>
   <div class="divMenuBox">
@@ -16,7 +16,7 @@
       
     </div>
     <div class="bottomContent">
-      <UCPanel Title="业务数据图层" iconClass="icon-zuobiao"></UCPanel>
+      <UCPanel Title="基础数据图层" iconClass="icon-zuobiao"></UCPanel>
       <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
         <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
       </vuescroll>

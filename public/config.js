@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-21 14:56:27
+ * @LastEditTime: 2023-06-25 14:27:29
  * @input: no param
  * @out: no param
  */
@@ -40,12 +40,13 @@ window.BASE_CONFIG = {
 				"extent": "",
 				"initLevel": "-1",
 				"tag": "",
-				"sort": "3",
+				"sort": "5",
 				"edition": null,
 				"metaDataItemString": "",
 				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/qgxzq/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=qgxzq&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
 				"serviceName": "qgxzq",
 				"serviceEpsg": "EPSG:4326",
+				"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"fill-color":"rgba(255, 170, 62, 0)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"line-color":"rgba(209,223,186,1)","line-width":1.2},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"fill-color":"rgba(255, 170, 62, 0)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"line-color":"rgba(255, 170, 62, 1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"fill-color":"rgba(255, 170, 62, 0)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"line-color":"rgba(255,239,148,1)","line-width":1.2},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',
 				"styleJsonUrl": "http://223.71.70.150:9977/styles/qgxzq/styles/root.json",
 				"sourceName": null,
 				"renderParamsString": "",
@@ -80,7 +81,7 @@ window.BASE_CONFIG = {
 				"extent": "",
 				"initLevel": "-1",
 				"tag": "",
-				"sort": "2",
+				"sort": "5",
 				"edition": null,
 				"metaDataItemString": "",
 				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/10liuyu/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=10liuyu&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
@@ -105,7 +106,16 @@ window.BASE_CONFIG = {
 		},
 	],
 	"showFields": [
-		{ name: 'mc', aliasName: '名称', index: 0, value: '' }
+		{name:'sheng',aliasName:'所属省',index:0,value:''},
+		{name:'shi',aliasName:'所属市',index:0,value:''},
+		{name:'xian',aliasName:'所属县',index:0,value:''},
+		{name:'xz',aliasName:'所属乡镇',index:0,value:''},
+		{name:'hjjgdj',aliasName:'监管等级',index:0,value:''},
+		{name:'wkkdb',aliasName:'尾矿库等别',index:0,value:''},
+		{name:'wkkdb',aliasName:'环境敏感度',index:0,value:''},
+		{name:'rkxs',aliasName:'入库形式',index:0,value:''},
+		{name:'rkxs',aliasName:'主要矿种',index:0,value:''},
+		{name:'sczk',aliasName:'生产状况',index:0,value:''}
 	],
 	useFieldConfig: {
 		"监管等级": 'hjjgdj',

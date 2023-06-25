@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-09 14:31:30
- * @LastEditTime: 2023-06-21 14:46:18
+ * @LastEditTime: 2023-06-25 14:40:07
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCAttriInfos.vue
@@ -12,7 +12,7 @@
     <ul class="ul-attrisInfo">
         <li class="li-items" v-for="item in attributes"
         :key="item.key">
-        <div class="div-attri-key"  :title="item.key">{{item.key.trim()}}：</div>
+        <div class="div-attri-key"  :title="item.key">{{item.key.trim()}}</div>
         <div class="div-attri-value"  :title="item.value">{{item.value}}</div>
       </li>
      
@@ -55,29 +55,37 @@ export default {
 }
 .li-items {
   line-height: 14px;
-  list-style: none;
-  padding: 5px 0;
-  box-sizing: border-box;
-  overflow: hidden;
-  font-size: 14px;
-  color: #323232;
+    list-style: none;
+    box-sizing: border-box;
+    overflow: hidden;
+    font-size: 14px;
+    color: #323232;
+    border: 1px solid #e4e4e4;
+    border-bottom: 0;
+    &:last-of-type{
+      border: 1px solid #e4e4e4;
+    }
   .div-attri-key {
-    width: 90px;
+    width: 110px;
     font-weight: 300;
     line-height: 14px;
     float: left;
     text-align: left;
     font-size:14px;
     line-height:26px;
+    border-right:1px solid #e4e4e4;
+    background: #f9f9f9;
+    padding: 0 8px;
   }
   .div-attri-value {
     padding-left: 6px;
-    width: calc(100% - 96px);
+    width: calc(100% - 116px);
     float: right;
     text-align: left;
     word-break: break-all;
     font-size: 14px;
     line-height: 26px;
+    padding: 0 8px;
   }
 }
 </style>

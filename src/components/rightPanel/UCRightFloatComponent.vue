@@ -77,7 +77,7 @@ export default {
      * 初始化
      */
     updatePanel(data, curStat) {
-      debugger
+      
       if(!data){
         let barObj = {
           data: [],

@@ -410,7 +410,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
             if (olVtLayer instanceof ol.layer.VectorTile) {
 
                 //进行符号化渲染
-                if (olVtLayer && this.renderParamsString) {
+                // if (olVtLayer && this.renderParamsString) {
 
                     // this.styleJsonUrlContent = null;
                     
@@ -425,6 +425,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                         mbsJson.rendererEx(JSON.parse(this.styleJsonUrlContent));
 
                     } else if (this.styleJsonUrl) {
+                        
                         let mbsJson = new MapboxStyleJsonRenderer();
                         mbsJson.sourceLayerString = this.sourceName;
                         mbsJson.olVTLayer = olVtLayer;
@@ -433,7 +434,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
                     }
                     // let jsonToStyle = new EzJson2StyleMapbox(olVtLayer, this.styleJsonUrl, this.renderParamsString);
-                }
+                // }
             }
         }
 
