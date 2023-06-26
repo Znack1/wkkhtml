@@ -6,7 +6,7 @@ import { WMTSLayerUtility } from "../../../utility/ol/WMTSLayerUtilityJs";
 /*
  * @Author: your name
  * @Date: 2020-03-05 17:39:41
- * @LastEditTime: 2023-05-29 15:57:36
+ * @LastEditTime: 2023-06-26 14:25:55
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /html/src/components/mainMap/layer/LayerCatalogItemLayer.js
@@ -70,7 +70,7 @@ export class LayerCatalogItemLayer {
 
                 let olVtLayer = null;
                 for (let tempIndex = 0; tempIndex < olVtLayers.length; tempIndex++) {
-
+                    
                     olVtLayer = olVtLayers[tempIndex];
                     // //设置排序属性项
                     if (layerItem.sort) {
@@ -86,6 +86,7 @@ export class LayerCatalogItemLayer {
 
 
             } else if (layerItem.type === LayerCatalogItemType.wmts) {
+                
                 let wmtsUtility = new WMTSLayerUtility();
                 wmtsUtility.epsg = layerItem.epsg;
                 wmtsUtility.formatName = layerItem.formatName;

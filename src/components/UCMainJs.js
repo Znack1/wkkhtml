@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-25 16:29:59
+ * @LastEditTime: 2023-06-26 14:15:03
  * @input: no param
  * @out: no param
  */
@@ -103,7 +103,9 @@ export class UCMainEventManager {
   // 获取页面数据更新
   getPageData() {
     let self = this;
-    this.ucMain.checkedNodes = this.checkedNodes;
+    this.ucMain.checkedNodes = _.sortBy(this.checkedNodes,(node)=>{
+      return node.sort;
+    });
     if(this.checkedNodes.length == 0){
       self.ucMap.layerMgr.poiLayer.clear();
       self.ucRightPanel.updatePanel(null, this.ucMain.curStat)

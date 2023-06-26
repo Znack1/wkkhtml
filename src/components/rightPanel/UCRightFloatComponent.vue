@@ -121,8 +121,9 @@ export default {
           let temp = {
             name: map.name,
           };
+
           map.list = _.sortBy(map.list,(o)=>{
-          return o.sort
+          return o.id
         });
           // {name:'区域',props:'area',width:120}
           _.each(map.list, (l, index) => {

@@ -5,10 +5,11 @@
   >
     <el-main
       v-show="curDatas.length > 0"
-      style="height: 100%; width: 100%; padding: 1px 1px 1px 1px"
+      style="height: calc(100% - 32px); width: 100%; padding: 1px 1px 1px 1px"
       :class="{ firstPage: ucsetting.pagination.curPageIndex == 1 }"
     >
       <el-table
+        height="100%"
         :data="curDatas"
         @row-click="_rowClickHandler"
         @row-dblclick="_rowDbClickHandler"
@@ -29,7 +30,7 @@
       </el-table>
     </el-main>
 
-    <el-footer style="height: 40px; margin-top: 10px">
+    <el-footer style="height:32px;">
       <div class="block">
         <span class="demonstration"></span>
         <el-pagination

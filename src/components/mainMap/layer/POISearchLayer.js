@@ -58,8 +58,9 @@ export class POISearchLayer {
             tempFeature.setStyle(iconStyle);
             markerFeatures.push(tempFeature);
         }
-
+        
         if (!this.markerLayer) {
+            
             this.markerLayer = this._createMarkerLayer();
             this.markerLayer.set(LayerCatalogItem.sortFieldName, 1000);
             this.curMap.addLayer(this.markerLayer, true);
@@ -117,7 +118,10 @@ export class POISearchLayer {
 
         if (!this.markerLayer) {
             this.markerLayer = this._createMarkerLayer();
+            this.markerLayer.set(LayerCatalogItem.sortFieldName, 1000);
             this.curMap.addLayer(this.markerLayer, true);
+            let allLayers = this.curMap.getLayers();
+            OLLayerUtility.ascLayer(allLayers, LayerCatalogItem.sortFieldName);
         }
 
         this.markerLayer.getSource().addFeatures(markerFeatures);

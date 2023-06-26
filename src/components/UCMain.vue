@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-21 17:19:54
+ * @LastEditTime: 2023-06-26 13:37:22
  * @input: no param
  * @out: no param
 -->
@@ -120,7 +120,7 @@ export default {
       let toolFlag = [
         MapTools.mapEventCode.District,
         MapTools.mapEventCode.River,
-        MapTools.mapEventCode.DrawPolygon,
+        // MapTools.mapEventCode.DrawPolygon,
         // MapTools.mapEventCode.Location,
         MapTools.mapEventCode.MeasureLine,
         MapTools.mapEventCode.MeasureArea,
@@ -294,6 +294,7 @@ export default {
     align-items: flex-start;
     flex-wrap: wrap;
     background: white;
+    border-radius: 10px;
     .legendItem {
       margin-bottom: 5px;
       margin-right: 13px;
