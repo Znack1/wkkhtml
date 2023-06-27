@@ -227,9 +227,9 @@ export class VectorTileUtility {
                         .replace('{y}', String(tileMarker[2] + 1));
                 }
 
-                console.log(tileUrl)
+                // console.log(tileUrl)
 
-                console.log(self.tilematrixSuffix)
+                // console.log(self.tilematrixSuffix)
                
 
                 // //隐藏时间戳

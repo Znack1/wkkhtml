@@ -9,7 +9,7 @@
 <!--  -->
 <template>
   <div style="padding:0 24px;margin-top:5px;">
-    <el-carousel height="200px" v-if="rangeVideos.length > 0">
+    <el-carousel :interval="6000" height="200px" v-if="rangeVideos.length > 0" >
       <el-carousel-item  v-for="(tempItem,idx) in rangeVideos" :key="idx">
         <video-player style="width:100%;height:200px"  class="video-player vjs-custom-skin perVideo"
         ref="videoPlayer" :playsinline="true"  @play="onPlayerPlaying($event)"

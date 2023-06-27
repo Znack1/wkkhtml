@@ -131,7 +131,7 @@ export default {
 
 .tdt-bottom {
   position: absolute;
-  z-index: 9999;
+  z-index: 1500;
   pointer-events: none;
 }
 

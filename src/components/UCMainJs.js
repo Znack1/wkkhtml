@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-26 14:15:03
+ * @LastEditTime: 2023-06-27 14:09:10
  * @input: no param
  * @out: no param
  */
@@ -104,7 +104,7 @@ export class UCMainEventManager {
   getPageData() {
     let self = this;
     this.ucMain.checkedNodes = _.sortBy(this.checkedNodes,(node)=>{
-      return node.sort;
+      return parseFloat(node.sort);
     });
     if(this.checkedNodes.length == 0){
       self.ucMap.layerMgr.poiLayer.clear();
@@ -191,7 +191,13 @@ export class UCMainEventManager {
       
       let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
-        self.twinklePoint(features[0])
+        let findItem = _.find(features,(fea)=>{
+          let properties = fea.getProperties();
+          return properties.featureType == LayerFeatureType.treeLayerFeature
+        })
+        if(findItem){
+          self.twinklePoint(findItem)
+        }
       }
       self._on_showOverlay(features, e.coordinate);
 
@@ -218,15 +224,21 @@ export class UCMainEventManager {
       //清除地图上的overlay
 
       // self.ucMap.layerMgr.selectLayer.clear();
-      // let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
-      // let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
-      // if (!features || features.length == 0) {
-      //   // 修改鼠标形状
-      //   self.ucMap.curMap.getTargetElement().style.cursor = 'default';
+      let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
+      let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
+      if (!features || features.length == 0) return;
 
-      // } else {
-      //   self.ucMap.curMap.getTargetElement().style.cursor = 'pointer';
-      // }
+      let level = self.ucMap.getZoomLevel();
+      if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
+        let findItem = _.find(features,(fea)=>{
+          let properties = fea.getProperties();
+          return properties.featureType == LayerFeatureType.treeLayerFeature
+        })
+        if(findItem){
+          self.twinklePoint(findItem)
+        }
+       
+      }
       // 刷新右下角坐标
       self.ucCustomMapScale.refreshCoordinate(e.coordinate);
 
@@ -238,7 +250,8 @@ export class UCMainEventManager {
   twinklePoint(feature, count) {
     count = count || 0;
     let selectImg = feature.get("bindingObject").selectImg;
-    let defaultStyle = feature.getStyle();
+    let normalImg = feature.get("bindingObject").img;
+   
     let iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
         anchor: [0.5, 8],
@@ -251,11 +264,19 @@ export class UCMainEventManager {
     feature.setStyle(iconStyle)
 
     setTimeout(() => {
-      count++;
+      // count++;
+      let defaultStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+          anchor: [0.5, 8],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: normalImg
+        }))
+      });
       feature.setStyle(defaultStyle)
-      if (count < 2) {
-        this.twinklePoint(feature, count)
-      }
+      // if (count < 2) {
+      //   this.twinklePoint(feature, count)
+      // }
     }, 500);
 
   }

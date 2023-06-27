@@ -93,7 +93,7 @@ export default {
           color:['#158DFD','#9BC5F1']
         };
         data.map = _.sortBy(data.map, (o) => {
-          return o.sort;
+          return parseFloat(o.sort);
         });
         _.each(data.map, (n, key) => {
           barObj.data.push({
@@ -109,7 +109,7 @@ export default {
         let idx = 0;
         let tableDatas = new Array();
         data.linkedHashMap = _.sortBy(data.linkedHashMap,(o)=>{
-          return o.sort
+          return parseFloat(o.sort)
         });
         let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
         if (curStat) {

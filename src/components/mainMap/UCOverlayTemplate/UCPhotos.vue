@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-09 15:10:45
- * @LastEditTime: 2023-06-25 15:00:28
+ * @LastEditTime: 2023-06-27 09:30:54
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCPhotos.vue
@@ -16,13 +16,14 @@
       </el-carousel-item>
     </el-carousel> -->
      <div v-show="photoRanges.length > 0">
-        <img class="perImg" :src="tempImg"
-          :preview-src-list="photos" v-for="tempImg in photoRanges" :key=tempImg.id />
+        <img class="perImg" :src="tempImg" @click="_imgClickHandle(index)"
+          :preview-src-list="photos" v-for="(tempImg,index) in photoRanges" :key="index" />
     </div>
   </div>
 </template>
 
 <script>
+  import { DialogSystemJs } from "../../../common/dialogSystemJs";
   import _ from 'lodash';
   export default {
     name: "UCPhotos",
@@ -103,7 +104,7 @@
       // 放大图片
       _imgClickHandle(imgIndex) {
         let attachments = this.photos;
-        // YellowRiverSystemJs.ucOpenDialog.updata(imgIndex,attachments);
+        DialogSystemJs.ucOpenDialog.update(imgIndex,attachments);
       },
 
 

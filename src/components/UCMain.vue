@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-26 13:37:22
+ * @LastEditTime: 2023-06-27 15:12:37
  * @input: no param
  * @out: no param
 -->
@@ -54,6 +54,8 @@
         <span>{{ node.name }}</span>
       </div>
     </div>
+
+    <UCPhotoDialog ref="ucPhotoDialog"></UCPhotoDialog>
   </div>
 </template>
 
@@ -67,7 +69,8 @@ import UCBaseLayerSwitch from "./baseLayerSwitch/UCBaseLayerSwitch.vue";
 import UCCustomMapScale from "./customMapControls/UCCustomMapScale.vue";
 import UCZoomControl from "./customMapControls/UCZoomControl.vue";
 import UCRightFloatComponent from "./rightPanel/UCRightFloatComponent.vue";
-import { VectorTileUtility } from "@/utility/ol/VectorTileUtility";
+import { DialogSystemJs } from "../common/dialogSystemJs";
+import UCPhotoDialog from "../utility/ui/dialog/UCPhotoDialog.vue"
 import {
   LayerCatalogItem,
   LayerCatalogItemType,
@@ -85,6 +88,7 @@ export default {
     UCRightFloatComponent,
     LeftMenu,
     UCZoomControl,
+    UCPhotoDialog
   },
   props: {},
   data() {
@@ -116,6 +120,9 @@ export default {
         };
         this.$refs.ucMap.init(mapOptions, false);
       }
+
+       // 初始化dialog
+       DialogSystemJs.ucOpenDialog = this.$refs.ucPhotoDialog;
       this._initEvents();
       let toolFlag = [
         MapTools.mapEventCode.District,
@@ -287,17 +294,15 @@ export default {
     position: absolute;
     bottom: 60px;
     left: 375px;
-    padding: 8px;
-    min-height: 100px;
-    width: 200px;
+    padding: 15px;
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
-    background: white;
+    background: #fff;
     border-radius: 10px;
+    flex-direction: column;
     .legendItem {
       margin-bottom: 5px;
-      margin-right: 13px;
     }
   }
 }
