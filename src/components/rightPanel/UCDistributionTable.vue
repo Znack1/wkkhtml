@@ -1,49 +1,43 @@
 <template>
-  <el-container
-    class="tableAreaDist"
-    style="height: 100%; width: 99%; margin: 0 auto"
-  >
-    <el-main
-      v-show="curDatas.length > 0"
-      style="height: calc(100% - 32px); width: 100%; padding: 1px 1px 1px 1px"
-      :class="{ firstPage: ucsetting.pagination.curPageIndex == 1 }"
+  <div class="tableAreaDist">
+    <el-table
+      height="calc(100% - 32px)"
+      ref="table"
+      :data="curDatas"
+      @row-click="_rowClickHandler"
+      @row-dblclick="_rowDbClickHandler"
+      :show-header="ucsetting.hiddenTableHeader"
     >
-      <el-table
-        height="100%"
-        :data="curDatas"
-        @row-click="_rowClickHandler"
-        @row-dblclick="_rowDbClickHandler"
-        :show-header="ucsetting.hiddenTableHeader"
+      <el-table-column type="index" label="排名" width="80" align="center">
+        <template slot-scope="scope">
+          <span class="spanNum" :class="'num' + scope.row.idx"
+            >{{ scope.row.idx }}
+          </span>
+        </template>
+      </el-table-column>
+
+      <el-table-column
+        v-for="(header, idx) in ucsetting.headers"
+        :key="idx"
+        :prop="header.props"
+        :label="header.name"
+        align="center"
       >
-        <el-table-column    type="index" label="排名" width="80" align="center">
-          <template slot-scope="scope">
-            <span class="spanNum" :class="'num' + scope.row.idx ">{{scope.row.idx}} </span>
-          </template>
-        </el-table-column>
+      </el-table-column>
+    </el-table>
 
-        <el-table-column v-for="(header,idx) in ucsetting.headers" :key="idx"
-          :prop="header.props"
-          :label="header.name"
-          align="center"
-        >
-        </el-table-column>
-      </el-table>
-    </el-main>
-
-    <el-footer style="height:32px;">
-      <div class="block">
-        <span class="demonstration"></span>
-        <el-pagination
-          @current-change="_paginationCurrentChangeHandler"
-          :current-page.sync="ucsetting.pagination.curPageIndex"
-          :page-size="ucsetting.pagination.pageSize"
-          layout="total, prev, pager, next"
-          :total="datas.length"
-          :hide-on-single-page="true"
-        ></el-pagination>
-      </div>
-    </el-footer>
-  </el-container>
+    <div class="block" style="height: 32px">
+      <span class="demonstration"></span>
+      <el-pagination
+        @current-change="_paginationCurrentChangeHandler"
+        :current-page.sync="ucsetting.pagination.curPageIndex"
+        :page-size="ucsetting.pagination.pageSize"
+        layout="total, prev, pager, next"
+        :total="datas.length"
+        :hide-on-single-page="true"
+      ></el-pagination>
+    </div>
+  </div>
 </template>
 
 <script>
@@ -61,7 +55,7 @@ export default {
         // 是否隐藏表头
         hiddenTableHeader: true,
         isFilterYear: false,
-        headers:[],
+        headers: [],
         pagination: {
           //每页的个数
           pageSize: 10,
@@ -84,10 +78,10 @@ export default {
     /**
      * 更新表格数据
      */
-    update(statItem,headers) {
+    update(statItem, headers) {
       let self = this;
       self.datas = statItem || [];
-      self.ucsetting.headers =headers|| []
+      self.ucsetting.headers = headers || [];
 
       this._paginationCurrentChangeHandler(1);
     },
@@ -104,7 +98,10 @@ export default {
       var startIndex = this.ucsetting.pagination.pageSize * (pageIndex - 1);
       var endIndex = this.ucsetting.pagination.pageSize * pageIndex - 1;
       this.curDatas = [];
-      this.curDatas = this.datas.slice(startIndex,endIndex);
+      this.curDatas = this.datas.slice(startIndex, endIndex);
+      this.$nextTick(() => {
+        this.$refs.table.doLayout();
+      });
     },
 
     /**
@@ -123,6 +120,17 @@ export default {
 };
 </script>
 <style lang="less" scoped >
+.el-table {
+  width: 100%;
+
+  display: flex;
+
+  flex-direction: column;
+
+  .el-table__body-wrapper {
+    flex: 1;
+  }
+}
 .tableAreaDist {
   /deep/ .el-table--border {
     background: none;
@@ -177,23 +185,23 @@ export default {
   /deep/ .el-pagination button:disabled {
     background: #102b4f;
   }
-  .spanNum{
-       width: 20px;
+  .spanNum {
+    width: 20px;
     height: 20px;
     display: inline-block;
     line-height: 20px;
-    border-radius:10px;
-    color:white;
-    background:#3072f6 ;
+    border-radius: 10px;
+    color: white;
+    background: #3072f6;
   }
-  .num0{
-    background:red
-  } 
-  .num1{
-    background:rgb(255, 138, 5)
-  } 
-  .num2{
-    background:rgb(236, 194, 6)
-  } 
+  .num0 {
+    background: red;
+  }
+  .num1 {
+    background: rgb(255, 138, 5);
+  }
+  .num2 {
+    background: rgb(236, 194, 6);
+  }
 }
 </style>

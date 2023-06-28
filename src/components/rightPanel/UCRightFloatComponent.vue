@@ -109,7 +109,7 @@ export default {
         let idx = 0;
         let tableDatas = new Array();
         data.linkedHashMap = _.sortBy(data.linkedHashMap,(o)=>{
-          return parseFloat(o.sort)
+          return -parseFloat(o.sort)
         });
         let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
         if (curStat) {
@@ -123,7 +123,7 @@ export default {
           };
 
           map.list = _.sortBy(map.list,(o)=>{
-          return o.id
+            return parseFloat(o.id)
         });
           // {name:'区域',props:'area',width:120}
           _.each(map.list, (l, index) => {
@@ -140,9 +140,9 @@ export default {
 
           tableDatas.push(temp);
         });
-        tableDatas = _.sortBy(tableDatas, (o) => {
-          return o.prop0;
-        });
+        // tableDatas = _.sortBy(tableDatas, (o) => {
+        //   return o.prop0;
+        // });
 
         _.each(tableDatas,(d,index)=>{
           d.idx = (index+1)
