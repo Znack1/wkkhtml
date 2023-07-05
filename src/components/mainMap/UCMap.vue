@@ -2,31 +2,27 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 13:52:03
- * @LastEditTime: 2023-06-08 21:26:05
+ * @LastEditTime: 2023-07-05 17:47:37
  * @LastEditors: zkc
  -->
 <!--  -->
 <template>
   <div class="div_map">
-    <div
-      id="map"
-      class="div_map"
-    ></div>
+    <div id="map" class="div_map"></div>
 
-  <UCMapOverlay ref="ucOverlay" v-show="false"></UCMapOverlay>
-
+    <UCMapOverlay ref="ucOverlay" v-show="false"></UCMapOverlay>
   </div>
-
 </template>
 
 
 <script>
 import { LayerManager } from "./layer/LayerManager.js";
 import { OLMapUtility } from "../../utility/ol/OLMapUtility.js";
-import {DrawGeometryUtility } from "../../utility/ol/DrawGeometryUtilityJs.js";
-import { GeometryUtility } from '../../utility/ol/GeometryUtility.js'
+import { DrawGeometryUtility } from "../../utility/ol/DrawGeometryUtilityJs.js";
+import { GeometryUtility } from "../../utility/ol/GeometryUtility.js";
 import { UCMapEvent } from "./UCMapJs.js";
 import UCMapOverlay from "./UCMapOverlay.vue";
+import AxiosConfig from "@/config/AxiosConfigJs.js";
 
 export default {
   name: "UCMap",
@@ -34,12 +30,12 @@ export default {
   props: {
     width: {
       type: String,
-      default: "100%"
+      default: "100%",
     },
     height: {
       type: String,
-      default: "100vh"
-    }
+      default: "100vh",
+    },
   },
 
   data() {
@@ -49,14 +45,14 @@ export default {
       //图层管理
       layerMgr: null,
 
-      currentMapLevel: -1
+      currentMapLevel: -1,
     };
   },
 
-  components: { 
-    UCMapOverlay
-    
-    // UCPhotoDialog 
+  components: {
+    UCMapOverlay,
+
+    // UCPhotoDialog
   },
 
   computed: {},
@@ -66,7 +62,7 @@ export default {
   methods: {
     //初始化
     init(mapOptions, showMapControl) {
-      // 
+      //
       this.layerMgr = new LayerManager();
       //初始化底图配置
       this.layerMgr.initBaseLayerConfig();
@@ -83,23 +79,102 @@ export default {
       // this.layerMgr.ucMapOverLay = this.$refs.ucOverlay;
       this.layerMgr.init();
       this.layerMgr.addLayers();
-      
+
       this.$refs.ucOverlay.curMap = this.curMap;
       this.$refs.ucOverlay.init();
 
+      // 掩膜
+      AxiosConfig.publicJson("city.json").then((res) => {
+        var formatGeoJSON = new ol.format.GeoJSON({
+                featureProjection: "EPSG:4326"
+            });
+        // const boundFeature = new ol.format.GeoJSON().readFeatures(res.data);
+        //   // 剪裁
+        //   let wktOLReaderALL = new ol.format.WKT();
+        //   let boundWKTarr = res.data.features[0].geometry.coordinates[0],
+        //       boundWKT = 'POLYGON ((';
+        //       for (let i = 0; i < boundWKTarr.length; i++) {
+        //            boundWKT += boundWKTarr[i][0] + ' ' + boundWKTarr[i][1] + ','
+        //       }
+        //   boundWKT += boundWKTarr[0][0] + ' ' + boundWKTarr[0][1] + '))'
+        //   let boundPolygon = wktOLReaderALL.readFeature(boundWKT).getGeometry();
+
+        //   this.curMap.on('postcompose', (evt)=> {
+        //       this.createclip(evt.context, boundPolygon, this.curMap)
+        //   });
+
+        var features = formatGeoJSON.readFeatures(res.data);
+        var usaGeometry = features[0].getGeometry();
+        var fExtent = usaGeometry.getExtent();
+        // view.fit(fExtent);
+        var fillStyle = new ol.style.Fill({
+          color:'rgba(255, 255, 255, 0)',
+        });
+        var styleVC = new ol.style.Style({
+                fill: fillStyle
+       })
+       this.curMap.on("precompose", function (event) {
+            var ctx = event.context;
+            var pixelRatio = event.frameState.pixelRatio;
+            //For openlayers v6.0+:
+            // var vecCtx = ol.render.getVectorContext(event);
+            var vecCtx = event.vectorContext;
+            ctx.save();
+            vecCtx.setStyle(styleVC);
+            vecCtx.drawGeometry(usaGeometry);
+            // ctx.lineWidth = 5 * pixelRatio;
+            // ctx.strokeStyle = "rgba(0,0,0,0.5)";
+            // ctx.stroke();
+            ctx.clip();
+          });
+          //For openlayers v6.0+:
+          // osm.on('postrender', function (event) {
+            this.curMap.on("postcompose", function (event) {
+            var ctx = event.context;
+            ctx.restore();
+          });
+      });
+
       this._initEvents();
     },
+    // 剪裁
+    createclip(context, boundPolygon, map) {
+      //裁剪
+      context.save();
+      let coors = boundPolygon.getCoordinates();
+      let pointArr = [];
+      for (let i = 0; i < coors.length; i++) {
+        let coorTmp = coors[i];
+        let pointTmp = [];
+        for (let j = 0; j < coorTmp.length; j++) {
+          pointTmp.push(map.getPixelFromCoordinate(coorTmp[j]));
+        }
+        pointArr.push(pointTmp);
+      }
+      context.globalCompositeOperation = "destination-in";
+      context.beginPath();
+      for (let i = 0; i < pointArr.length; i++) {
+        let pointTmp = pointArr[i];
+        for (let j = 0; j < pointTmp.length; j++) {
+          if (j == 0) {
+            context.moveTo(pointTmp[j][0], pointTmp[j][1]);
+          } else {
+            context.lineTo(pointTmp[j][0], pointTmp[j][1]);
+          }
+        }
+      }
+      context.closePath();
+      context.fillStyle = "#ff0000ff";
+      context.fill();
+      context.restore();
+    },
 
-    cl(){
-       this.curMap.changeDragMode(
-                'measureArea',
-                function (callbackData) {
-                    
-                    self.isOpenTool = false;
-                    // self.mapTool = false;
-                    // self.mapToolOpen = false;
-                }
-            );
+    cl() {
+      this.curMap.changeDragMode("measureArea", function (callbackData) {
+        self.isOpenTool = false;
+        // self.mapTool = false;
+        // self.mapToolOpen = false;
+      });
     },
 
     /**
@@ -201,7 +276,7 @@ export default {
       let mapView = this.curMap.getView();
       mapView.fit(mapExtent, {
         nearest: true,
-        duration:1000
+        duration: 1000,
       });
     },
 
@@ -211,7 +286,6 @@ export default {
     },
 
     plusZoomLevel() {
-      
       let zoomLevel = this.getZoomLevel();
       let plusLevel = zoomLevel + 1;
       this.setZoomLevel(plusLevel);
@@ -254,7 +328,7 @@ export default {
       }
     },
 
-     showOverlayEx(overlayInfo) {
+    showOverlayEx(overlayInfo) {
       if (this.$refs.ucOverlay) {
         this.$refs.ucOverlay.showOverlayEx(overlayInfo);
       }
@@ -272,19 +346,17 @@ export default {
       }
     },
 
-
     // 点击弹框的详情按钮
-    on_ucOverlay_moreClickHandle(callback){
-        if(callback){
-          this.$refs.ucOverlay.on_ucAttribute_moreClickHandle(callback);
-        }
+    on_ucOverlay_moreClickHandle(callback) {
+      if (callback) {
+        this.$refs.ucOverlay.on_ucAttribute_moreClickHandle(callback);
+      }
     },
 
-     /**
+    /**
      *  画图形  isClear 是否清空地图 boolean
      */
     drawRange(type, isClearMap) {
-      
       let self = this;
       let drawUtil = new DrawGeometryUtility();
       drawUtil.curMap = this.curMap;
@@ -302,11 +374,11 @@ export default {
             mapCode
           );
         }
-        self.$emit(UCMapEvent.UCMap_event_drawFinish,drawItem);
+        self.$emit(UCMapEvent.UCMap_event_drawFinish, drawItem);
       });
     },
 
-      /**
+    /**
      * 画图结束去掉工具高亮
      */
     on_drawRange(callback) {
@@ -318,18 +390,15 @@ export default {
     _initEvents() {
       let self = this;
 
-      this.curMap.on("moveend", function() {
+      this.curMap.on("moveend", function () {
         let curZoomLevel = self.curMap.getView().getZoom();
         if (curZoomLevel != self.currentMapLevel) {
           self.$emit(UCMapEvent.UCMap_event_zoomlevelChange, curZoomLevel);
         }
         self.currentMapLevel = curZoomLevel;
       });
-
-    }
-
-  
-  }
+    },
+  },
 };
 </script>
 
