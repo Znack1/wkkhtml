@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-08 10:15:58
+ * @LastEditTime: 2023-07-11 15:05:19
  * @input: no param
  * @out: no param
  */
@@ -19,8 +19,9 @@ import AxiosConfig from "@/config/AxiosConfigJs";
 import draw_marker from "../assets/images/draw_marker.png";
 import _ from 'lodash'
 import { LayerFeatureType } from './mainMap/layer/LayerFeatureType.js';
-import { LayerCatalogItems } from '@/model/LayerCatalogItem.js';
+import { LayerCatalogItem, LayerCatalogItems } from '@/model/LayerCatalogItem.js';
 import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
+import echarts from "echarts";
 export class UCMainEventManager {
   constructor() {
     this.ucMain = null;
@@ -34,6 +35,24 @@ export class UCMainEventManager {
     this.editPoint = false; // 是否是编辑
     this.checkedNodes = [];
     this.curStatData = []; // 当前右侧统计数据
+    this.dataColumn = [
+      {
+        name: ['监测点1'],
+        x: 116.4575803581078, y: 40.04054437977018,
+        value: [100]
+      },
+      {
+        name: ['监测点2'],
+        x: 109.069956,
+        y: 27.757735,
+        value: [8]
+      }, {
+        name: ['监测点3'],
+        x: 109.162517,
+        y: 27.671774,
+        value: [5]
+      },
+    ];
   }
 
   /**
@@ -53,6 +72,9 @@ export class UCMainEventManager {
 
     this._addZoomControlListener();
 
+    // 添加echart图表
+    this.addColumnChart()
+
   }
 
   /**
@@ -61,24 +83,30 @@ export class UCMainEventManager {
   _addZoomControlListener() {
     let self = this;
     // 放大
-    this.ucZoomControl.on_zoomInClick(function() {
-        self.ucMap.plusZoomLevel();
+    this.ucZoomControl.on_zoomInClick(function () {
+      self.ucMap.plusZoomLevel();
     });
     // 缩放
-    this.ucZoomControl.on_zoomOutClick(function() {
-        self.ucMap.subtractionZoomLevel();
+    this.ucZoomControl.on_zoomOutClick(function () {
+      self.ucMap.subtractionZoomLevel();
     });
 
     // 图例
-    this.ucZoomControl.on_showLegend(()=>{
+    this.ucZoomControl.on_showLegend(() => {
       self.ucMain.showLegend = !self.ucMain.showLegend;
     })
-}
+  }
 
   _addUCLeftMenuListener() {
     let self = this;
     this.ucLeftMenu.on_checkLayer((nodes) => {
       this.checkedNodes = nodes;
+      _.each(nodes, (node) => {
+        if (node.layerItem) {
+          this._changeLayerItemVisible(node.layerItem, true)
+        }
+
+      })
 
       // this.getPageData();
 
@@ -86,7 +114,7 @@ export class UCMainEventManager {
 
     // 图层目录树
     this.ucLeftMenu.on_nodeCheckChangeHandler((node) => {
-      
+
       let self = this;
       if (!node) return;
       let layerItem = node;
@@ -104,21 +132,21 @@ export class UCMainEventManager {
   // 获取页面数据更新
   getPageData() {
     let self = this;
-    this.ucMain.checkedNodes = _.sortBy(this.checkedNodes,(node)=>{
+    this.ucMain.checkedNodes = _.sortBy(this.checkedNodes, (node) => {
       return parseFloat(node.sort);
     });
-    if(this.checkedNodes.length == 0){
+    if (this.checkedNodes.length == 0) {
       self.ucMap.layerMgr.poiLayer.clear();
       self.ucRightPanel.updatePanel(null, this.ucMain.curStat)
-    }else{
-      let rootParent =self.ucLeftMenu.$refs.ucLeftPanel.getParentNode(this.checkedNodes[0].parentId)
+    } else {
+      let rootParent = self.ucLeftMenu.$refs.ucLeftPanel.getParentNode(this.checkedNodes[0].parentId)
       // 获取分类key
       let typekey = null;
-      if(rootParent){
+      if (rootParent) {
         typekey = window.BASE_CONFIG.useFieldConfig[rootParent.name];
         this.ucRightPanel.firstName = rootParent.name
       }
-    
+
       let params = {
         type: this.checkedNodes[0].parentId,
         twoType: _.map(this.checkedNodes, "name"),
@@ -129,31 +157,31 @@ export class UCMainEventManager {
         .post(ServiceUrlConfig.point_allPoint, params)
         .then((res) => {
           self.ucMain.loading = false;
-  
+
           let datas = res.data.data.pointEntities;
           self.ucMap.layerMgr.poiLayer.clear();
           // 通过key分类
-          let groupByKey = _.groupBy(datas,typekey)
+          let groupByKey = _.groupBy(datas, typekey)
           let initDatas = [];
-          
-          _.each(groupByKey,(group,key)=>{
+
+          _.each(groupByKey, (group, key) => {
             initDatas.push({
-              features:group,
-              img:_.find(this.checkedNodes,{"name":key})?_.find(this.checkedNodes,{"name":key}).img:null,
-              selectImg:_.find(this.checkedNodes,{"name":key})?_.find(this.checkedNodes,{"name":key}).icon:null
+              features: group,
+              img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
+              selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
             })
           })
 
           self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
-  
+
           // 更新右侧面板
           self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
         }).catch((error) => {
           self.ucMain.loading = false;
-  
+
         })
     }
-   
+
 
   }
 
@@ -189,14 +217,14 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-      
+
       let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
-        let findItem = _.find(features,(fea)=>{
+        let findItem = _.find(features, (fea) => {
           let properties = fea.getProperties();
           return properties.featureType == LayerFeatureType.treeLayerFeature
         })
-        if(findItem){
+        if (findItem) {
           self.twinklePoint(findItem)
         }
       }
@@ -230,14 +258,14 @@ export class UCMainEventManager {
       if (!features || features.length == 0) return;
       let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
-        let findItem = _.find(features,(fea)=>{
+        let findItem = _.find(features, (fea) => {
           let properties = fea.getProperties();
           return properties.featureType == LayerFeatureType.treeLayerFeature
         })
-        if(findItem){
+        if (findItem) {
           self.twinklePoint(findItem)
         }
-       
+
       }
       // 刷新右下角坐标
       self.ucCustomMapScale.refreshCoordinate(e.coordinate);
@@ -251,7 +279,7 @@ export class UCMainEventManager {
     count = count || 0;
     let selectImg = feature.get("bindingObject").selectImg;
     let normalImg = feature.get("bindingObject").img;
-   
+
     let iconStyle = new ol.style.Style({
       image: new ol.style.Icon(({
         anchor: [0.5, 8],
@@ -294,7 +322,7 @@ export class UCMainEventManager {
     })
     // 工具条监听
     this.ucMapTool.on_toolClicked(function (toolItem) {
-    
+
       self.toolEventCode = toolItem.eventCode;
       //清除弹窗
       // self.ucMap.clearOverlays();
@@ -336,7 +364,7 @@ export class UCMainEventManager {
           self.ucMap.layerMgr.clear();
           // 清除目录树选中数据
           self.ucLeftMenu.$refs.ucLeftPanel.setAllUnChecked();
-          self.checkedNodes  = [];
+          self.checkedNodes = [];
           self.getPageData();
           break;
 
@@ -389,40 +417,40 @@ export class UCMainEventManager {
 
 
   // 显示showOverLay
-  _on_showOverlay(features,coordinate) {
+  _on_showOverlay(features, coordinate) {
     //清除地图上的overlay
-   
-    if(features.length == 0){
+
+    if (features.length == 0) {
       return;
     }
     let feature = features[0];
     let properties = feature.getProperties();
-    if(properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid){
+    if (properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid) {
       this.ucMap.clearOverlays();
       let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
       overlay.type = MapOverlayType.featureAttriInfo;
       overlay.features = [feature];
-      let showFields = _.sortBy(window.BASE_CONFIG.showFields,(field)=>{
+      let showFields = _.sortBy(window.BASE_CONFIG.showFields, (field) => {
         return -field.index;
       })
       let params = {
-        gid:properties.bindingObject.gid
+        gid: properties.bindingObject.gid
       }
       this.ucMain.loading = true;
       AxiosConfig.spatialdecision
-      .get(ServiceUrlConfig.detatil_findOne,{params:params})
-      .then((res)=>{
-        this.ucMain.loading = false;
-        overlay.properties = res.data.data || {};
-        overlay.showFields = showFields;
-    
-        this.ucMap.showOverlay(overlay);
-      }).catch((error)=>{
-        this.ucMain.loading = false;
-        console.log(error)
-      })
-     
+        .get(ServiceUrlConfig.detatil_findOne, { params: params })
+        .then((res) => {
+          this.ucMain.loading = false;
+          overlay.properties = res.data.data || {};
+          overlay.showFields = showFields;
+
+          this.ucMap.showOverlay(overlay);
+        }).catch((error) => {
+          this.ucMain.loading = false;
+          console.log(error)
+        })
+
     }
 
   }
@@ -452,6 +480,75 @@ export class UCMainEventManager {
         this.ucMap.layerMgr.layerItemLayer.addLayer(layerItem);
       }
     }
+  }
+
+  // 生成随机id
+  guid() {  //为了生成不一样的id，实现每个装柱状图的盒子的唯一性
+    var d = new Date().getTime();
+    var guid = 'xxxx-xxxx-xxxx-xxxx'.replace(
+      /[xy]/g,
+      function (c) {
+        var r = (d + Math.random() * 16) % 16 | 0;
+        d = Math.floor(d / 16);
+        return (c == 'x' ? r : (r & 0x7 | 0x8)).toString(16);
+      });
+    return guid;
+  }
+  // 添加echart图表
+  addColumnChart() {   //向点位添加柱状图的方法
+    let self = this;
+    var html = '';
+    for (var i = 0; i < self.dataColumn.length; i++) {
+      //1、循环每一条数据，生成id不同的div，
+      //2、获取到该div，将柱状图添加上去，
+      //3、 new Overlay，将每个柱状图添加到对应的点位上去
+      var d = self.dataColumn[i];
+      // var pt = new ol.proj.fromLonLat([d.x, d.y]);
+      var domid = "chart" + self.guid();    //生成不同的id
+      html += "<div id='" + domid + "' style='width: 35px;height:200px;margin-left: -18px;margin-bottom: -22px;'></div>"
+      self.ucMain.chart.innerHTML = html;    //self.chart为HTML里的柱状图容器，
+      // 创建树状图
+      var option = {};
+      var myChart = echarts.init(document.getElementById(domid));
+
+      option = {
+        color: ['#c23531',],
+        tooltip: {
+          trigger: 'axis',
+          axisPointer: {
+            type: 'shadow'
+          }
+        },
+        xAxis: {
+          name: '监测点名称',
+          data: d.name,
+          show: false
+        },
+        yAxis: {
+          max: '10',
+          name: '浓度单位（mg/kg）',
+          show: false
+        },
+        series: [{
+          name: '汞浓度(mg/kg)',
+          type: 'bar',
+          data: d.value
+        }]
+      };
+      myChart.setOption(option);
+      //将柱状图添加到指定点位上去
+      var chart = new ol.Overlay({
+        id: domid,
+        positioning: "bottom-center",
+        element: document.getElementById(domid),
+        offset: [0, 5],
+        stopEvent: false  //overlay也支持滚珠放大缩小
+      });
+      this.ucMap.curMap.addOverlay(chart,true);
+      //self.map是在mounted里new Map出来的，按openlayer官网操作即可，
+      chart.setPosition([d.x, d.y]);
+    }
+
   }
 
 

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-10 17:27:21
+ * @LastEditTime: 2023-07-11 14:25:42
  * @input: no param
  * @out: no param
 -->
@@ -56,6 +56,9 @@
     </div>
 
     <UCPhotoDialog ref="ucPhotoDialog"></UCPhotoDialog>
+
+    <!-- echart -->
+    <div style="display: none;" id="echart" ref="chart"></div>
   </div>
 </template>
 
@@ -93,6 +96,7 @@ export default {
   props: {},
   data() {
     return {
+      chart :  null, // echart容器
       showLegend: false, // 是否显示图例
       loading: false,
       checkedNodes: [], // 当前图例数据
@@ -123,6 +127,9 @@ export default {
 
        // 初始化dialog
        DialogSystemJs.ucOpenDialog = this.$refs.ucPhotoDialog;
+      //  echart容器
+       this.chart = this.$refs.chart
+
       this._initEvents();
       let toolFlag = [
         MapTools.mapEventCode.District,

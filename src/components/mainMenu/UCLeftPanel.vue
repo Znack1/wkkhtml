@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-10 10:48:53
+ * @LastEditTime: 2023-07-11 15:06:59
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -86,8 +86,9 @@ import vuescroll from "vuescroll";
 import _ from "lodash";
 
 import { EventManageCode } from "../EventManage";
-import AxiosConfig from '@/config/AxiosConfigJs';
-import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs';
+import AxiosConfig from "@/config/AxiosConfigJs";
+import { ServiceUrlConfig } from "@/config/ServiceUrlConfigJs";
+import { LayerCatalogItemType, VectorTileLayerItem, WmsLayerItem, WmtsLayerItem } from "@/model/LayerCatalogItem";
 
 export default {
   name: "UCCollapsePanel",
@@ -184,15 +185,15 @@ export default {
         },
       ],
       curCheckedNode: null,
-      curChecked:new Array(),
+      curChecked: new Array(),
     };
   },
   components: {
     vuescroll,
   },
 
-  mounted(){
-    this.getTreeNodes()
+  mounted() {
+    this.getTreeNodes();
   },
 
   methods: {
@@ -202,7 +203,6 @@ export default {
 
     // 改变选中状态
     _change(val, data, checkeds) {
-      
       let isFirst = false;
       this.curCheckedNode = data;
       if (!checkeds) {
@@ -210,15 +210,13 @@ export default {
         isFirst = true;
 
         // 如果是选中  则取消其他
-        if(val && data.type == "group"){
+        if (val && data.type == "group") {
           this.curChecked = [];
           this.setUnChecked(this.treeNodes);
         }
-      
-       
+
         // 本节点关闭或者展开
         this.$refs.tree.store.nodesMap[data.id].expanded = val;
-      
       }
 
       if (data.type != "group") {
@@ -229,7 +227,7 @@ export default {
         _.each(data.children, (child) => {
           child.checked = data.checked;
           if (child.type == "group") {
-            if(val){
+            if (val) {
               this.$refs.tree.store.nodesMap[child.id].expanded = val;
             }
             this._change(data.checked, child, checkeds);
@@ -239,40 +237,39 @@ export default {
         });
       }
       if (isFirst) {
-        if(val){
-          this.curChecked = this.curChecked.concat(checkeds)
-        }else{
-          _.remove(this.curChecked,(o)=>{
-            let findItem = _.find(checkeds,{"id":o.id});
-            return findItem
-          })
+        if (val) {
+          this.curChecked = this.curChecked.concat(checkeds);
+        } else {
+          _.remove(this.curChecked, (o) => {
+            let findItem = _.find(checkeds, { id: o.id });
+            return findItem;
+          });
         }
-       
+
         console.log(this.curChecked);
-        this.$emit(EventManageCode.treeCheckChange,this.curChecked)
-        
+        this.$emit(EventManageCode.treeCheckChange, this.curChecked);
       }
     },
     // 点击选中节点
-    on_checkLayer(callback){
-      if(callback){
-        this.$on(EventManageCode.treeCheckChange,callback)
+    on_checkLayer(callback) {
+      if (callback) {
+        this.$on(EventManageCode.treeCheckChange, callback);
       }
     },
 
     // 节点展开
-    _nodeExpand(data,node){
+    _nodeExpand(data, node) {
       let checkeds = [];
-      debugger
+      debugger;
       this.curCheckedNode = data;
-      data.checked =true;
+      data.checked = true;
       if (data.type == "group") {
         this.curChecked = [];
         this.setUnChecked(this.treeNodes);
         _.each(data.children, (child) => {
           child.checked = data.checked;
           if (child.type == "group") {
-            if(data.checked){
+            if (data.checked) {
               this.$refs.tree.store.nodesMap[child.id].expanded = val;
             }
             this._change(data.checked, child, checkeds);
@@ -281,39 +278,36 @@ export default {
           }
         });
         this.curChecked = this.curChecked.concat(checkeds);
-        this.$emit(EventManageCode.treeCheckChange,this.curChecked)
+        this.$emit(EventManageCode.treeCheckChange, this.curChecked);
       }
-    },  
+    },
 
     // 设置其他根节点不选中
     setUnChecked(treeNodes) {
-     
       let parentNode = this.curCheckedNode;
-      while (this.getParentNode(parentNode.parentId, this.treeNodes)){
-          parentNode = this.getParentNode(parentNode.parentId, this.treeNodes)
+      while (this.getParentNode(parentNode.parentId, this.treeNodes)) {
+        parentNode = this.getParentNode(parentNode.parentId, this.treeNodes);
       }
-      _.each(treeNodes,(node) => {
-        if (node.id !=parentNode.id ) {
+      _.each(treeNodes, (node) => {
+        if (node.id != parentNode.id) {
           node.checked = false;
           if (node.type == "group") {
             this.$refs.tree.store.nodesMap[node.id].expanded = false;
             this.setUnChecked(node.children);
           }
         }
-       
       });
     },
-
 
     //  设置节点不选中
     setAllUnChecked(treeNodes) {
       treeNodes = treeNodes || this.treeNodes;
-      _.each(treeNodes,(node) => {
-          node.checked = false;
-          if (node.type == "group") {
-            this.$refs.tree.store.nodesMap[node.id].expanded = false;
-            this.setAllUnChecked(node.children);
-          }
+      _.each(treeNodes, (node) => {
+        node.checked = false;
+        if (node.type == "group") {
+          this.$refs.tree.store.nodesMap[node.id].expanded = false;
+          this.setAllUnChecked(node.children);
+        }
       });
     },
     // 设置选中展开
@@ -336,60 +330,73 @@ export default {
       return node;
     },
 
-
     // 获取目录树数据
-    getTreeNodes(){
+    getTreeNodes() {
       AxiosConfig.spatialdecision
-      .get(ServiceUrlConfig.firstDir_allDir)
-      .then((res)=>{
-        if(res.data.code == 200){
-         let treeNodes = [];
-         
-          this.treeNodes =  this.dealData(res.data.data,treeNodes);
-          this.$nextTick(()=>{
-            let firstNode = this.treeNodes[0]? this.treeNodes[0]:null
-          if(firstNode){
-            firstNode.checked = true;
-            this._change(true,firstNode)
+        .get(ServiceUrlConfig.firstDir_allDir)
+        .then((res) => {
+          if (res.data.code == 200) {
+            let treeNodes = [];
+
+            this.treeNodes = this.dealData(res.data.data, treeNodes);
+            this.$nextTick(() => {
+              let firstNode = this.treeNodes[0] ? this.treeNodes[0] : null;
+              if (firstNode) {
+                firstNode.checked = true;
+                this._change(true, firstNode);
+              }
+            });
           }
-          })
-         
-        }
-        
-      }).catch((error)=>{
-        
-        this.$message.warning("获取数据失败")
-      })
+        })
+        .catch((error) => {
+          this.$message.warning("获取数据失败");
+        });
     },
 
     // 处理数据
-    dealData(datas,treeNodes){
-      for(let idx = 0; idx < datas.length; idx++){
-      
-        let treeNode = _.cloneDeep(datas[idx])
-        treeNode.type = treeNode.children.length > 0?'group':'leaf'
+    dealData(datas, treeNodes) {
+      for (let idx = 0; idx < datas.length; idx++) {
+        let treeNode = _.cloneDeep(datas[idx]);
+        treeNode.type = treeNode.children.length > 0 ? "group" : "leaf";
         treeNode.checked = false;
         treeNode.children = null;
-        if(datas[idx].children.length > 0){
+        if (datas[idx].children.length > 0) {
           treeNode.children = [];
-          treeNode.children =  this.dealData(datas[idx].children,treeNode.children)
+          treeNode.children = this.dealData(
+            datas[idx].children,
+            treeNode.children
+          );
         }
-        treeNodes.push(treeNode)
+
+        // 创建图层layer对象
+        // let layerItemObj = window.BASE_CONFIG.polygonLayer1;
+        // let showTempLayerItem = null;
+        // if (idx == 0 && treeNode.type) {
+        //   if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
+        //     showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+        //   } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
+        //   } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
+        //     showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
+        //   } else if (layerItemObj.type === LayerCatalogItemType.wms) {
+        //     showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
+        //   }
+        //   treeNode.layerItem = showTempLayerItem;
+        // }
+        treeNodes.push(treeNode);
       }
+
       return treeNodes;
-    }
+    },
   },
 };
 </script>
 <style lang="less" scoped>
-
-
 .collapsePanel {
   .custom-tree-node {
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    padding:5px 0;
+    padding: 5px 0;
     .el-tree-node__content {
       margin-bottom: 5px;
     }

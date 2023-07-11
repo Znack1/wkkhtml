@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-05 16:35:51
+ * @LastEditTime: 2023-07-11 14:59:17
  * @input: no param
  * @out: no param
  */
@@ -17,7 +17,7 @@ window.BASE_CONFIG = {
 	"defaultToken": "d3182ea02e2a9c206f78d45793bb11ac",
 	"DefaultMapBaseLayerType": "Ter", // 默认加载地图底图类型Image,Vector,Ter
 	"map_view_init_centerPoint": [108.5525, 34.32],
-	"map_view_init_initLevel": 6,
+	"map_view_init_initLevel": 4,
 	"map_view_maxLevel": 23,
 	"map_view_minLevel": 2,
 	"canClickMapMinLevel": 7, // 地图要素可以点击的最小级别
@@ -58,6 +58,46 @@ window.BASE_CONFIG = {
 				"tileSchemeType": "tdt_4326",
 				"rendererSettings": null
 	}, // 尾矿库面图层
+
+	"polygonLayer1":{
+		"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
+				"name": "行政区",
+				"description": null,
+				"groupId": "",
+				"type": "vectorTile",
+				"defaultVisible": "true",
+				"opacity": "1.0",
+				"visibleMinLevel": "0",
+				"visibleMaxLevel": "22",
+				"token": null,
+				"extent": "",
+				"initLevel": "-1",
+				"tag": "",
+				"sort": "100",
+				"edition": null,
+				"metaDataItemString": "",
+				"serviceUrl": " http://223.71.70.150:9977/mapserviceweb/service/weikuangkudian/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=weikuangkudian&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+				"serviceName": "weikuangkudian",
+				"serviceEpsg": "EPSG:4326",
+				"styleJsonUrlContent":'',
+				"styleJsonUrl": "",
+				"sourceName": null,
+				"renderParamsString": "",
+				"showFieldsJsonString": "",
+				"filterName": null,
+				"tilematrixSuffix": null,
+				"nodeType": "item",
+				"createTime": "2023-06-21 14:14:41.625463",
+				"alias": null,
+				"checked": "false",
+				"fields": null,
+				"rendererSettingsString": "",
+				"styleName": "featuremap",
+				"tileSchemeType": "tdt_4326",
+				"rendererSettings": null
+	}, 
+
+
 	"statTypes": [
 		{
 			name: '行政区划', value: 'sheng', defalutHeader: [
