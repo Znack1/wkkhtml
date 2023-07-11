@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-25 16:10:23
+ * @LastEditTime: 2023-07-10 10:48:53
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -38,6 +38,7 @@
           :props="defaultProps"
           :render-after-expand="false"
           :expand-on-click-node="false"
+          @node-expand="_nodeExpand"
           accordion
           ref="tree"
         >
@@ -63,6 +64,7 @@
             >
             <div class="rightSwitch" @click.stop="">
               <el-switch
+                v-show="data.type == 'leaf'"
                 v-model="data.checked"
                 @change="
                   (val) => {
@@ -258,6 +260,31 @@ export default {
       }
     },
 
+    // 节点展开
+    _nodeExpand(data,node){
+      let checkeds = [];
+      debugger
+      this.curCheckedNode = data;
+      data.checked =true;
+      if (data.type == "group") {
+        this.curChecked = [];
+        this.setUnChecked(this.treeNodes);
+        _.each(data.children, (child) => {
+          child.checked = data.checked;
+          if (child.type == "group") {
+            if(data.checked){
+              this.$refs.tree.store.nodesMap[child.id].expanded = val;
+            }
+            this._change(data.checked, child, checkeds);
+          } else {
+            checkeds.push(child);
+          }
+        });
+        this.curChecked = this.curChecked.concat(checkeds);
+        this.$emit(EventManageCode.treeCheckChange,this.curChecked)
+      }
+    },  
+
     // 设置其他根节点不选中
     setUnChecked(treeNodes) {
      
@@ -372,7 +399,7 @@ export default {
     }
   }
 }
-/deep/ .el-tree-node__expand-icon {
-  pointer-events: none;
-  }
+// /deep/ .el-tree-node__expand-icon {
+//   pointer-events: none;
+//   }
 </style>

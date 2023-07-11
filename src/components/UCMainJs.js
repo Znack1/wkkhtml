@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-27 14:09:10
+ * @LastEditTime: 2023-07-08 10:15:58
  * @input: no param
  * @out: no param
  */
@@ -33,6 +33,7 @@ export class UCMainEventManager {
     this.printBtn = null; // 打印按钮
     this.editPoint = false; // 是否是编辑
     this.checkedNodes = [];
+    this.curStatData = []; // 当前右侧统计数据
   }
 
   /**
@@ -79,7 +80,7 @@ export class UCMainEventManager {
     this.ucLeftMenu.on_checkLayer((nodes) => {
       this.checkedNodes = nodes;
 
-      this.getPageData();
+      // this.getPageData();
 
     })
 
@@ -227,7 +228,6 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-
       let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
         let findItem = _.find(features,(fea)=>{
