@@ -425,7 +425,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                         mbsJson.rendererEx(JSON.parse(this.styleJsonUrlContent));
 
                     } else if (this.styleJsonUrl) {
-                        
+                        debugger
                         let mbsJson = new MapboxStyleJsonRenderer();
                         mbsJson.sourceLayerString = this.sourceName;
                         mbsJson.olVTLayer = olVtLayer;

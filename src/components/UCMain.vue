@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-27 15:12:37
+ * @LastEditTime: 2023-07-10 17:27:21
  * @input: no param
  * @out: no param
 -->
@@ -101,7 +101,7 @@ export default {
         value: "district",
         defalutHeader: [
           { name: "排名", props: "", width: 80 },
-          { name: "区域", props: "area", width: 120 },
+          { name: "区域", props: "area", width: 122 },
         ],
       }, // 当前统计类型
       statTypes: window.BASE_CONFIG.statTypes, // 统计类型
@@ -138,6 +138,9 @@ export default {
         this.curStat = this.statTypes[0];
         this.addLayerByUrl(this.curStat);
       }
+
+      // 添加尾矿库面图层
+      this.addLayerByPolygon(window.BASE_CONFIG.polygonLayer)
     },
 
     // 切换面板显隐
@@ -169,6 +172,23 @@ export default {
       }
       this.showTempLayerItem.defaultVisible = true;
       this.eventManager._changeLayerItemVisible(this.showTempLayerItem,true)
+
+    },
+
+     // 添加尾矿库面
+     addLayerByPolygon(layerItemObj) {
+      let showTempLayerItem = null;
+      if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
+        showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+      } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
+      } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
+       showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
+      } else if (layerItemObj.type === LayerCatalogItemType.wms) {
+       showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
+      }
+      if(!showTempLayerItem) return;
+      showTempLayerItem.defaultVisible = true;
+      this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
 
     },
 

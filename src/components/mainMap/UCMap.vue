@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 13:52:03
- * @LastEditTime: 2023-07-05 17:47:37
+ * @LastEditTime: 2023-07-10 11:24:16
  * @LastEditors: zkc
  -->
 <!--  -->
@@ -84,56 +84,56 @@ export default {
       this.$refs.ucOverlay.init();
 
       // 掩膜
-      AxiosConfig.publicJson("city.json").then((res) => {
-        var formatGeoJSON = new ol.format.GeoJSON({
-                featureProjection: "EPSG:4326"
-            });
-        // const boundFeature = new ol.format.GeoJSON().readFeatures(res.data);
-        //   // 剪裁
-        //   let wktOLReaderALL = new ol.format.WKT();
-        //   let boundWKTarr = res.data.features[0].geometry.coordinates[0],
-        //       boundWKT = 'POLYGON ((';
-        //       for (let i = 0; i < boundWKTarr.length; i++) {
-        //            boundWKT += boundWKTarr[i][0] + ' ' + boundWKTarr[i][1] + ','
-        //       }
-        //   boundWKT += boundWKTarr[0][0] + ' ' + boundWKTarr[0][1] + '))'
-        //   let boundPolygon = wktOLReaderALL.readFeature(boundWKT).getGeometry();
+      // AxiosConfig.publicJson("city.json").then((res) => {
+      //   var formatGeoJSON = new ol.format.GeoJSON({
+      //           featureProjection: "EPSG:4326"
+      //       });
+      //   // const boundFeature = new ol.format.GeoJSON().readFeatures(res.data);
+      //   //   // 剪裁
+      //   //   let wktOLReaderALL = new ol.format.WKT();
+      //   //   let boundWKTarr = res.data.features[0].geometry.coordinates[0],
+      //   //       boundWKT = 'POLYGON ((';
+      //   //       for (let i = 0; i < boundWKTarr.length; i++) {
+      //   //            boundWKT += boundWKTarr[i][0] + ' ' + boundWKTarr[i][1] + ','
+      //   //       }
+      //   //   boundWKT += boundWKTarr[0][0] + ' ' + boundWKTarr[0][1] + '))'
+      //   //   let boundPolygon = wktOLReaderALL.readFeature(boundWKT).getGeometry();
 
-        //   this.curMap.on('postcompose', (evt)=> {
-        //       this.createclip(evt.context, boundPolygon, this.curMap)
-        //   });
+      //   //   this.curMap.on('postcompose', (evt)=> {
+      //   //       this.createclip(evt.context, boundPolygon, this.curMap)
+      //   //   });
 
-        var features = formatGeoJSON.readFeatures(res.data);
-        var usaGeometry = features[0].getGeometry();
-        var fExtent = usaGeometry.getExtent();
-        // view.fit(fExtent);
-        var fillStyle = new ol.style.Fill({
-          color:'rgba(255, 255, 255, 0)',
-        });
-        var styleVC = new ol.style.Style({
-                fill: fillStyle
-       })
-       this.curMap.on("precompose", function (event) {
-            var ctx = event.context;
-            var pixelRatio = event.frameState.pixelRatio;
-            //For openlayers v6.0+:
-            // var vecCtx = ol.render.getVectorContext(event);
-            var vecCtx = event.vectorContext;
-            ctx.save();
-            vecCtx.setStyle(styleVC);
-            vecCtx.drawGeometry(usaGeometry);
-            // ctx.lineWidth = 5 * pixelRatio;
-            // ctx.strokeStyle = "rgba(0,0,0,0.5)";
-            // ctx.stroke();
-            ctx.clip();
-          });
-          //For openlayers v6.0+:
-          // osm.on('postrender', function (event) {
-            this.curMap.on("postcompose", function (event) {
-            var ctx = event.context;
-            ctx.restore();
-          });
-      });
+      //   var features = formatGeoJSON.readFeatures(res.data);
+      //   var feaGeometry = features[0].getGeometry();
+      //   var fExtent = feaGeometry.getExtent();
+      //   this.setMapExtent(fExtent)
+      //   var fillStyle = new ol.style.Fill({
+      //     color:'rgba(255, 255, 255, 0)',
+      //   });
+      //   var styleVC = new ol.style.Style({
+      //           fill: fillStyle
+      //  })
+      //  this.curMap.on("precompose", function (event) {
+      //       var ctx = event.context;
+      //       var pixelRatio = event.frameState.pixelRatio;
+      //       //For openlayers v6.0+:
+      //       // var vecCtx = ol.render.getVectorContext(event);
+      //       var vecCtx = event.vectorContext;
+      //       ctx.save();
+      //       vecCtx.setStyle(styleVC);
+      //       vecCtx.drawGeometry(feaGeometry);
+      //       // ctx.lineWidth = 5 * pixelRatio;
+      //       // ctx.strokeStyle = "rgba(0,0,0,0.5)";
+      //       // ctx.stroke();
+      //       ctx.clip();
+      //     });
+      //     //For openlayers v6.0+:
+      //     // osm.on('postrender', function (event) {
+      //       this.curMap.on("postcompose", function (event) {
+      //       var ctx = event.context;
+      //       ctx.restore();
+      //     });
+      // });
 
       this._initEvents();
     },
