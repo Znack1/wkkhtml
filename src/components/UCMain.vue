@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-11 14:25:42
+ * @LastEditTime: 2023-07-18 21:08:05
  * @input: no param
  * @out: no param
 -->
@@ -112,7 +112,7 @@ export default {
       ucSetting: {
         rightPanelVisiable: true,
       },
-      showTempLayerItem: new LayerCatalogItem(),
+      showTempLayerItems: new Array(),
     };
   },
   methods: {
@@ -164,21 +164,33 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
-      if(this.showTempLayerItem){
-        this.showTempLayerItem.defaultVisible = false;
-        this.eventManager._changeLayerItemVisible(this.showTempLayerItem,false)
+      if(this.showTempLayerItems){
+        _.each(this.showTempLayerItems,(showTempLayerItem)=>{
+         showTempLayerItem.defaultVisible = false;
+        this.eventManager._changeLayerItemVisible(showTempLayerItem,false)
+        })
+       
       }
-      let layerItemObj = curStat.service;
+     _.each(curStat.service,(service)=>{
+      let layerItemObj = service
+      let showTempLayerItem = null;
       if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
-        this.showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+       showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
       } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
       } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
-        this.showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
+        showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
       } else if (layerItemObj.type === LayerCatalogItemType.wms) {
-        this.showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
+        showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
       }
-      this.showTempLayerItem.defaultVisible = true;
-      this.eventManager._changeLayerItemVisible(this.showTempLayerItem,true)
+      showTempLayerItem.defaultVisible = true;
+      this.showTempLayerItems.push(showTempLayerItem)
+      if(curStat.value != window.BASE_CONFIG.statTypes[0].value){
+        this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
+      }
+      
+     })
+     let level = this.$refs.ucMap.getZoomLevel();
+     this.eventManager._on_zoomLevelChange_districtLayerVisibleChange(level)
 
     },
 

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-11 15:05:19
+ * @LastEditTime: 2023-07-18 21:39:22
  * @input: no param
  * @out: no param
  */
@@ -214,6 +214,7 @@ export class UCMainEventManager {
       if (self.isOpenTool) {
         return;
       }
+      debugger
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
@@ -237,7 +238,7 @@ export class UCMainEventManager {
       // 刷新地图右下角的比例尺
       let resolution = self.ucMap.getResolution();
       self.ucCustomMapScale.refreshScale(resolution);
-
+      self._on_zoomLevelChange_districtLayerVisibleChange(e);
     });
 
 
@@ -550,6 +551,39 @@ export class UCMainEventManager {
     }
 
   }
+
+   /**
+     *
+     * 地图级别改变时，行政区划图层显隐改变
+     */
+   _on_zoomLevelChange_districtLayerVisibleChange(level) {
+
+    if (this.ucMain.curStat.value !== window.BASE_CONFIG.statTypes[0].value) return;
+    //0-7级显示市、8级显示市县、8级以上显示县
+    if (level <= 7) {
+        // //城市隐藏
+        this.ucMain.showTempLayerItems[0].defaultVisible = true;
+        this.ucMain.showTempLayerItems[1].defaultVisible = false;
+        this.ucMain.showTempLayerItems[2].defaultVisible = false;
+        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], true);
+        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], false);
+        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
+        //县区显示
+       
+    } else if (level <= 12) {
+      this.ucMain.showTempLayerItems[0].defaultVisible = false;
+      this.ucMain.showTempLayerItems[1].defaultVisible = true;
+      this.ucMain.showTempLayerItems[2].defaultVisible = false;
+        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], false);
+        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], true);
+        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
+    } else if (level > 12) {
+      this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], false);
+      this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], false);
+      this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], true);
+    }
+}
+
 
 
 }

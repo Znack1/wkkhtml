@@ -425,11 +425,11 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                         mbsJson.rendererEx(JSON.parse(this.styleJsonUrlContent));
 
                     } else if (this.styleJsonUrl) {
-                        debugger
-                        let mbsJson = new MapboxStyleJsonRenderer();
-                        mbsJson.sourceLayerString = this.sourceName;
-                        mbsJson.olVTLayer = olVtLayer;
-                        mbsJson.renderer(this.styleJsonUrl);
+                        // debugger
+                        // let mbsJson = new MapboxStyleJsonRenderer();
+                        // mbsJson.sourceLayerString = this.sourceName;
+                        // mbsJson.olVTLayer = olVtLayer;
+                        // mbsJson.renderer(this.styleJsonUrl);
 
 
                     }
@@ -972,7 +972,6 @@ export class WmtsLayerItem extends LayerCatalogItem {
      * @return {*}
      */
     createOLLayers () {
-
         let wmtsUtility = new WMTSLayerUtility();
         wmtsUtility.epsg = this.epsg;
         wmtsUtility.formatName = this.formatName;
@@ -995,8 +994,8 @@ export class WmtsLayerItem extends LayerCatalogItem {
         }
         this.olLayer = wmtsOlVtLayer;
 
-        this.olLayer = new Array();
-        this.olLayer.push(this.olLayer);
+        this.olLayers = new Array();
+        this.olLayers.push(this.olLayer);
     }
 
 
@@ -1070,7 +1069,7 @@ export class WmtsLayerItem extends LayerCatalogItem {
         layerItem.tileGridResolutions = jsonObject.tileGridResolutions;
         layerItem.tileGridMatrixIds = jsonObject.tileGridMatrixIds;
         layerItem.tileSchemeType = jsonObject.tileSchemeType;
-        // layerItem.createOLLayers();
+        layerItem.createOLLayers();
         return layerItem;
     }
 

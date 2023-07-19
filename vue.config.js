@@ -1,3 +1,11 @@
+/*
+ * @Descripttion: 
+ * @version: 
+ * @Author: zkc
+ * @Date: 2023-05-04 16:33:32
+ * @LastEditors: zkc
+ * @LastEditTime: 2023-07-13 14:25:21
+ */
 const { defineConfig } = require('@vue/cli-service')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
 const webpack = require('webpack')
@@ -13,6 +21,13 @@ module.exports = defineConfig({
     port: 9011, // 端口号
     https: false, // https:{type:Boolean}
     open: true, //配置自动启动预览器
+    client: {
+      webSocketURL: 'ws://0.0.0.0:6103/ws',
+    },
+    headers: {
+      'Access-Control-Allow-Origin': '*',
+    }
+
   },
 
   configureWebpack: {

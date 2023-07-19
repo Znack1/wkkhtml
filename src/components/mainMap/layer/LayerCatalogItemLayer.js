@@ -6,7 +6,7 @@ import { WMTSLayerUtility } from "../../../utility/ol/WMTSLayerUtilityJs";
 /*
  * @Author: your name
  * @Date: 2020-03-05 17:39:41
- * @LastEditTime: 2023-06-26 14:25:55
+ * @LastEditTime: 2023-07-13 10:43:55
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /html/src/components/mainMap/layer/LayerCatalogItemLayer.js
@@ -32,7 +32,7 @@ export class LayerCatalogItemLayer {
 
             layerItem.setLayersVisible(layerItem.defaultVisible);
             // remove移除图层
-            layerItem.removeLayers(this.curMap);
+            // layerItem.removeLayers(this.curMap);
 
 
             //如果可见，将该图层在最前面显示
