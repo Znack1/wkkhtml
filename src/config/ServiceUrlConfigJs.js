@@ -3,7 +3,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-17 15:07:49
- * @LastEditTime: 2023-05-31 10:13:15
+ * @LastEditTime: 2023-07-20 21:28:55
  * @LastEditors: zkc
  */
 
@@ -82,4 +82,5 @@ ServiceUrlConfig.point_allPoint="/point/allPoint" ; // 获取所有点位
 ServiceUrlConfig.firstDir_allDir = "/firstDir/allDir" ;// 获取左上目录树
 ServiceUrlConfig.nextDir_allInformation = "nextDir/allInformation"; // 左下目录树
 ServiceUrlConfig.detatil_findOne = "/detatil/findOne" // 获取要素详情
+ServiceUrlConfig.point_quantityStatistics = "/point/quantityStatistics" // 各省、流域的数量统计和经纬度
 

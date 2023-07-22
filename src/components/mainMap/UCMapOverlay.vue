@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 15:57:10
  * @LastEditors: zkc
- * @LastEditTime: 2023-05-31 11:16:19
+ * @LastEditTime: 2023-07-21 14:58:20
  * @input: no param
  * @out: no param
 -->
@@ -68,7 +68,7 @@ export default {
       let divMapOverlayElement = document.getElementById("divMapOverlay");
 
       if (!this.$refs.ucStatOverlay) {
-        this.clearOverlays();
+        this.clearOverlays('countOverlay',false);
       }
 
       // 无属性则不显示
@@ -108,18 +108,32 @@ export default {
     /**
      * 清除地图所有overlays
      */
-    clearOverlays() {
+    clearOverlays(overType,boolean) {
       let overlayCollections = this.curMap.getOverlays();
       let overlays = new Array();
       if (overlayCollections) {
         overlays = overlayCollections.getArray();
       }
-
+     
       let tempOverlay = null;
       for (let tempIndex = 0; tempIndex < overlays.length; tempIndex++) {
         tempOverlay = overlays[tempIndex];
-        this.curMap.removeOverlay(tempOverlay);
-        tempIndex = tempIndex - 1;
+        let properties = tempOverlay.get("overlyType")
+        if(overType && boolean){
+           if(properties == overType){
+            this.curMap.removeOverlay(tempOverlay);
+            tempIndex = tempIndex - 1;
+           }
+        }else if(overType && !boolean){
+          if(properties != overType){
+            this.curMap.removeOverlay(tempOverlay);
+            tempIndex = tempIndex - 1;
+           }
+        }else{
+          this.curMap.removeOverlay(tempOverlay);
+          tempIndex = tempIndex - 1;
+        }
+       
       }
     },
 

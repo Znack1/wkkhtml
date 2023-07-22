@@ -12,6 +12,9 @@ import { BaseLayerConfig } from '../../../config/BaseLayerConfig.js';
 import { DrawGeometryLayer } from './DrawGeometryLayer'
 import { LayerCatalogItemLayer } from './LayerCatalogItemLayer.js';
 import { POISearchLayer } from './POISearchLayer'
+import { SelectLayer } from './SelectLayer'
+import { DataCountLayer } from './DataCountLayer'
+
 /**
  * 图层管理
  */
@@ -29,6 +32,8 @@ export class LayerManager {
         this.drawGeometryLayer = new DrawGeometryLayer();
         this.layerItemLayer = new LayerCatalogItemLayer();
         this.poiLayer = new POISearchLayer();
+        this.datacountLayer = new DataCountLayer();
+        this.selectLayer = new SelectLayer();
     }
 
 
@@ -45,7 +50,8 @@ export class LayerManager {
         this.drawGeometryLayer.curMap = this.currentMap;
         this.layerItemLayer.curMap = this.currentMap;
         this.poiLayer.curMap = this.currentMap;
-
+        this.selectLayer.curMap = this.currentMap;
+        this.datacountLayer.curMap = this.currentMap
         // this.baseLayer.showVisibleLayer(MapBaseLayerType.Vector);
         this.baseLayer.showVisibleLayer(window.BASE_CONFIG.DefaultMapBaseLayerType);
         

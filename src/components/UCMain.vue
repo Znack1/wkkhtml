@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-18 21:08:05
+ * @LastEditTime: 2023-07-21 14:11:30
  * @input: no param
  * @out: no param
 -->
@@ -136,9 +136,9 @@ export default {
         MapTools.mapEventCode.River,
         // MapTools.mapEventCode.DrawPolygon,
         // MapTools.mapEventCode.Location,
-        MapTools.mapEventCode.MeasureLine,
-        MapTools.mapEventCode.MeasureArea,
-        MapTools.mapEventCode.ClearMap,
+        // MapTools.mapEventCode.MeasureLine,
+        // MapTools.mapEventCode.MeasureArea,
+        // MapTools.mapEventCode.ClearMap,
       ];
       this.$refs.ucMapTool.init(toolFlag, MapTools.mapEventCode.District);
       if (this.statTypes.length > 0) {
@@ -167,8 +167,10 @@ export default {
       if(this.showTempLayerItems){
         _.each(this.showTempLayerItems,(showTempLayerItem)=>{
          showTempLayerItem.defaultVisible = false;
-        this.eventManager._changeLayerItemVisible(showTempLayerItem,false)
+          this.eventManager._changeLayerItemVisible(showTempLayerItem,false)
         })
+
+        this.showTempLayerItems = [];
        
       }
      _.each(curStat.service,(service)=>{
@@ -182,15 +184,19 @@ export default {
       } else if (layerItemObj.type === LayerCatalogItemType.wms) {
         showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
       }
+      // if(showTempLayerItem.olVtLayers.length > 0){
+      //   _.each(showTempLayerItem.olVtLayers,(layer))
+      // }
       showTempLayerItem.defaultVisible = true;
       this.showTempLayerItems.push(showTempLayerItem)
+      this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
       if(curStat.value != window.BASE_CONFIG.statTypes[0].value){
-        this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
+        showTempLayerItems.setLayersVisible(false);
       }
       
      })
-     let level = this.$refs.ucMap.getZoomLevel();
-     this.eventManager._on_zoomLevelChange_districtLayerVisibleChange(level)
+    //  let level = this.$refs.ucMap.getZoomLevel();
+    //  this.eventManager._on_zoomLevelChange_districtLayerVisibleChange(level)
 
     },
 

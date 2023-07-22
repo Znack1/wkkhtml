@@ -6,7 +6,7 @@ import { WMTSLayerUtility } from "../../../utility/ol/WMTSLayerUtilityJs";
 /*
  * @Author: your name
  * @Date: 2020-03-05 17:39:41
- * @LastEditTime: 2023-07-13 10:43:55
+ * @LastEditTime: 2023-07-21 14:33:08
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /html/src/components/mainMap/layer/LayerCatalogItemLayer.js
@@ -32,7 +32,8 @@ export class LayerCatalogItemLayer {
 
             layerItem.setLayersVisible(layerItem.defaultVisible);
             // remove移除图层
-            // layerItem.removeLayers(this.curMap);
+            debugger
+            layerItem.removeLayers(this.curMap);
 
 
             //如果可见，将该图层在最前面显示
@@ -58,64 +59,65 @@ export class LayerCatalogItemLayer {
                     layerArray.insertAt(layerArray.getArray().length, olVtLayer);
                 }
 
-                this.curMap.renderSync();
+                // this.curMap.renderSync();
 
 
-            }
-        } else {
-            // else代码没意义
-            if (layerItem.type === LayerCatalogItemType.vectorTile) {
-
-                let olVtLayers = layerItem.olLayers;
-
-                let olVtLayer = null;
-                for (let tempIndex = 0; tempIndex < olVtLayers.length; tempIndex++) {
-                    
-                    olVtLayer = olVtLayers[tempIndex];
-                    // //设置排序属性项
-                    if (layerItem.sort) {
-                        olVtLayer.set(LayerCatalogItem.sortFieldName, layerItem.sort);
-                    }
-                    //追加到最后
-                    this.curMap.addLayer(olVtLayer, true);
-                }
-
-
-
-            } else if (layerItem.type === LayerCatalogItemType.wfs) {
-
-
-            } else if (layerItem.type === LayerCatalogItemType.wmts) {
-                
-                let wmtsUtility = new WMTSLayerUtility();
-                wmtsUtility.epsg = layerItem.epsg;
-                wmtsUtility.formatName = layerItem.formatName;
-                wmtsUtility.matrixSetName = layerItem.matrixSetName;
-                wmtsUtility.serviceName = layerItem.serviceName;
-                wmtsUtility.tileGridExtent = layerItem.tileGridExtent;
-                wmtsUtility.tileGridMatrixIds = layerItem.tileGridMatrixIds;
-                wmtsUtility.tileGridOrigin = layerItem.tileGridOrigin;
-                wmtsUtility.tileGridResolutions = layerItem.tileGridResolutions;
-                wmtsUtility.tileSize = layerItem.tileSize;
-                wmtsUtility.wmtsUrl = layerItem.wmtsUrl;
-                wmtsUtility.token = layerItem.token;
-
-                let wmtsOlVtLayer = wmtsUtility.createWmtsLayer();
-
-                wmtsOlVtLayer.setOpacity(layerItem.opacity);
-                wmtsOlVtLayer.setVisible(layerItem.defaultVisible);
-                if (layerItem.sort) {
-                    wmtsOlVtLayer.set(LayerCatalogItem.sortFieldName, layerItem.sort);
-                }
-                layerItem.olLayer = wmtsOlVtLayer;
-
-                layerItem.olLayers = new Array();
-                layerItem.olLayers.push(layerItem.olLayer);
-
-                //追加到最后
-                this.curMap.addLayer(wmtsOlVtLayer, true);
             }
         }
+        //  else {
+        //     // else代码没意义
+        //     if (layerItem.type === LayerCatalogItemType.vectorTile) {
+
+        //         let olVtLayers = layerItem.olLayers;
+
+        //         let olVtLayer = null;
+        //         for (let tempIndex = 0; tempIndex < olVtLayers.length; tempIndex++) {
+                    
+        //             olVtLayer = olVtLayers[tempIndex];
+        //             // //设置排序属性项
+        //             if (layerItem.sort) {
+        //                 olVtLayer.set(LayerCatalogItem.sortFieldName, layerItem.sort);
+        //             }
+        //             //追加到最后
+        //             this.curMap.addLayer(olVtLayer, true);
+        //         }
+
+
+
+        //     } else if (layerItem.type === LayerCatalogItemType.wfs) {
+
+
+        //     } else if (layerItem.type === LayerCatalogItemType.wmts) {
+                
+        //         let wmtsUtility = new WMTSLayerUtility();
+        //         wmtsUtility.epsg = layerItem.epsg;
+        //         wmtsUtility.formatName = layerItem.formatName;
+        //         wmtsUtility.matrixSetName = layerItem.matrixSetName;
+        //         wmtsUtility.serviceName = layerItem.serviceName;
+        //         wmtsUtility.tileGridExtent = layerItem.tileGridExtent;
+        //         wmtsUtility.tileGridMatrixIds = layerItem.tileGridMatrixIds;
+        //         wmtsUtility.tileGridOrigin = layerItem.tileGridOrigin;
+        //         wmtsUtility.tileGridResolutions = layerItem.tileGridResolutions;
+        //         wmtsUtility.tileSize = layerItem.tileSize;
+        //         wmtsUtility.wmtsUrl = layerItem.wmtsUrl;
+        //         wmtsUtility.token = layerItem.token;
+
+        //         let wmtsOlVtLayer = wmtsUtility.createWmtsLayer();
+
+        //         wmtsOlVtLayer.setOpacity(layerItem.opacity);
+        //         wmtsOlVtLayer.setVisible(layerItem.defaultVisible);
+        //         if (layerItem.sort) {
+        //             wmtsOlVtLayer.set(LayerCatalogItem.sortFieldName, layerItem.sort);
+        //         }
+        //         layerItem.olLayer = wmtsOlVtLayer;
+
+        //         layerItem.olLayers = new Array();
+        //         layerItem.olLayers.push(layerItem.olLayer);
+
+        //         //追加到最后
+        //         this.curMap.addLayer(wmtsOlVtLayer, true);
+        //     }
+        // }
 
         let allLayers = this.curMap.getLayers();
         OLLayerUtility.ascLayer(allLayers, LayerCatalogItem.sortFieldName);

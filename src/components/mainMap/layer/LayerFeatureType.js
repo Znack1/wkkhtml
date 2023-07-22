@@ -25,6 +25,9 @@ export const LayerFeatureType = {
     select_feature: 'select_feature', // 选中图形
 
     treeLayerFeature:'treeLayerFeature', // 图层点
+
+    dataCountFeature:'dataCountFeature',// 统计点位
+
     /**
      * 通过要素类型查找要素
      * @param {*} source 

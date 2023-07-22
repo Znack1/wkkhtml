@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-18 21:39:22
+ * @LastEditTime: 2023-07-22 10:02:22
  * @input: no param
  * @out: no param
  */
@@ -35,24 +35,9 @@ export class UCMainEventManager {
     this.editPoint = false; // 是否是编辑
     this.checkedNodes = [];
     this.curStatData = []; // 当前右侧统计数据
-    this.dataColumn = [
-      {
-        name: ['监测点1'],
-        x: 116.4575803581078, y: 40.04054437977018,
-        value: [100]
-      },
-      {
-        name: ['监测点2'],
-        x: 109.069956,
-        y: 27.757735,
-        value: [8]
-      }, {
-        name: ['监测点3'],
-        x: 109.162517,
-        y: 27.671774,
-        value: [5]
-      },
-    ];
+    this.datas = []; // 当前统计数据
+    this.pointDatas = null; // 当前点位数据
+    this.showType = 'count';
   }
 
   /**
@@ -71,9 +56,6 @@ export class UCMainEventManager {
     this._addUCLeftMenuListener();
 
     this._addZoomControlListener();
-
-    // 添加echart图表
-    this.addColumnChart()
 
   }
 
@@ -100,15 +82,16 @@ export class UCMainEventManager {
   _addUCLeftMenuListener() {
     let self = this;
     this.ucLeftMenu.on_checkLayer((nodes) => {
+      debugger
       this.checkedNodes = nodes;
-      _.each(nodes, (node) => {
-        if (node.layerItem) {
-          this._changeLayerItemVisible(node.layerItem, true)
-        }
+      // _.each(nodes, (node) => {
+      //   if (node.layerItem) {
+      //     this._changeLayerItemVisible(node.layerItem, true)
+      //   }
 
-      })
+      // })
 
-      // this.getPageData();
+      this.getPageData();
 
     })
 
@@ -121,7 +104,7 @@ export class UCMainEventManager {
       if (!layerItem) return;
 
       //清除弹窗
-      self.ucMap.clearOverlays();
+      self.ucMap.clearOverlays('countOverlay',false);
       self._changeLayerItemVisible(
         layerItem,
         layerItem.defaultVisible
@@ -150,32 +133,51 @@ export class UCMainEventManager {
       let params = {
         type: this.checkedNodes[0].parentId,
         twoType: _.map(this.checkedNodes, "name"),
-        qvbie: this.ucMain.curStat.value || ''
+        qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly':'xzq'
       }
       self.ucMain.loading = true;
-      AxiosConfig.spatialdecision
-        .post(ServiceUrlConfig.point_allPoint, params)
+      // AxiosConfig.spatialdecision
+      //   .post(ServiceUrlConfig.point_allPoint, params)
+      //   .then((res) => {
+      //     self.ucMain.loading = false;
+
+      //     let datas = res.data.data.pointEntities;
+      //     self.ucMap.layerMgr.poiLayer.clear();
+      //     // 通过key分类
+      //     let groupByKey = _.groupBy(datas, typekey)
+      //     let initDatas = [];
+
+      //     _.each(groupByKey, (group, key) => {
+      //       initDatas.push({
+      //         features: group,
+      //         img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
+      //         selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
+      //       })
+      //     })
+
+      //     self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+
+      //     // 更新右侧面板
+      //     self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
+      //   }).catch((error) => {
+      //     self.ucMain.loading = false;
+
+      //   })
+      // params = {
+      //   type: this.ucMain.curStat.value == 'ssly' ? 'ssly':'xzq'
+      // }
+       AxiosConfig.spatialdecision
+        .post(ServiceUrlConfig.point_quantityStatistics, params)
         .then((res) => {
           self.ucMain.loading = false;
-
-          let datas = res.data.data.pointEntities;
-          self.ucMap.layerMgr.poiLayer.clear();
-          // 通过key分类
-          let groupByKey = _.groupBy(datas, typekey)
-          let initDatas = [];
-
-          _.each(groupByKey, (group, key) => {
-            initDatas.push({
-              features: group,
-              img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
-              selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
-            })
-          })
-
-          self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+          debugger
+          self.datas = res.data.data;
+          // self.ucMap.layerMgr.datacountLayer.clear();
+          self.addColumnChart()
+          // self.ucMap.layerMgr.datacountLayer.addMarkers(datas);
 
           // 更新右侧面板
-          self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
+          // self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
         }).catch((error) => {
           self.ucMain.loading = false;
 
@@ -210,26 +212,32 @@ export class UCMainEventManager {
   _addUCMapListener() {
     let self = this;
     // 点图点击 
-    this.ucMap.on_mapClick(function (e) {
+    this.ucMap.on_mapClick( (e)=> {
       if (self.isOpenTool) {
         return;
       }
-      debugger
+
+      
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-
-      let level = self.ucMap.getZoomLevel();
+      let properties = features[0].getProperties();
+      let findItem = _.find(features, (fea) => {
+        let properties = fea.getProperties();
+        return properties.featureType == LayerFeatureType.treeLayerFeature
+      })
+      if(!findItem &&( properties.layer == 'sheng' || properties.layer == 'shi' || properties.layer == 'xian')){
+        // let gj = new ol.format.GeoJSON().writeGeometry(features[0].getGeometry())
+        
+        this.ucMap.layerMgr.selectLayer.addFeature(features[0]);
+      }else if(findItem){
+        let level = self.ucMap.getZoomLevel();
       if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
-        let findItem = _.find(features, (fea) => {
-          let properties = fea.getProperties();
-          return properties.featureType == LayerFeatureType.treeLayerFeature
-        })
-        if (findItem) {
           self.twinklePoint(findItem)
-        }
       }
-      self._on_showOverlay(features, e.coordinate);
+        self._on_showOverlay(features, e.coordinate);
+      }
+      
 
     });
 
@@ -252,7 +260,7 @@ export class UCMainEventManager {
     // 鼠标在地图上移动时
     this.ucMap.on_mapPointerMove(function (e) {
       //清除地图上的overlay
-
+return;
       // self.ucMap.layerMgr.selectLayer.clear();
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
@@ -361,7 +369,7 @@ export class UCMainEventManager {
           break;
         case MapTools.mapEventCode.ClearMap:
           self.ucMap.layerMgr.drawGeometryLayer.clear();
-          self.ucMap.clearOverlays();
+          self.ucMap.clearOverlays('countOverlay',false);
           self.ucMap.layerMgr.clear();
           // 清除目录树选中数据
           self.ucLeftMenu.$refs.ucLeftPanel.setAllUnChecked();
@@ -427,7 +435,7 @@ export class UCMainEventManager {
     let feature = features[0];
     let properties = feature.getProperties();
     if (properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid) {
-      this.ucMap.clearOverlays();
+      this.ucMap.clearOverlays('countOverlay',false);
       let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
       overlay.type = MapOverlayType.featureAttriInfo;
@@ -496,47 +504,21 @@ export class UCMainEventManager {
     return guid;
   }
   // 添加echart图表
-  addColumnChart() {   //向点位添加柱状图的方法
+  addColumnChart(datas) {   //向点位添加柱状图的方法
     let self = this;
+    this.showType = 'count';
     var html = '';
-    for (var i = 0; i < self.dataColumn.length; i++) {
+    this.ucMap.clearOverlays('countOverlay',true);
+    for (var i = 0; i < self.datas.length; i++) {
       //1、循环每一条数据，生成id不同的div，
       //2、获取到该div，将柱状图添加上去，
       //3、 new Overlay，将每个柱状图添加到对应的点位上去
-      var d = self.dataColumn[i];
+      var d =  self.datas[i];
       // var pt = new ol.proj.fromLonLat([d.x, d.y]);
       var domid = "chart" + self.guid();    //生成不同的id
-      html += "<div id='" + domid + "' style='width: 35px;height:200px;margin-left: -18px;margin-bottom: -22px;'></div>"
+      html += "<div id='" + domid + "' style='margin-left: -20px;margin-bottom: -30px;display: flex;flex-direction: column;align-items: center;'><div style='color:#323232;font-size:16px'>" + d.sheng+ "</div><div style='padding: 8px;background: rgba(0,97 ,255 ,0.3);border-radius: 50%;'><div style='width: 40px;height: 40px;background:#0061ff;border-radius: 50%;color: white;line-height: 40px;font-size:12px;font-weight:600'>" + d.count + "</div></div></div>"
       self.ucMain.chart.innerHTML = html;    //self.chart为HTML里的柱状图容器，
-      // 创建树状图
-      var option = {};
-      var myChart = echarts.init(document.getElementById(domid));
-
-      option = {
-        color: ['#c23531',],
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
-        },
-        xAxis: {
-          name: '监测点名称',
-          data: d.name,
-          show: false
-        },
-        yAxis: {
-          max: '10',
-          name: '浓度单位（mg/kg）',
-          show: false
-        },
-        series: [{
-          name: '汞浓度(mg/kg)',
-          type: 'bar',
-          data: d.value
-        }]
-      };
-      myChart.setOption(option);
+    
       //将柱状图添加到指定点位上去
       var chart = new ol.Overlay({
         id: domid,
@@ -545,12 +527,25 @@ export class UCMainEventManager {
         offset: [0, 5],
         stopEvent: false  //overlay也支持滚珠放大缩小
       });
+      chart.set("overlyType","countOverlay")
       this.ucMap.curMap.addOverlay(chart,true);
       //self.map是在mounted里new Map出来的，按openlayer官网操作即可，
-      chart.setPosition([d.x, d.y]);
+      chart.setPosition([d.zxjd, d.zxwd]);
     }
 
   }
+
+  // 取消echarts
+removeEcharts () {
+  
+  
+  // 弹出层销毁
+  if (this.overlay) {
+    // 设置位置undefined可达到隐藏清除弹出框
+    this.overlay.setPosition(undefined)
+    this.overlay = null
+  }
+}  
 
    /**
      *
@@ -560,27 +555,54 @@ export class UCMainEventManager {
 
     if (this.ucMain.curStat.value !== window.BASE_CONFIG.statTypes[0].value) return;
     //0-7级显示市、8级显示市县、8级以上显示县
-    if (level <= 7) {
+    if (level <=5) {
         // //城市隐藏
-        this.ucMain.showTempLayerItems[0].defaultVisible = true;
-        this.ucMain.showTempLayerItems[1].defaultVisible = false;
-        this.ucMain.showTempLayerItems[2].defaultVisible = false;
-        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], true);
-        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], false);
-        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
+        if(this.ucMain.showTempLayerItems[0]){
+          this.ucMain.showTempLayerItems[0].setLayersVisible(true);
+        }
+        if(this.ucMain.showTempLayerItems[1]){
+          this.ucMain.showTempLayerItems[1].setLayersVisible(false);
+        }
+        if(this.ucMain.showTempLayerItems[2]){
+          this.ucMain.showTempLayerItems[2].setLayersVisible(false);
+        }
+        // this.ucMain.showTempLayerItems[0]. = true;
+        // this.ucMain.showTempLayerItems[1].defaultVisible = false;
+        // this.ucMain.showTempLayerItems[2].defaultVisible = false;
+        // this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], true);
+        // this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], false);
+        // this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
         //县区显示
        
-    } else if (level <= 12) {
-      this.ucMain.showTempLayerItems[0].defaultVisible = false;
-      this.ucMain.showTempLayerItems[1].defaultVisible = true;
-      this.ucMain.showTempLayerItems[2].defaultVisible = false;
-        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], false);
-        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], true);
-        this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
-    } else if (level > 12) {
-      this._changeLayerItemVisible( this.ucMain.showTempLayerItems[0], false);
-      this._changeLayerItemVisible( this.ucMain.showTempLayerItems[1], false);
-      this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], true);
+    } else if (level <= 7) {
+      if(this.ucMain.showTempLayerItems[0]){
+        this.ucMain.showTempLayerItems[0].setLayersVisible(false);
+      }
+      if(this.ucMain.showTempLayerItems[1]){
+        this.ucMain.showTempLayerItems[1].setLayersVisible(true);
+      }
+      if(this.ucMain.showTempLayerItems[2]){
+        this.ucMain.showTempLayerItems[2].setLayersVisible(false);
+      }
+    } else if (level > 7) {
+      if(this.ucMain.showTempLayerItems[0]){
+        this.ucMain.showTempLayerItems[0].setLayersVisible(false);
+      }
+      if(this.ucMain.showTempLayerItems[1]){
+        this.ucMain.showTempLayerItems[1].setLayersVisible(false);
+      }
+      if(this.ucMain.showTempLayerItems[2]){
+        this.ucMain.showTempLayerItems[2].setLayersVisible(false);
+      }
+    }
+
+    // 级别区间显示不同数据
+    if(level > 6 && this.showType == 'count'){
+      this.ucMap.clearOverlays('countOverlay',true);
+      this.showType = 'point'
+    }else if(level <= 6  && this.showType == 'point'){
+     
+      this.addColumnChart();
     }
 }
 
