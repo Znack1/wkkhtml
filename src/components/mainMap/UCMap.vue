@@ -82,26 +82,7 @@ export default {
 
       this.$refs.ucOverlay.curMap = this.curMap;
       this.$refs.ucOverlay.init();
-        // 点击事件监听器
-        this.curMap.on('click',  (event)=> {
-            // 获取点击位置的要素
-            this.curMap.forEachFeatureAtPixel(event.pixel, function (feature) {
-                // 高亮要素：修改要素样式
-                debugger
-                const highlightedStyle = new ol.style.Style({
-                    fill: new ol.style.Fill({
-                        color: 'rgba(255, 255, 0, 0.6)', // 设置高亮的填充颜色
-                    }),
-                    stroke: new ol.style.Stroke({
-                        color: 'rgba(255, 0, 0, 1)', // 设置高亮的边框颜色
-                        width: 2,
-                    }),
-                });
-
-                // 设置要素的样式为高亮样式
-                feature.setStyle(highlightedStyle);
-            });
-        });
+       
       // 掩膜
       // AxiosConfig.publicJson("city.json").then((res) => {
       //   var formatGeoJSON = new ol.format.GeoJSON({

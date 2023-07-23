@@ -73,6 +73,83 @@ export default {
   },
 
   methods: {
+
+    updateChart(datas, curStat){
+      debugger
+      if(!datas){
+        let barObj = {
+          data: [],
+        };
+        this.$refs.ucBarXComponent.initChart(barObj);
+        return;
+      }
+      let barObj = {
+          data: [],
+          color:['#158DFD','#9BC5F1']
+        };
+        datas= _.sortBy(datas, (o) => {
+          return parseFloat(o.sort);
+        });
+        _.each(datas, (n, key) => {
+          barObj.data.push({
+            value: n.value,
+            name: n.name,
+            type: "统计",
+          });
+        });
+        this.$refs.ucBarXComponent.initChart(barObj);
+    },
+
+    // 更新table
+    updateTable(datas, curStat){
+      if(!datas){
+        this.$refs.ucDistributionTable.update([], []);
+        return;
+      }
+      if (datas) {
+        let idx = 0;
+        let tableDatas = new Array();
+        datas = _.sortBy(datas,(o)=>{
+          return -parseFloat(o.sort)
+        });
+        let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
+        if (curStat) {
+          headers = _.cloneDeep(curStat.defalutHeader);
+        }
+
+        // 解析数据
+        _.each(datas, (map) => {
+          let temp = {
+            name: map.name,
+          };
+
+          map.list = _.sortBy(map.list,(o)=>{
+            return parseFloat(o.id)
+        });
+          // {name:'区域',props:'area',width:120}
+          _.each(map.list, (l, index) => {
+            if (idx == 0) {
+              headers.push({
+                name: l.dengji,
+                props: "prop" + index,
+              });
+            }
+
+            temp["prop" + index] = l.number;
+          });
+          idx++;
+
+          tableDatas.push(temp);
+        });
+     
+        _.each(tableDatas,(d,index)=>{
+          d.idx = (index+1)
+        })
+        this.$refs.ucDistributionTable.update(tableDatas, headers);
+      }
+    
+    },
+
     /**
      * 初始化
      */
@@ -92,7 +169,7 @@ export default {
           data: [],
           color:['#158DFD','#9BC5F1']
         };
-        data.map = _.sortBy(data.map, (o) => {
+        datas= _.sortBy(data.map, (o) => {
           return parseFloat(o.sort);
         });
         _.each(data.map, (n, key) => {

@@ -32,7 +32,6 @@ export class LayerCatalogItemLayer {
 
             layerItem.setLayersVisible(layerItem.defaultVisible);
             // remove移除图层
-            debugger
             layerItem.removeLayers(this.curMap);
 
 

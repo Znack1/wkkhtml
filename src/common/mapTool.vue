@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-24 17:08:40
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-07 16:44:56
+ * @LastEditTime: 2023-07-22 11:13:20
  * @input: no param
  * @out: no param
 -->
@@ -19,7 +19,8 @@
       v-show="toolItem.show"
       v-for="(toolItem, toolItemIndex) in mapTools"
       :key="toolItemIndex"
-    ></i>
+    >{{ toolItem.name }}</i>
+
   </div>
 </template>
 
@@ -105,17 +106,19 @@ export default {
 .mapTool {
   i {
     font-size: 16px;
-    border-bottom: 1px solid rgb(0, 0, 0);
+    border-bottom: 1px solid rgba(0,0,0,0.5);
     cursor: pointer;
     display: inline-block;
-    background: rgb(0, 0, 0);
-    height: 32px;
-    width:32px;
+    background: rgba(0,0,0,0.5);
     line-height: 32px;
     color: white;
-    border-radius: 16px;
     margin: 0 3px;
     text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+   &::before{
+    margin-right:5px;
+   }
   }
   .editMapBtn:hover,
   .editMapBtn.active {

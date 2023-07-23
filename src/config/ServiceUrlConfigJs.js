@@ -3,7 +3,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-17 15:07:49
- * @LastEditTime: 2023-07-20 21:28:55
+ * @LastEditTime: 2023-07-22 11:37:08
  * @LastEditors: zkc
  */
 
@@ -78,9 +78,10 @@ ServiceUrlConfig.subject_base_url = null;
 ServiceUrlConfig.datasourceinfo_fullparseshapefile = null;
 
 ServiceUrlConfig.layercataloggroup_getlayercatalog = "/layercataloggroup/getlayercatalog"; // 查询目录树
-ServiceUrlConfig.point_allPoint="/point/allPoint" ; // 获取所有点位
+ServiceUrlConfig.point_point="/point/points" ; // 获取所有点位
 ServiceUrlConfig.firstDir_allDir = "/firstDir/allDir" ;// 获取左上目录树
 ServiceUrlConfig.nextDir_allInformation = "nextDir/allInformation"; // 左下目录树
 ServiceUrlConfig.detatil_findOne = "/detatil/findOne" // 获取要素详情
 ServiceUrlConfig.point_quantityStatistics = "/point/quantityStatistics" // 各省、流域的数量统计和经纬度
-
+ServiceUrlConfig.point_echars = "/point/echars" // 获取右上图表数据
+ServiceUrlConfig.point_findForm = "point/findForm" // 获取右下表格

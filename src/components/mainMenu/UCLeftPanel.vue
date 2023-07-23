@@ -260,7 +260,6 @@ export default {
     // 节点展开
     _nodeExpand(data, node) {
       let checkeds = [];
-      debugger;
       this.curCheckedNode = data;
       data.checked = true;
       if (data.type == "group") {

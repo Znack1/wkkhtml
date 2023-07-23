@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-21 14:11:30
+ * @LastEditTime: 2023-07-23 21:01:32
  * @input: no param
  * @out: no param
 -->
@@ -190,8 +190,8 @@ export default {
       showTempLayerItem.defaultVisible = true;
       this.showTempLayerItems.push(showTempLayerItem)
       this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
-      if(curStat.value != window.BASE_CONFIG.statTypes[0].value){
-        showTempLayerItems.setLayersVisible(false);
+      if(curStat.value == window.BASE_CONFIG.statTypes[0].value){
+        showTempLayerItem.setLayersVisible(false);
       }
       
      })
@@ -276,9 +276,7 @@ export default {
     position: absolute;
     left: 340px;
     top: 10px;
-    border-radius: 21px;
-    padding: 5px 10px;
-    background: rgba(0, 0, 0, 0.4);
+ 
   }
 
   .leftpanel {
