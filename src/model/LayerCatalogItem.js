@@ -433,6 +433,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
 
                     }
+                 
                     // let jsonToStyle = new EzJson2StyleMapbox(olVtLayer, this.styleJsonUrl, this.renderParamsString);
                 // }
             }
@@ -465,7 +466,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
     createSelectedOLLayer (curMap) {
         if (!this.olLayers || this.olLayers.length == 0) return;
-
+debugger
         let olVtLayer = null;
         for (let tempIndex = 0; tempIndex < this.olLayers.length; tempIndex++) {
             olVtLayer = this.olLayers[tempIndex];
@@ -508,6 +509,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
 
     selectedStyleFunction (feature) {
+        debugger
         if (!feature) return;
         let featureId = feature.getId();
         if (featureId == null || featureId == undefined) return;
@@ -535,6 +537,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
     }
 
     initSelectedStyle (featureType) {
+        debugger
         let selectedStyle = null;
 
         if (featureType === "Polygon") {
@@ -1346,9 +1349,9 @@ export class LayerCatalogItems extends CustomArray {
         let tempItem = null;
         for (let tempIndex = 0; tempIndex < this.objects.length; tempIndex++) {
             tempItem = this.objects[tempIndex];
-            if (!tempItem || !tempItem.sourceName) continue;
+            if (!tempItem || !tempItem.serviceName) continue;
 
-            if (tempItem.sourceName.toLowerCase() === layerSourceName.toLowerCase()) {
+            if (tempItem.serviceName.toLowerCase() === layerSourceName.toLowerCase()) {
                 findItem = tempItem;
                 break;
             }

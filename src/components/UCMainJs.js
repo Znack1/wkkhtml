@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-23 21:10:57
+ * @LastEditTime: 2023-07-27 21:54:42
  * @input: no param
  * @out: no param
  */
@@ -19,7 +19,7 @@ import AxiosConfig from "@/config/AxiosConfigJs";
 import draw_marker from "../assets/images/draw_marker.png";
 import _ from 'lodash'
 import { LayerFeatureType } from './mainMap/layer/LayerFeatureType.js';
-import { LayerCatalogItem, LayerCatalogItems } from '@/model/LayerCatalogItem.js';
+import { LayerCatalogItem, LayerCatalogItems ,VectorTileLayerItem} from '@/model/LayerCatalogItem.js';
 import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
 import echarts from "echarts";
 export class UCMainEventManager {
@@ -40,6 +40,10 @@ export class UCMainEventManager {
     this.showType = 'count'; // count 数量统计   point 点位显示
     // 获取分类key
     this.typekey = null;
+    this.curCityInfo = {
+      cityLevel:1,
+      cityName:'全国'
+    }
   }
 
   /**
@@ -131,7 +135,7 @@ export class UCMainEventManager {
         self.typekey = window.BASE_CONFIG.useFieldConfig[rootParent.name];
         this.ucRightPanel.firstName = rootParent.name
       }
-
+      
       // 获取右侧数据
       this.getRightPanel()
 
@@ -196,7 +200,7 @@ export class UCMainEventManager {
 
   // 获取右测数据
   getRightPanel() {
-
+    this.ucRightPanel.initTitle(this.curCityInfo)
     // 更新echart数据
     let chartParams = {
       type: this.checkedNodes[0].parentId,
@@ -316,9 +320,35 @@ export class UCMainEventManager {
         return properties.featureType == LayerFeatureType.treeLayerFeature
       })
       if (!findItem && (properties.layer == 'sheng' || properties.layer == 'shi' || properties.layer == 'xian')) {
-        // let gj = new ol.format.GeoJSON().writeGeometry(features[0].getGeometry())
+          // 更新echart数据
+          this.curCityInfo = {
+            cityLevel:properties.layer == 'sheng'?2:(properties.layer == 'shi'?3:4),
+            cityName:properties.layer == 'sheng'?properties['省名']:(properties.layer == 'shi'?properties['市']:properties['县']  ),
+          }
+          this.ucRightPanel.initTitle(this.curCityInfo)
 
-        this.ucMap.layerMgr.selectLayer.addFeature(features[0]);
+          let chartParams = {
+            type: this.checkedNodes[0].parentId,
+            twoType: _.map(this.checkedNodes, "name"),
+            "rank": properties.layer,
+            "shengName": properties['省名'],
+            "shiName":properties['市']
+          }   
+            this.getRightEechart(chartParams)
+
+            // 更新table数据
+            let params = {
+              type: this.checkedNodes[0].parentId,
+              twoType: _.map(this.checkedNodes, "name"),
+              qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'xzq',
+              "rank": properties.layer,
+              "shengName": properties['省名'],
+              "shiName":properties['市']
+            }
+          this.getRightTableDatas(params)
+
+            //选中要素高亮显示
+            self._selectedFeatureHighlight(features[0]);
       } else if (findItem) {
         let level = self.ucMap.getZoomLevel();
         if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
@@ -371,6 +401,53 @@ export class UCMainEventManager {
 
     });
   }
+
+  
+/**
+     * 选中要素高亮
+     * @param {*} feature 
+     */
+_selectedFeatureHighlight(feature) {
+
+  //清除选中图层
+  LayerCatalogItems.visibleItems.clearSelectedFeatures();
+
+
+
+
+  if (!feature) return;
+
+  let featureId = feature.getId();
+  if (!featureId) return;
+
+  let layerCatalogItem = null;
+
+  let properties = feature.getProperties();
+  if (properties && properties["layer"]) {
+      let layerName = properties["layer"];
+
+      let tempItem = null;
+      for (let tempIndex = 0; tempIndex < this.ucMain.showTempLayerItems.length; tempIndex++) {
+        tempItem = this.ucMain.showTempLayerItems[tempIndex];
+          if (!tempItem || !tempItem.serviceName) continue;
+
+          if (tempItem.serviceName.toLowerCase() === layerName.toLowerCase()) {
+            layerCatalogItem = tempItem;
+              break;
+          }
+      }
+  }
+
+  if (!layerCatalogItem || !layerCatalogItem.olLayers || !layerCatalogItem.defaultVisible) return;
+
+  //如果是矢量切片图层，选中要素
+  if (layerCatalogItem instanceof VectorTileLayerItem) {
+      layerCatalogItem.clearSelectedFeatures();
+      let selectedIds = new Array();
+      selectedIds.push(featureId);
+      layerCatalogItem.updateSelectedFeatures(selectedIds);
+  }
+}
 
   // 地图要素闪烁
   twinklePoint(feature, count) {
@@ -605,7 +682,7 @@ export class UCMainEventManager {
       var d = self.datas[i];
       // var pt = new ol.proj.fromLonLat([d.x, d.y]);
       var domid = "chart" + self.guid();    //生成不同的id
-      html += "<div id='" + domid + "' style='margin-left: -20px;margin-bottom: -30px;display: flex;flex-direction: column;align-items: center;'><div style='color:#323232;font-size:16px'>" + d.sheng + "</div><div style='padding: 8px;background: rgba(0,97 ,255 ,0.3);border-radius: 50%;'><div style='width: 40px;height: 40px;background:#0061ff;border-radius: 50%;color: white;line-height: 40px;font-size:12px;font-weight:600'>" + d.count + "</div></div></div>"
+      html += "<div id='" + domid + "' style='margin-left: -20px;margin-bottom: -30px;display: flex;flex-direction: column;align-items: center;'><div style='color:#323232;font-size:16px'>" + d.name + "</div><div style='padding: 8px;background: rgba(0,97 ,255 ,0.3);border-radius: 50%;'><div style='width: 40px;height: 40px;background:#0061ff;border-radius: 50%;color: white;line-height: 40px;font-size:12px;font-weight:600'>" + d.count + "</div></div></div>"
       self.ucMain.chart.innerHTML = html;    //self.chart为HTML里的柱状图容器，
 
       //将柱状图添加到指定点位上去

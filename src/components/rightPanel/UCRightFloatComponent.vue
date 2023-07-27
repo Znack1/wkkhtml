@@ -31,7 +31,7 @@
          
         </div>
         <div class="bottomContent tableContent">
-          <UCPanel Title="数据统计" iconClass="icon-chart-trend-full"></UCPanel>
+          <UCPanel :Title="secondName" iconClass="icon-chart-trend-full"></UCPanel>
           <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
             <UCDistributionTable
             style="width: 100%; height: calc(100% - 50px);"
@@ -56,6 +56,7 @@ export default {
   data() {
     return {
       firstName:"监管等级",
+      secondName:'数据统计',
       // ucsetting: {
       //   tabelName: "图表统计", // 项目分布表格名称
       //   tableNameYear: "数据统计", // 历年表格名称
@@ -73,7 +74,12 @@ export default {
   },
 
   methods: {
+    initTitle(curCityInfo){
+      this.firstName="监管等级("  + curCityInfo.cityName +")";
+      this.secondName="数据统计("  + curCityInfo.cityName +")";
+    },
 
+    // 更新数据
     updateChart(datas, curStat){
       debugger
       if(!datas){

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-11 15:52:03
+ * @LastEditTime: 2023-07-26 20:25:44
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -51,7 +51,7 @@
             <el-button v-show="data.type==nodeType.group  && options.showIcon" type="text" size="small" icon="iconfont icon-NzmV1nzmGrid"></el-button> -->
             <img
               style="margin-right: 5px"
-              v-show="data.type == 'leaf'"
+              
               :src="data.img"
               width="18px"
               height="18px"
