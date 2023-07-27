@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-27 21:54:42
+ * @LastEditTime: 2023-07-27 21:56:34
  * @input: no param
  * @out: no param
  */
@@ -755,7 +755,7 @@ if (level > 6 && this.showType == 'count') {
         this.ucMain.showTempLayerItems[1].setLayersVisible(false);
       }
       if (this.ucMain.showTempLayerItems[2]) {
-        this.ucMain.showTempLayerItems[2].setLayersVisible(false);
+        this.ucMain.showTempLayerItems[2].setLayersVisible(true);
       }
     }
 
