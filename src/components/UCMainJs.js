@@ -4,13 +4,11 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-27 21:56:34
+ * @LastEditTime: 2023-08-01 15:33:06
  * @input: no param
  * @out: no param
  */
 import { MapTools } from '../common/maptoolJs.js'
-import { FieldItems } from "../model/FieldItemJs";
-import { BaseLayerConfig } from '../config/BaseLayerConfig.js';
 import { DrawGeometryPartType } from '../utility/ol/DrawGeometryUtilityJs.js';
 import { GeometryExtentUtility } from '../utility/ol/GeometryExtentUtility.js';
 import { MapBaseLayerType } from './mainMap/layer/MapBaseLayer';
@@ -42,8 +40,13 @@ export class UCMainEventManager {
     this.typekey = null;
     this.curCityInfo = {
       cityLevel:1,
-      cityName:'全国'
-    }
+      sheng:null,
+            shi:null,
+            xian:null
+    };
+    // 当前要素信息
+    this.curFeaInfo = null;
+    this.curFeatrue = null;
   }
 
   /**
@@ -205,7 +208,7 @@ export class UCMainEventManager {
     let chartParams = {
       type: this.checkedNodes[0].parentId,
       twoType: _.map(this.checkedNodes, "name"),
-      "rank": null,
+      "shiName": null,
       "shengName": null,
 
     }
@@ -214,10 +217,26 @@ export class UCMainEventManager {
     let params = {
       type: this.checkedNodes[0].parentId,
       twoType: _.map(this.checkedNodes, "name"),
-      qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'xzq',
-      "rank": null,
+      qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'sheng',
       "shengName": null,
       "shiName": null,
+    }
+    if(this.ucMain.curStat.value == 'ssly'){
+      params.qvbie = 'ssly'
+    }else{
+      switch(this.curCityInfo.cityLevel){
+          case 1:
+            params.qvbie = 'sheng'
+            break;
+            case 2:
+            params.qvbie = 'shi'
+            break;
+            case 3:
+            params.qvbie = 'xian'
+            break;
+        }
+        params.shengName = this.curCityInfo.sheng;
+        params.shiName = this.curCityInfo.shi
     }
     this.getRightTableDatas(params)
 
@@ -304,6 +323,12 @@ export class UCMainEventManager {
    */
   _addUCMapListener() {
     let self = this;
+
+    // 详情
+    this.ucMap.on_showDetail((info)=>{
+      this.ucMain.show();
+    })
+
     // 点图点击 
     this.ucMap.on_mapClick((e) => {
       if (self.isOpenTool) {
@@ -314,16 +339,26 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-      let properties = features[0].getProperties();
+      
       let findItem = _.find(features, (fea) => {
-        let properties = fea.getProperties();
-        return properties.featureType == LayerFeatureType.treeLayerFeature
+        let tempProperties = fea.getProperties();
+        return tempProperties.featureType == LayerFeatureType.treeLayerFeature
       })
-      if (!findItem && (properties.layer == 'sheng' || properties.layer == 'shi' || properties.layer == 'xian')) {
-          // 更新echart数据
+
+      
+
+      if (!findItem) {
+        let districtFea = this.findDistrictFeature(features,this.getTypes(),0)
+        // && (properties.layer == 'sheng' || properties.layer == 'shi' || properties.layer == 'xian')
+        if(!districtFea) return;
+        let properties = districtFea.getProperties();  
+        // 更新echart数据
+          
           this.curCityInfo = {
             cityLevel:properties.layer == 'sheng'?2:(properties.layer == 'shi'?3:4),
-            cityName:properties.layer == 'sheng'?properties['省名']:(properties.layer == 'shi'?properties['市']:properties['县']  ),
+            sheng:properties['sheng'],
+            shi:properties['shi'],
+            xian:properties['xian']
           }
           this.ucRightPanel.initTitle(this.curCityInfo)
 
@@ -331,8 +366,8 @@ export class UCMainEventManager {
             type: this.checkedNodes[0].parentId,
             twoType: _.map(this.checkedNodes, "name"),
             "rank": properties.layer,
-            "shengName": properties['省名'],
-            "shiName":properties['市']
+            "shengName": properties['sheng'],
+            "shiName":properties['shi']
           }   
             this.getRightEechart(chartParams)
 
@@ -341,20 +376,40 @@ export class UCMainEventManager {
               type: this.checkedNodes[0].parentId,
               twoType: _.map(this.checkedNodes, "name"),
               qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'xzq',
-              "rank": properties.layer,
-              "shengName": properties['省名'],
-              "shiName":properties['市']
+              "shengName": null,
+              "shiName":null
+            }
+            if(this.ucMain.curStat.value == 'ssly'){
+            params.qvbie = 'ssly';
+            }else{
+              switch(this.curCityInfo.cityLevel){
+                case 1:
+                  params.qvbie = 'sheng'
+                  break;
+                  case 2:
+                  params.qvbie = 'shi'
+                  break;
+                  case 3:
+                  params.qvbie = 'xian'
+                  break;
+              }
+              params.shengName = this.curCityInfo.sheng;
+              params.shiName = this.curCityInfo.shi
             }
           this.getRightTableDatas(params)
+            // 定位放大地图
+            let extent = districtFea.getExtent();
+            let curExtent = GeometryExtentUtility.expandExtent(extent, 2);
+            self.ucMap.setMapExtent(curExtent);
 
-            //选中要素高亮显示
-            self._selectedFeatureHighlight(features[0]);
+          //选中要素高亮显示
+          self._selectedFeatureHighlight(districtFea);
       } else if (findItem) {
         let level = self.ucMap.getZoomLevel();
         if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
           self.twinklePoint(findItem)
         }
-        self._on_showOverlay(features, e.coordinate);
+        self._on_showOverlay([findItem], e.coordinate);
       }
 
 
@@ -402,6 +457,38 @@ export class UCMainEventManager {
     });
   }
 
+  // 获取图层名称数组
+  getTypes(){
+   let layerNames= ["xian","shi","sheng"];
+   let level = this.ucMap.getZoomLevel();
+  if(level > window.BASE_CONFIG.showDistrictLevel[2]){
+      return layerNames
+  }else if(level <= window.BASE_CONFIG.showDistrictLevel[0]){
+    return layerNames.slice(2)
+  }else{
+    return layerNames.slice(1)
+  }
+}
+
+  // 查找省市县按顺序
+  findDistrictFeature(features,types,idx){
+    if(types.length < idx){
+      return null
+    }
+    let findItem = _.find(features, (fea) => {
+      let tempProperties = fea.getProperties();
+      return tempProperties.layer ==types[idx]
+    })
+    if(findItem){
+      return findItem
+    }else{
+      findItem =  this.findDistrictFeature(features,types,idx+1);
+      if(findItem){
+        return findItem;
+      }
+    }
+    return findItem;
+  }
   
 /**
      * 选中要素高亮
@@ -411,9 +498,6 @@ _selectedFeatureHighlight(feature) {
 
   //清除选中图层
   LayerCatalogItems.visibleItems.clearSelectedFeatures();
-
-
-
 
   if (!feature) return;
 
@@ -513,8 +597,8 @@ _selectedFeatureHighlight(feature) {
           break;
         case MapTools.mapEventCode.ResetMap:
           //初始化地图中心点
-          self.ucMap.curMap.getView().setZoom(BaseLayerConfig.map_view_init_initLevel);
-          self.ucMap.curMap.getView().setCenter(BaseLayerConfig.map_view_init_centerPoint);
+          self.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);
+          self.ucMap.curMap.getView().setCenter(window.BASE_CONFIG.map_view_init_centerPoint);
           break;
         case MapTools.mapEventCode.ZoomIn:
           self.ucMap.plusZoomLevel();
@@ -613,10 +697,12 @@ _selectedFeatureHighlight(feature) {
         gid: properties.bindingObject.gid
       }
       this.ucMain.loading = true;
+      this.curFeatrue = feature;
       AxiosConfig.spatialdecision
         .get(ServiceUrlConfig.detatil_findOne, { params: params })
         .then((res) => {
           this.ucMain.loading = false;
+          this.curFeaInfo = res.data.data;
           overlay.properties = res.data.data || {};
           overlay.showFields = showFields;
 
@@ -718,7 +804,7 @@ if (level > 6 && this.showType == 'count') {
 }
     if (this.ucMain.curStat.value !== window.BASE_CONFIG.statTypes[0].value) return;
     //0-7级显示市、8级显示市县、8级以上显示县
-    if (level <= 5) {
+    if (level <= window.BASE_CONFIG.showDistrictLevel[0]) {
       // //城市隐藏
       if (this.ucMain.showTempLayerItems[0]) {
         this.ucMain.showTempLayerItems[0].setLayersVisible(true);
@@ -737,7 +823,7 @@ if (level > 6 && this.showType == 'count') {
       // this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
       //县区显示
 
-    } else if (level <= 7) {
+    } else if (level <=  window.BASE_CONFIG.showDistrictLevel[1]) {
       if (this.ucMain.showTempLayerItems[0]) {
         this.ucMain.showTempLayerItems[0].setLayersVisible(false);
       }
@@ -747,7 +833,7 @@ if (level > 6 && this.showType == 'count') {
       if (this.ucMain.showTempLayerItems[2]) {
         this.ucMain.showTempLayerItems[2].setLayersVisible(false);
       }
-    } else if (level > 7) {
+    } else if (level >  window.BASE_CONFIG.showDistrictLevel[2]) {
       if (this.ucMain.showTempLayerItems[0]) {
         this.ucMain.showTempLayerItems[0].setLayersVisible(false);
       }
@@ -763,5 +849,18 @@ if (level > 6 && this.showType == 'count') {
   }
 
 
+  // 返回全国数据
+  backCountryReset(){
+    this.curCityInfo = {
+      cityLevel:1,
+      sheng:null,
+      shi:null,
+      xian:null
+    };
+    LayerCatalogItems.visibleItems.clearSelectedFeatures();
+    this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);
+    this.ucMap.curMap.getView().setCenter(window.BASE_CONFIG.map_view_init_centerPoint);
+    this.getRightPanel();
 
+  }
 }

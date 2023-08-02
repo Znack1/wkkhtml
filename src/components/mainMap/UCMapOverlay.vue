@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 15:57:10
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-21 14:58:20
+ * @LastEditTime: 2023-08-01 09:09:46
  * @input: no param
  * @out: no param
 -->
@@ -45,6 +45,13 @@ export default {
 
   methods: {
     init() {},
+
+    on_showDetail(callback){
+      if(this.$refs.ucStatOverlay){
+        this.$refs.ucStatOverlay.on_more(callback)
+      }
+    
+    },
 
     showOverlay(overlayInfo) {
       let self = this;
@@ -102,6 +109,7 @@ export default {
         //设置overlay的显示位置
         overlayLayout.ucOverlay.setPosition(position);
         self.curMap.addOverlay(overlayLayout.ucOverlay, true);
+        self.curMap.getView().setCenter(position)
       });
     },
 

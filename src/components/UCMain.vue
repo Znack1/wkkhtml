@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-23 21:01:32
+ * @LastEditTime: 2023-08-01 22:15:53
  * @input: no param
  * @out: no param
 -->
@@ -12,19 +12,13 @@
   <div class="divContainer" v-loading="loading">
     <LeftMenu ref="ucLeftMenu" class="leftpanel"></LeftMenu>
 
-    <UCMap ref="ucMap"></UCMap>
+    <UCMap ref="ucMap" :id="'map'"></UCMap>
     <!-- 右侧控制端 -->
-    <UCBaseLayerSwitch
-      class="baseLayerSwitch"
-      ref="ucBaseLayerSwitch"
-      :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '10px' }"
-    ></UCBaseLayerSwitch>
+    <UCBaseLayerSwitch class="baseLayerSwitch" ref="ucBaseLayerSwitch"
+      :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '10px' }"></UCBaseLayerSwitch>
     <UCZoomControl class="divZoomCon" ref="ucZoomControl"></UCZoomControl>
     <!-- 比例尺，经纬度 -->
-    <UCCustomMapScale
-      ref="ucCustomMapScale"
-      class="divScale"
-    ></UCCustomMapScale>
+    <UCCustomMapScale ref="ucCustomMapScale" class="divScale"></UCCustomMapScale>
     <!-- <div
         class="close_btn"
         @click="_togglePanel"
@@ -32,11 +26,8 @@
       >
         {{ ucSetting.rightPanelVisiable ? "关闭列表" : "展开列表" }}
       </div> -->
-    <UCRightFloatComponent
-      :style="{ right: ucSetting.rightPanelVisiable ? '0px' : '-320px' }"
-      class="divRightLeftFloat"
-      ref="ucRightFloatComponent"
-    >
+    <UCRightFloatComponent :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '-320px' }" class="divRightLeftFloat"
+      ref="ucRightFloatComponent">
     </UCRightFloatComponent>
 
     <!-- 工具条 -->
@@ -45,12 +36,7 @@
     <!-- 图例 -->
     <div v-show="showLegend" class="legendBox">
       <div v-for="node in checkedNodes" :key="node.id" class="legendItem">
-        <img
-          style="margin-right: 5px"
-          :src="node.img"
-          width="18px"
-          height="18px"
-        />
+        <img style="margin-right: 5px" :src="node.img" width="18px" height="18px" />
         <span>{{ node.name }}</span>
       </div>
     </div>
@@ -59,6 +45,185 @@
 
     <!-- echart -->
     <div style="display: none;" id="echart" ref="chart"></div>
+
+    <!-- 返回全国 -->
+    <i @click="_backCountry" class="iconfont editMapBtn active icon-zuobiao">全国</i>
+
+    <el-dialog v-if="detailInfo" :title="detailInfo.mc" fullscreen :visible.sync="dialogVisible" width="100%"
+      :before-close="handleClose">
+      <div class="detail_content">
+        <div class="content_box">
+          <div class="box_title" style="text-align:left;padding:5px 0">基本信息</div>
+          <el-row :gutter="10" style="display:flex;">
+            <el-col :span="8">
+              <div class="infoItem">
+                <div class="itemName">尾款库名称：</div>
+                <div class="itemValue">{{ detailInfo.mc }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">生产状态：</div>
+                <div class="itemValue">{{ detailInfo.sczt }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">入库形式：</div>
+                <div class="itemValue">{{ detailInfo.rkxs }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">尾矿库等别：</div>
+                <div class="itemValue">{{ detailInfo.wkkdb }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">位置：</div>
+                <div class="itemValue">{{ detailInfo.wz }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">生成状况：</div>
+                <div class="itemValue">{{ detailInfo.sczk }}</div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="infoItem">
+                <div class="itemName">启用时间：</div>
+                <div class="itemValue">{{ detailInfo.qysj }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">主要矿种：</div>
+                <div class="itemValue">{{ detailInfo.zykz }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">设计全库容(万M3)：</div>
+                <div class="itemValue">{{ detailInfo.sjqkr }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">现状总坝高：</div>
+                <div class="itemValue">{{ detailInfo.xzzbg }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">监管等级：</div>
+                <div class="itemValue">{{ detailInfo.jgdj }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">环境敏感度：</div>
+                <div class="itemValue">{{ detailInfo.hjmgcd }}</div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <!-- <div style="width:80%;height:100%;background:blue">地图定位</div> -->
+              <UCMap  style="border:1px solid #bebeff;height:200px" :id="'mapEx'" ref="ucMapEx"></UCMap>
+            </el-col>
+          </el-row>
+          <div class="box_title" style="text-align:left;padding:5px 0">其他信息</div>
+          <el-row :gutter="10" style="display:flex;">
+            <el-col :span="8">
+              <div class="infoItem">
+                <div class="itemName">省：</div>
+                <div class="itemValue">{{ detailInfo.sheng }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">乡镇：</div>
+                <div class="itemValue">{{ detailInfo.xz }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">生产许可：</div>
+                <div class="itemValue">{{ detailInfo.aqscxk }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">环境管理人：</div>
+                <div class="itemValue">{{ detailInfo.hjglr }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">尾矿库回水：</div>
+                <div class="itemValue">{{ detailInfo.wkkhs }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">是否安装污：</div>
+                <div class="itemValue">{{ detailInfo.sfazw }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">所处区域及：</div>
+                <div class="itemValue">{{ detailInfo.scqyj }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">所属流域：</div>
+                <div class="itemValue">{{ detailInfo.ssly }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">排查情况：</div>
+                <div class="itemValue">{{ detailInfo.pcqk }}</div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="infoItem">
+                <div class="itemName">市：</div>
+                <div class="itemValue">{{ detailInfo.shi }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">中心经度：</div>
+                <div class="itemValue">{{ detailInfo.zxjd }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">运营管理单位：</div>
+                <div class="itemValue">{{ detailInfo.yygldw }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">联系电话：</div>
+                <div class="itemValue">{{ detailInfo.lxdh }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">尾矿水回水：</div>
+                <div class="itemValue">{{ detailInfo.wkshs }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">临近水源地：</div>
+                <div class="itemValue">{{ detailInfo.ljsyd }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">环境风险控：</div>
+                <div class="itemValue">{{ detailInfo.hjfxk }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">岩质及地质：</div>
+                <div class="itemValue">{{ detailInfo.yzjdz }}</div>
+              </div>
+            </el-col>
+            <el-col :span="8">
+              <div class="infoItem">
+                <div class="itemName">县：</div>
+                <div class="itemValue">{{ detailInfo.xian }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">中心维度：</div>
+                <div class="itemValue">{{ detailInfo.zxwd }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">社会信用代码：</div>
+                <div class="itemValue">{{ detailInfo.shxydm }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">现状全库容量：</div>
+                <div class="itemValue">{{ detailInfo.xzqkrl }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">是否为无主：</div>
+                <div class="itemValue">{{ detailInfo.sfwwz }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">距水源地最：</div>
+                <div class="itemValue">{{ detailInfo.jlsydz }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">环境监管等级：</div>
+                <div class="itemValue">{{ detailInfo.hjjgdj }}</div>
+              </div>
+              <div class="infoItem">
+                <div class="itemName">地下水状况：</div>
+                <div class="itemValue">{{ detailInfo.dxszk }}</div>
+              </div>
+            </el-col>
+          </el-row>
+        </div>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -96,7 +261,9 @@ export default {
   props: {},
   data() {
     return {
-      chart :  null, // echart容器
+      detailInfo: null,
+      dialogVisible: false,// 更多详情弹框
+      chart: null, // echart容器
       showLegend: false, // 是否显示图例
       loading: false,
       checkedNodes: [], // 当前图例数据
@@ -116,7 +283,41 @@ export default {
     };
   },
   methods: {
+
+    // 关闭更多详情弹框
+    handleClose() {
+      this.dialogVisible = false;
+    },
+
+    // 关闭更多详情弹框
+    show() {
+      this.dialogVisible = true;
+      this.detailInfo = this.eventManager.curFeaInfo;
+      this.$nextTick(() => {
+        if (this.$refs.ucMapEx) {
+          let mapOptions = {
+            indoor: false,
+            projection: "EPSG:3857",
+          };
+          this.$refs.ucMapEx.init(mapOptions, false);
+          debugger
+
+          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([this.eventManager.curFeatrue])
+          this.$refs.ucMapEx.curMap.getView().setZoom(11);
+          this.$refs.ucMapEx.curMap.getView().setCenter(this.eventManager.curFeatrue.getGeometry().getCoordinates());
+          // this.$refs.ucMapEx.layerMgr.drawGeometryLayer.addDrawPoint(JSON.parse(this.eventManager.curFeaInfo.geom))
+        }
+      })
+    },
+
+    // _backCountry
+    _backCountry() {
+      this.eventManager.backCountryReset();
+
+    },
+
     init() {
+
       if (this.$refs.ucMap) {
         let mapOptions = {
           indoor: false,
@@ -125,10 +326,10 @@ export default {
         this.$refs.ucMap.init(mapOptions, false);
       }
 
-       // 初始化dialog
-       DialogSystemJs.ucOpenDialog = this.$refs.ucPhotoDialog;
+      // 初始化dialog
+      DialogSystemJs.ucOpenDialog = this.$refs.ucPhotoDialog;
       //  echart容器
-       this.chart = this.$refs.chart
+      this.chart = this.$refs.chart
 
       this._initEvents();
       let toolFlag = [
@@ -164,56 +365,56 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
-      if(this.showTempLayerItems){
-        _.each(this.showTempLayerItems,(showTempLayerItem)=>{
-         showTempLayerItem.defaultVisible = false;
-          this.eventManager._changeLayerItemVisible(showTempLayerItem,false)
+      if (this.showTempLayerItems) {
+        _.each(this.showTempLayerItems, (showTempLayerItem) => {
+          showTempLayerItem.defaultVisible = false;
+          this.eventManager._changeLayerItemVisible(showTempLayerItem, false)
         })
 
         this.showTempLayerItems = [];
-       
+
       }
-     _.each(curStat.service,(service)=>{
-      let layerItemObj = service
+      _.each(curStat.service, (service) => {
+        let layerItemObj = service
+        let showTempLayerItem = null;
+        if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
+          showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+        } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
+        } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
+          showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
+        } else if (layerItemObj.type === LayerCatalogItemType.wms) {
+          showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
+        }
+        // if(showTempLayerItem.olVtLayers.length > 0){
+        //   _.each(showTempLayerItem.olVtLayers,(layer))
+        // }
+        showTempLayerItem.defaultVisible = true;
+        this.showTempLayerItems.push(showTempLayerItem)
+        this.eventManager._changeLayerItemVisible(showTempLayerItem, true)
+        if (curStat.value == window.BASE_CONFIG.statTypes[0].value) {
+          showTempLayerItem.setLayersVisible(false);
+        }
+
+      })
+      //  let level = this.$refs.ucMap.getZoomLevel();
+      //  this.eventManager._on_zoomLevelChange_districtLayerVisibleChange(level)
+
+    },
+
+    // 添加尾矿库面
+    addLayerByPolygon(layerItemObj) {
       let showTempLayerItem = null;
       if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
-       showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+        showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
       } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
       } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
         showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
       } else if (layerItemObj.type === LayerCatalogItemType.wms) {
         showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
       }
-      // if(showTempLayerItem.olVtLayers.length > 0){
-      //   _.each(showTempLayerItem.olVtLayers,(layer))
-      // }
+      if (!showTempLayerItem) return;
       showTempLayerItem.defaultVisible = true;
-      this.showTempLayerItems.push(showTempLayerItem)
-      this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
-      if(curStat.value == window.BASE_CONFIG.statTypes[0].value){
-        showTempLayerItem.setLayersVisible(false);
-      }
-      
-     })
-    //  let level = this.$refs.ucMap.getZoomLevel();
-    //  this.eventManager._on_zoomLevelChange_districtLayerVisibleChange(level)
-
-    },
-
-     // 添加尾矿库面
-     addLayerByPolygon(layerItemObj) {
-      let showTempLayerItem = null;
-      if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
-        showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
-      } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
-      } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
-       showTempLayerItem = WmtsLayerItem.fromJson(layerItemObj);
-      } else if (layerItemObj.type === LayerCatalogItemType.wms) {
-       showTempLayerItem = WmsLayerItem.fromJson(layerItemObj);
-      }
-      if(!showTempLayerItem) return;
-      showTempLayerItem.defaultVisible = true;
-      this.eventManager._changeLayerItemVisible(showTempLayerItem,true)
+      this.eventManager._changeLayerItemVisible(showTempLayerItem, true)
 
     },
 
@@ -272,11 +473,12 @@ export default {
   width: 100%;
   height: 100%;
   position: relative;
+
   .mapTool {
     position: absolute;
     left: 340px;
     top: 10px;
- 
+
   }
 
   .leftpanel {
@@ -327,6 +529,7 @@ export default {
     transition: all 0.5s;
     cursor: pointer;
   }
+
   .divZoomCon {
     position: absolute;
     left: 340px;
@@ -344,9 +547,116 @@ export default {
     background: #fff;
     border-radius: 10px;
     flex-direction: column;
+
     .legendItem {
       margin-bottom: 5px;
     }
   }
-}
-</style>
+
+  i {
+    font-size: 16px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
+    cursor: pointer;
+    display: inline-block;
+    background: rgba(0, 0, 0, 0.5);
+    line-height: 32px;
+    color: white;
+    margin: 0 3px;
+    text-align: center;
+    padding: 5px 10px;
+    border-radius: 5px;
+    position: absolute;
+    top: 10px;
+    right: 330px;
+
+    &::before {
+      margin-right: 5px;
+    }
+  }
+
+  .editMapBtn:hover,
+  .editMapBtn.active {
+    background: rgb(0, 183, 255);
+    color: white;
+
+    i {
+      color: white;
+    }
+  }
+
+  /deep/ .el-dialog__header {
+    padding: 20px 20px 10px;
+    text-align: left;
+    padding-left: 10%;
+    padding-bottom:0;
+  }
+  /deep/ .el-dialog__headerbtn{
+    right:10%
+  }
+
+  /deep/ .el-dialog__body {
+    padding: 10px 20px;
+    color: #606266;
+    font-size: 14px;
+    word-break: break-all;
+  }
+
+  /deep/ .el-dialog__title {
+    width: 100%;
+    height: 40px;
+    font-weight: bold;
+    text-align: left;
+    color: #3d81ef;
+    font-size: 18px;
+  }
+
+  .detail_content {
+    width: 80%;
+    margin: 0 auto;
+
+
+
+    .content_box {
+      padding: 10px;
+      background: #ffffff;
+      border-radius: 4px;
+      box-shadow: 0 0 10px 0 rgba(8, 20, 30, 0.50);
+
+      .box_title {
+        padding-left: 16px;
+        text-align: left;
+        border-bottom: 2px solid #8397d4;
+        ;
+        margin-bottom: 5px;
+
+        &::before {
+          content: "";
+          height: 20px;
+          width: 5px;
+          display: inline-block;
+          background: blue;
+          margin-right: 5px;
+          margin-left: 5px;
+          vertical-align: bottom;
+        }
+      }
+
+      .infoItem {
+        line-height: 20px;
+        color: #323232;
+        display: flex;
+        justify-content: flex-start;
+        padding:5px;
+
+        .itemName {
+          width: 140px;
+          text-align: right;
+              flex-shrink: 0;
+        }
+        .itemValue {
+    text-align: left; 
+        }
+      }
+    }
+  }
+}</style>

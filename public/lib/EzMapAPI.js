@@ -199,8 +199,8 @@ var ezMap = {
      * 取值范围：无限制
      * 默认值：无
      */
-    // CenterPoint: [12958207.8873,4826182.4452],
-    CenterPoint: [112.568,22.364],
+    CenterPoint: [12958207.8873,4826182.4452],
+    // CenterPoint: [112.568,22.364],
 
     /**
      * 参数说明：设置全图显示时地图显示范围
@@ -208,8 +208,8 @@ var ezMap = {
      * 取值范围：无限制
      * 默认值：无
      */
-    MapFullExtent: undefined,
-    //MapFullExtent: [116.264129,39.590339,116.564129,39.79],
+    // MapFullExtent: undefined,
+    MapFullExtent: [70,16.9,135,55],
 
     /**
      * 参数说明：设置地图初始显示级别

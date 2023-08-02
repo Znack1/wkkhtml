@@ -465,8 +465,8 @@ export class VectorTileLayerItem extends LayerCatalogItem {
     }
 
     createSelectedOLLayer (curMap) {
+        debugger
         if (!this.olLayers || this.olLayers.length == 0) return;
-debugger
         let olVtLayer = null;
         for (let tempIndex = 0; tempIndex < this.olLayers.length; tempIndex++) {
             olVtLayer = this.olLayers[tempIndex];
@@ -479,7 +479,7 @@ debugger
                     source: olVtLayer.getSource(),
                     style: this.selectedStyleFunction,
                 });
-
+                selectedOLVtLayer.set(LayerCatalogItem.sortFieldName,90);
                 this.selectedOLLayer = selectedOLVtLayer;
             }
         }
@@ -509,7 +509,6 @@ debugger
 
 
     selectedStyleFunction (feature) {
-        debugger
         if (!feature) return;
         let featureId = feature.getId();
         if (featureId == null || featureId == undefined) return;
@@ -537,7 +536,6 @@ debugger
     }
 
     initSelectedStyle (featureType) {
-        debugger
         let selectedStyle = null;
 
         if (featureType === "Polygon") {
@@ -545,6 +543,9 @@ debugger
                 stroke: new ol.style.Stroke({
                     color: 'red',
                     width: 4
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(255,255,0,0.3)',
                 })
             });
         } else if (featureType === "Polyline") {
@@ -594,6 +595,9 @@ debugger
                 stroke: new ol.style.Stroke({
                     color: 'red',
                     width: 4
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(255,255,0,0.01)',
                 })
             });
         } else if (geometryType === "LineString" || geometryType == "MultiLineString") {
@@ -615,7 +619,7 @@ debugger
 
             selectedStyle = new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: 'red',
+                    color: '#FCFF00',
                     width: 4
                 })
             });
@@ -635,7 +639,7 @@ debugger
                 image: new ol.style.Circle({
                     radius: 10,
                     fill: new ol.style.Fill({
-                        color: 'red'
+                        color: '#FCFF00',
                     })
                 })
             });

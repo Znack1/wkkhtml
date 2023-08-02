@@ -26,7 +26,7 @@
       </el-table-column>
     </el-table>
 
-    <div class="block" style="height: 32px">
+    <!-- <div class="block" style="height: 32px">
       <span class="demonstration"></span>
       <el-pagination
         @current-change="_paginationCurrentChangeHandler"
@@ -36,7 +36,7 @@
         :total="datas.length"
         :hide-on-single-page="true"
       ></el-pagination>
-    </div>
+    </div> -->
   </div>
 </template>
 
@@ -95,10 +95,9 @@ export default {
 
       this.ucsetting.pagination.curPageIndex = pageIndex;
 
-      var startIndex = this.ucsetting.pagination.pageSize * (pageIndex - 1);
-      var endIndex = this.ucsetting.pagination.pageSize * pageIndex - 1;
+    
       this.curDatas = [];
-      this.curDatas = this.datas.slice(startIndex, endIndex);
+      this.curDatas = this.datas;
       this.$nextTick(() => {
         this.$refs.table.doLayout();
       });

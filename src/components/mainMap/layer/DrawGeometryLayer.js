@@ -9,7 +9,7 @@ import { SystemConfig } from "../../../config/SystemConfig";
 /*
  * @Author: your name
  * @Date: 2019-07-11 11:17:45
- * @LastEditTime: 2022-11-17 14:50:17
+ * @LastEditTime: 2023-07-31 17:17:32
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /html/src/components/mainMap/layer/DrawGeometryLayer.js
@@ -51,10 +51,10 @@ export class DrawGeometryLayer {
         // tempPoiItem = drawGeometry;
 
         let tempCoordinate = drawGeometry.coordinates; // [tempPoiItem.x, tempPoiItem.y];
-        if (mapCRSCode.toLowerCase() !== drawGeometry.crsCode.toLowerCase()) {
+        if (mapCRSCode.toLowerCase() !== drawGeometry.crs.properties.name.toLowerCase()) {
             tempCoordinate = ol.proj.transform(
                 tempCoordinate,
-                drawGeometry.crsCode,
+                drawGeometry.crs.properties.name,
                 mapCRSCode
             );
         }

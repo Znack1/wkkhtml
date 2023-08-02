@@ -2,13 +2,13 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 13:52:03
- * @LastEditTime: 2023-07-10 11:24:16
+ * @LastEditTime: 2023-07-31 16:54:53
  * @LastEditors: zkc
  -->
 <!--  -->
 <template>
   <div class="div_map">
-    <div id="map" class="div_map"></div>
+    <div :id="id" class="div_map"></div>
 
     <UCMapOverlay ref="ucOverlay" v-show="false"></UCMapOverlay>
   </div>
@@ -38,6 +38,8 @@ export default {
     },
   },
 
+  props:['id'],
+
   data() {
     return {
       curMap: null,
@@ -62,12 +64,13 @@ export default {
   methods: {
     //初始化
     init(mapOptions, showMapControl) {
+      debugger
       //
       this.layerMgr = new LayerManager();
       //初始化底图配置
       this.layerMgr.initBaseLayerConfig();
 
-      let newMapControl = new EzMap("map", mapOptions);
+      let newMapControl = new EzMap(this.id, mapOptions);
 
       if (showMapControl) {
         newMapControl.showMapControl();
@@ -137,6 +140,17 @@ export default {
 
       this._initEvents();
     },
+
+
+    
+    on_showDetail(callback){
+      if(this.$refs.ucOverlay){
+        this.$refs.ucOverlay.on_showDetail(callback)
+      }
+    
+    },
+
+
     // 剪裁
     createclip(context, boundPolygon, map) {
       //裁剪

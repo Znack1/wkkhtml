@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-26 20:25:44
+ * @LastEditTime: 2023-08-01 22:36:28
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -52,7 +52,7 @@
             <img
               style="margin-right: 5px"
               
-              :src="data.img"
+              :src="(curCheckedNode &&curCheckedNode.id == data.id)?  data.selectImg:data.img"
               width="18px"
               height="18px"
             />
@@ -391,20 +391,29 @@ export default {
 </script>
 <style lang="less" scoped>
 .collapsePanel {
+ 
   .custom-tree-node {
     display: flex;
     align-items: center;
     justify-content: flex-start;
     padding: 5px 0;
-    .el-tree-node__content {
-      margin-bottom: 5px;
-    }
+  
     .rightSwitch {
       display: inline-block;
       margin-left: auto;
     }
   }
 }
+/deep/ .el-tree-node__content {
+      margin-bottom: 5px;
+      &:hover{
+        background:#5faeee;
+        .treeName{
+          color: #3636f5!important;
+        }  
+      }
+    }
+  
 // /deep/ .el-tree-node__expand-icon {
 //   pointer-events: none;
 //   }

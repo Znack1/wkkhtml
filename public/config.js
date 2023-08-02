@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-24 09:39:08
+ * @LastEditTime: 2023-08-01 21:52:08
  * @input: no param
  * @out: no param
  */
@@ -19,7 +19,7 @@ window.BASE_CONFIG = {
 	"map_view_init_centerPoint": [108.5525, 34.32],
 	"map_view_init_initLevel": 4,
 	"map_view_maxLevel": 23,
-	"map_view_minLevel": 2,
+	"map_view_minLevel": 4,
 	"canClickMapMinLevel": 7, // 地图要素可以点击的最小级别
 	"polygonLayer":{
 		"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
@@ -215,7 +215,7 @@ window.BASE_CONFIG = {
 					"rendererSettingsString": "",
 					"filterName": null,
 					"styleJsons": null,
-					"sort": 11,
+					"sort": 6,
 					"tilematrixSuffix": null,
 					"fieldItems": null,
 					"tilingScheme": null,
@@ -346,7 +346,7 @@ window.BASE_CONFIG = {
 					"rendererSettingsString": "",
 					"filterName": null,
 					"styleJsons": null,
-					"sort": 12,
+					"sort": 6,
 					"tilematrixSuffix": null,
 					"fieldItems": null,
 					"tilingScheme": null,
@@ -477,7 +477,7 @@ window.BASE_CONFIG = {
 					"rendererSettingsString": "",
 					"filterName": null,
 					"styleJsons": null,
-					"sort": 13,
+					"sort": 6,
 					"tilematrixSuffix": null,
 					"fieldItems": null,
 					"tilingScheme": null,
@@ -559,5 +559,6 @@ window.BASE_CONFIG = {
 		"尾矿库等别": "wkkdb",
 		"生产状况": "sczk",
 		"主要矿种": "zykz"
-	}
+	},
+	showDistrictLevel:[5,7,7] // 省最大级别，市最大级别，县最小级别
 };

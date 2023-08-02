@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 14:44:23
- * @LastEditTime: 2023-05-29 22:02:25
+ * @LastEditTime: 2023-07-31 09:23:22
  * @LastEditors: zkc
  */
 
@@ -14,7 +14,7 @@ import { LayerCatalogItemLayer } from './LayerCatalogItemLayer.js';
 import { POISearchLayer } from './POISearchLayer'
 import { SelectLayer } from './SelectLayer'
 import { DataCountLayer } from './DataCountLayer'
-
+import { DetailLayer } from './DetailLayer.js'
 /**
  * 图层管理
  */
@@ -34,6 +34,7 @@ export class LayerManager {
         this.poiLayer = new POISearchLayer();
         this.datacountLayer = new DataCountLayer();
         this.selectLayer = new SelectLayer();
+        this.detailLayer = new DetailLayer()
     }
 
 
@@ -45,13 +46,14 @@ export class LayerManager {
         //获取map默认的marker图层
         let layers = this.currentMap.getMarkerLayers().getLayers().getArray();
         this.markerLayer = OLLayerUtility.findByLayerAttribute(layers, 'name', 'marker_default');
-
+        // this.markerLayer.set('sort',90);
         this.baseLayer.curMap = this.currentMap; 
         this.drawGeometryLayer.curMap = this.currentMap;
         this.layerItemLayer.curMap = this.currentMap;
         this.poiLayer.curMap = this.currentMap;
         this.selectLayer.curMap = this.currentMap;
         this.datacountLayer.curMap = this.currentMap
+        this.detailLayer.curMap = this.currentMap;
         // this.baseLayer.showVisibleLayer(MapBaseLayerType.Vector);
         this.baseLayer.showVisibleLayer(window.BASE_CONFIG.DefaultMapBaseLayerType);
         

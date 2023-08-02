@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-17 15:13:50
- * @LastEditTime: 2021-04-29 23:36:55
+ * @LastEditTime: 2023-07-28 21:39:49
  * @LastEditors: zkc
  */
 import { SystemConfig } from '../../config/SystemConfig'
@@ -272,7 +272,7 @@ export class GeometryExtentUtility {
         let minY = oriExtent[1];
         let oriCenterX = (oriExtent[0] + oriExtent[2]) / 2.0;
         let oriCenterY = (oriExtent[1] + oriExtent[3]) / 2.0;
-        let offsetX = (460 / SystemConfig.bodyWidth) * (oriExtent[2] - oriExtent[0]);
+        let offsetX = (20 / SystemConfig.bodyWidth) * (oriExtent[2] - oriExtent[0]);
         let halfXDistance = oriCenterX - minX;
         let halfYDistance = oriCenterY - minY;
         let expandMinX = oriCenterX - halfXDistance * expandScale - offsetX * expandScale;
