@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 10:01:24
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-07 16:40:55
+ * @LastEditTime: 2023-08-02 16:30:10
  * @input: no param
  * @out: no param
 -->
@@ -56,16 +56,16 @@ export default {
   padding: 0 20px;
   height: 60px;
   width: 100%;
-  background: #075cba;
-
+  // background: #075cba;
+  background: url("../assets/images/header_bg.png") left center no-repeat;
   .divLogoBox {
     margin-top: 10px;
     float: left;
     color: white;
     height: 40px;
     // padding-left: 50px;
-    // background: url("../assets/images/logo.png") left center no-repeat;
-    background-size: auto 50px;
+    // background: url("../assets/images/header_bg.png") left center no-repeat;
+    // background-size: auto 50px;
   }
   .divNotice {
     color: white;

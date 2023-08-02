@@ -1,14 +1,15 @@
 <template>
   <div class="tableAreaDist">
     <el-table
-      height="calc(100% - 32px)"
+      height="100%"
       ref="table"
+      v-if="curDatas.length > 0"
       :data="curDatas"
       @row-click="_rowClickHandler"
       @row-dblclick="_rowDbClickHandler"
       :show-header="ucsetting.hiddenTableHeader"
     >
-      <el-table-column type="index" label="排名" width="80" align="center">
+      <el-table-column type="index" label="排名" align="center">
         <template slot-scope="scope">
           <span class="spanNum" :class="'num' + scope.row.idx"
             >{{ scope.row.idx }}
@@ -17,6 +18,7 @@
       </el-table-column>
 
       <el-table-column
+        :width="header.width"
         v-for="(header, idx) in ucsetting.headers"
         :key="idx"
         :prop="header.props"
@@ -99,7 +101,10 @@ export default {
       this.curDatas = [];
       this.curDatas = this.datas;
       this.$nextTick(() => {
-        this.$refs.table.doLayout();
+        if(this.$refs.table){
+           this.$refs.table.doLayout();
+        }
+       
       });
     },
 

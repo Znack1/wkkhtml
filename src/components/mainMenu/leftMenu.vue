@@ -4,19 +4,19 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-06-21 17:33:49
+ * @LastEditTime: 2023-08-02 15:28:27
 -->
 <template>
   <div class="divMenuBox">
     <div class="topContent">
-      <UCPanel Title="业务数据图层" iconClass="icon-zuobiao"></UCPanel>
+      <UCPanel Title="业务数据图层" style="border-radius: 5px 5px 0 0;" iconClass="icon-zuobiao"></UCPanel>
       <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
         <UCLeftPanel ref="ucLeftPanel" style="padding:10px;"></UCLeftPanel>
       </vuescroll>
       
     </div>
     <div class="bottomContent">
-      <UCPanel Title="基础数据图层" iconClass="icon-zuobiao"></UCPanel>
+      <UCPanel Title="基础数据图层" style="border-radius: 5px 5px 0 0;" iconClass="icon-gaokong"></UCPanel>
       <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
         <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
       </vuescroll>
@@ -139,19 +139,26 @@ export default {
   text-align: left;
     padding:0;
     height: 100%;
+   
     .div_leftTree{
       height: 100%;
       width:100%;
       padding:10px;
+      
     }
     .topContent{
       height:60%;
-      width:100%
+      width:100%;
+      background:white;
+      border:1px solid #3D81EF;
+      border-radius:5px;
     }
     .bottomContent{
       height:calc(40% - 20px);
       width:100%;
       margin-top:10px;
+      background:white;
+      border-radius:5px;
     }
 }
 </style>

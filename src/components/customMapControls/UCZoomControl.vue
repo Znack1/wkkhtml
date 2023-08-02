@@ -12,9 +12,9 @@
       class="tdt-control-zoom tdt-bar tdt-control"
     >
       <!-- <div class="zoom_number" @dblclick="_zoomLevelDblclickHandler">{{zoomLevel}}</div> -->
-      <div class="zoom-btn1" @click="_showLegend">
+      <!-- <div class="zoom-btn1" @click="_showLegend">
         <i class="iconfont icon-tuceng"></i>
-      </div>
+      </div> -->
       <div class="zoom-btn" @click="_zoomInClickHandler">
         <i class="add-map"></i>
       </div>

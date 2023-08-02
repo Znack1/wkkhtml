@@ -1,7 +1,7 @@
 
 <template>
   <div class="divRightFloat">
-    <div style="height: calc(100% - 0px); box-shadow: 4px 1px 18px 3px #8a8a8a">
+    <div style="height: calc(100% - 0px)">
         <!-- <el-collapse
           v-model="activeNames"
           @change="handleChange"
@@ -23,15 +23,15 @@
             ></UCDistributionTable>
           </el-collapse-item>
         </el-collapse> -->
-        <div class="topContent echartbox">
-          <UCPanel :Title="firstName" iconClass="icon-chart-trend-full"></UCPanel>
+        <div class="topContent echartbox" >
+          <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
           <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
             <UCBarXComponent ref="ucBarXComponent"></UCBarXComponent>
           </div>
          
         </div>
         <div class="bottomContent tableContent">
-          <UCPanel :Title="secondName" iconClass="icon-chart-trend-full"></UCPanel>
+          <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
           <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
             <UCDistributionTable
             style="width: 100%; height: calc(100% - 50px);"
@@ -140,6 +140,7 @@ export default {
               headers.push({
                 name: l.dengji,
                 props: "prop" + index,
+                width:l.dengji.length * 24
               });
             }
 

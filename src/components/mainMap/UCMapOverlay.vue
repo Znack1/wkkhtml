@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 15:57:10
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-01 09:09:46
+ * @LastEditTime: 2023-08-02 09:17:48
  * @input: no param
  * @out: no param
 -->
@@ -22,6 +22,7 @@ import {
   StatisticsOverlayInfo,
 } from "./UCMapOverlayJs";
 import UCStatisticsOverlay from "./UCOverlayTemplate/UCStatisticsOverlay.vue";
+import { SystemConfig } from '../../config/SystemConfig'
 export default {
   name: "UCMapOverlay",
   data() {
@@ -109,7 +110,13 @@ export default {
         //设置overlay的显示位置
         overlayLayout.ucOverlay.setPosition(position);
         self.curMap.addOverlay(overlayLayout.ucOverlay, true);
-        self.curMap.getView().setCenter(position)
+
+        // 使弹框居中
+        debugger
+        let extent = self.curMap.getView().calculateExtent(self.curMap.getSize());
+        let perPixe =   (200 / SystemConfig.bodyHeight * (extent[3] - extent[1]));
+        let perPixeEx =   (150 / SystemConfig.bodyWidth * (extent[2] - extent[0]));
+        self.curMap.getView().setCenter([position[0] + perPixeEx,position[1] + perPixe])
       });
     },
 

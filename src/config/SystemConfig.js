@@ -25,7 +25,7 @@ export class SystemConfig {
     urlConfigInstance.envType = SystemConfig.deployEnvType;
     urlConfigInstance.init();
     SystemConfig.bodyWidth = document.body.offsetWidth;
-
+    SystemConfig.bodyHeight = document.body.offsetHeight;
     // 初始化地图
     let blConfigInstance = BaseLayerConfig.getInstance();
     blConfigInstance.envType = SystemConfig.deployEnvType;
@@ -54,5 +54,5 @@ SystemConfig.token = window.BASE_CONFIG.defaultToken;
 SystemConfig.bodyWidth = '';
 
 //网页高度
-SystemConfig.bodyWidth = '';
+SystemConfig.bodyHeight = '';
 SystemConfig.sortFieldName = "sort";

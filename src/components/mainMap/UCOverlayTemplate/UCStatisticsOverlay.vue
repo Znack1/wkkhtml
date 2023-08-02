@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-15 10:18:06
- * @LastEditTime: 2023-08-01 16:01:03
+ * @LastEditTime: 2023-08-02 14:16:28
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCOverlay.vue
@@ -10,7 +10,7 @@
 <template>
   <div class="overLayerContent">
     <div class="divTitle">{{info.title}}</div>
-    <vuescroll   style="width:100%;height:40vh;padding:0 10px;" class="content_block">
+    <vuescroll   style="width:100%;height:320px;padding:0 10px;" class="content_block">
       
       <div style="text-align:left;padding:5px 0;position:relative;border-bottom: 2px solid #3d81ef;margin-bottom: 7px;">基本信息
         <a style="cursor:pointer;margin-top: 1px;font-size: 12px;position:absolute;right:10px;top:6px;z-index:100" @click="_more">更多详情>></a>
@@ -103,7 +103,7 @@ export default {
   padding-bottom: 24px;
   overflow: hidden;
   padding-bottom:10px;
-  box-shadow: 0 0 10px rgb(46, 46, 245);
+  box-shadow:inset 0 0 6px rgb(46, 46, 245);
 }
 
 .divCount {

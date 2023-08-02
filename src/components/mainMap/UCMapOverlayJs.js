@@ -3,7 +3,7 @@ import { GuidUtility } from "../../utility/common/GuidUtility";
 /*
  * @Author: your name
  * @Date: 2020-03-07 14:41:35
- * @LastEditTime: 2021-04-02 09:29:15
+ * @LastEditTime: 2023-08-02 09:32:44
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCMapOverlayJs.js
@@ -109,8 +109,8 @@ export class StatisticsOverlayInfo {
 
         this.attributes = attributes;
 
-        this.photos = properties.imgPaths;
-        this.videos = properties.videoPaths;
+        this.photos = properties.imgPaths || [];
+        this.videos = properties.videoPaths || [];
     }
 
 

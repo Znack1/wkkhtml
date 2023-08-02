@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-01 22:15:53
+ * @LastEditTime: 2023-08-02 15:58:58
  * @input: no param
  * @out: no param
 -->
@@ -35,9 +35,14 @@
 
     <!-- 图例 -->
     <div v-show="showLegend" class="legendBox">
-      <div v-for="node in checkedNodes" :key="node.id" class="legendItem">
-        <img style="margin-right: 5px" :src="node.img" width="18px" height="18px" />
-        <span>{{ node.name }}</span>
+      <div class="legendTitle">图例
+        <i class="el-icon-close" @click="_hideLegbox"></i>
+      </div>
+      <div class="itemContent">
+        <div v-for="node in checkedNodes" :key="node.id" class="legendItem">
+          <img style="margin-right: 5px" :src="node.img" width="16px" height="16px" />
+          <span>{{ node.name }}</span>
+        </div>
       </div>
     </div>
 
@@ -47,7 +52,7 @@
     <div style="display: none;" id="echart" ref="chart"></div>
 
     <!-- 返回全国 -->
-    <i @click="_backCountry" class="iconfont editMapBtn active icon-zuobiao">全国</i>
+    <i @click="_backCountry" class="allCity iconfont editMapBtn active icon-zuobiao">全国</i>
 
     <el-dialog v-if="detailInfo" :title="detailInfo.mc" fullscreen :visible.sync="dialogVisible" width="100%"
       :before-close="handleClose">
@@ -109,7 +114,7 @@
             </el-col>
             <el-col :span="8">
               <!-- <div style="width:80%;height:100%;background:blue">地图定位</div> -->
-              <UCMap  style="border:1px solid #bebeff;height:200px" :id="'mapEx'" ref="ucMapEx"></UCMap>
+              <UCMap style="border:1px solid #bebeff;height:200px" :id="'mapEx'" ref="ucMapEx"></UCMap>
             </el-col>
           </el-row>
           <div class="box_title" style="text-align:left;padding:5px 0">其他信息</div>
@@ -224,6 +229,11 @@
         </div>
       </div>
     </el-dialog>
+
+
+    <div class="legenBtn" @click="_showLegend" :class="showLegend?'active':''">
+      <i class="iconfont icon-tuceng"></i>
+    </div>
   </div>
 </template>
 
@@ -283,7 +293,10 @@ export default {
     };
   },
   methods: {
-
+    // 关闭图例
+    _hideLegbox(){
+      this.showLegend = false;
+    },
     // 关闭更多详情弹框
     handleClose() {
       this.dialogVisible = false;
@@ -314,6 +327,11 @@ export default {
     _backCountry() {
       this.eventManager.backCountryReset();
 
+    },
+
+    // 显示图例
+    _showLegend() {
+      this.showLegend = !this.showLegend
     },
 
     init() {
@@ -488,8 +506,9 @@ export default {
     width: 320px;
     bottom: 10px;
     height: calc(100% - 20px);
-    background: white;
+    // background: white;
     z-index: 2;
+    border-radius: 5px;
   }
 
   .baseLayerSwitch {
@@ -507,11 +526,12 @@ export default {
   }
 
   .divRightLeftFloat {
+    border-radius: 5px;
     width: 320px;
     position: absolute;
     right: 10px;
     top: 10px;
-    height: calc(100% - 100px);
+    height: calc(100% - 180px);
     transition: all 0.5s;
   }
 
@@ -532,33 +552,64 @@ export default {
 
   .divZoomCon {
     position: absolute;
-    left: 340px;
-    bottom: 60px;
+    right: 10px;
+    bottom: 80px;
   }
 
   .legendBox {
     position: absolute;
     bottom: 60px;
-    left: 375px;
-    padding: 15px;
+    left: 385px;
     display: flex;
     align-items: flex-start;
     flex-wrap: wrap;
     background: #fff;
-    border-radius: 10px;
     flex-direction: column;
+    width: 300px;
 
-    .legendItem {
-      margin-bottom: 5px;
+    .legendTitle {
+      width: 100%;
+      text-align: left;
+      height: 36px;
+      line-height: 36px;
+      background: #3d81ef;
+      color: white;
+      padding: 0 5px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
+
+    .itemContent {
+      padding: 10px;
+      .legendItem {
+        // margin-bottom: 5px;
+        width: 25%;
+        float: left;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 10px;
+
+        img {
+          display: block;
+          margin-bottom: 5px;
+        }
+
+        span {
+          display: block;
+          font-size:14px
+        }
+      }
+    }
+
   }
 
-  i {
+  .allCity {
     font-size: 16px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.5);
     cursor: pointer;
     display: inline-block;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 1);
     line-height: 32px;
     color: white;
     margin: 0 3px;
@@ -567,7 +618,7 @@ export default {
     border-radius: 5px;
     position: absolute;
     top: 10px;
-    right: 330px;
+    right: 340px;
 
     &::before {
       margin-right: 5px;
@@ -576,7 +627,7 @@ export default {
 
   .editMapBtn:hover,
   .editMapBtn.active {
-    background: rgb(0, 183, 255);
+    background: #3D81EF;
     color: white;
 
     i {
@@ -588,10 +639,11 @@ export default {
     padding: 20px 20px 10px;
     text-align: left;
     padding-left: 10%;
-    padding-bottom:0;
+    padding-bottom: 0;
   }
-  /deep/ .el-dialog__headerbtn{
-    right:10%
+
+  /deep/ .el-dialog__headerbtn {
+    right: 10%
   }
 
   /deep/ .el-dialog__body {
@@ -646,17 +698,53 @@ export default {
         color: #323232;
         display: flex;
         justify-content: flex-start;
-        padding:5px;
+        padding: 5px;
 
         .itemName {
           width: 140px;
           text-align: right;
-              flex-shrink: 0;
+          flex-shrink: 0;
         }
-        .itemValue {
-    text-align: left; 
+
+        .itemContent {
+          width: 100%;
+          padding: 10px;
+
+          .itemValue {
+            text-align: left;
+
+          }
         }
+
       }
     }
+  }
+
+  .legenBtn {
+    position: absolute;
+    left: 340px;
+    bottom: 60px;
+    cursor: pointer;
+    background: #ffffff;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    line-height: 40px;
+    text-align: center;
+
+    i {
+      font-size: 24px;
+      color: #323232
+    }
+
+    &.active,
+    &:hover {
+      background: #3d81ef;
+
+      i {
+        color: white;
+      }
+    }
+
   }
 }</style>

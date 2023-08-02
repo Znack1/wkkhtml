@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-09 14:31:30
- * @LastEditTime: 2023-06-25 14:40:07
+ * @LastEditTime: 2023-08-02 14:19:28
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCAttriInfos.vue
@@ -86,6 +86,7 @@ export default {
     font-size: 14px;
     line-height: 26px;
     padding: 0 8px;
+    color:#8397d4;
   }
 }
 </style>
