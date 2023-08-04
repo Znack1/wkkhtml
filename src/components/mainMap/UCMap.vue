@@ -64,7 +64,6 @@ export default {
   methods: {
     //初始化
     init(mapOptions, showMapControl) {
-      debugger
       //
       this.layerMgr = new LayerManager();
       //初始化底图配置

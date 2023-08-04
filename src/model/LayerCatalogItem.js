@@ -425,7 +425,6 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                         mbsJson.rendererEx(JSON.parse(this.styleJsonUrlContent));
 
                     } else if (this.styleJsonUrl) {
-                        // debugger
                         // let mbsJson = new MapboxStyleJsonRenderer();
                         // mbsJson.sourceLayerString = this.sourceName;
                         // mbsJson.olVTLayer = olVtLayer;
@@ -465,7 +464,6 @@ export class VectorTileLayerItem extends LayerCatalogItem {
     }
 
     createSelectedOLLayer (curMap) {
-        debugger
         if (!this.olLayers || this.olLayers.length == 0) return;
         let olVtLayer = null;
         for (let tempIndex = 0; tempIndex < this.olLayers.length; tempIndex++) {

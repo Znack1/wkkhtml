@@ -56,8 +56,20 @@ export default {
       let xAxisData = []; // x轴
       let serObj = [];
       let legend = [];
-
+      debugger
       // 获取legend
+      _.each(newData.data,(d)=>{
+        if(d.name.length > 3){
+          let newName = '';
+          for(let i = 0;i < Math.floor(d.name.length / 3); i++){
+            if(i != 0){
+              newName = newName+ '\n'
+            }
+            newName= newName + d.name.substr(i * 3,3);
+          }
+          d.name = newName;
+        }
+      })
       let groupByType = _.groupBy(newData.data, "type");
       _.each(groupByType, (item, key) => {
         legend.push(key);
@@ -207,45 +219,45 @@ export default {
         option.toolbox = toolbox;
       }
       // 是否增加滚动条
-      if (xAxisData.length > 11) {
-        option.dataZoom = [
-          {
-            type: "slider",
-            show: true,
-            start: 74,
-            end: 100,
-            handleSize: 8,
-          },
-          {
-            type: "inside",
-            start: 74,
-            end: 100,
-          },
-        ];
-      } else {
-        option.grid.bottom = "20";
+      // if (xAxisData.length > 11) {
+      //   option.dataZoom = [
+      //     {
+      //       type: "slider",
+      //       show: true,
+      //       start: 74,
+      //       end: 100,
+      //       handleSize: 8,
+      //     },
+      //     {
+      //       type: "inside",
+      //       start: 74,
+      //       end: 100,
+      //     },
+      //   ];
+      // } else {
+        option.grid.bottom = "10";
         option.dataZoom = [];
-      }
+      // }
 
-      if (xAxisData.length > 8) {
-        option.xAxis[0].axisLabel.rotate = "20";
-      }
+      // if (xAxisData.length > 8) {
+      //   option.xAxis[0].axisLabel.rotate = "20";
+      // }
 
       // 判断是否有lengend
-      if (newData.legend) {
-        if (xAxisData.length < 11) {
+      // if (newData.legend) {
+      //   if (xAxisData.length < 11) {
           option.xAxis[0].axisLabel.rotate = "0";
-        }
-        option.legend = {
-          data: legend,
-        };
-        option.grid.top = 30;
-      } else {
-        option.legend = {
-          show: false,
-        };
-        option.grid.top = 20;
-      }
+      //   }
+      //   option.legend = {
+      //     data: legend,
+      //   };
+      //   option.grid.top = 30;
+      // } else {
+      //   option.legend = {
+      //     show: false,
+      //   };
+      //   option.grid.top = 20;
+      // }
       if (this.charts) {
         this.charts.clear()
       }
@@ -257,6 +269,13 @@ export default {
         },
         true
       );
+    },
+
+    // 换行x名称
+    addEnterxAxisName(name,idx){
+      if(idx < name.length){
+
+      }
     },
     // risize
     resize() {

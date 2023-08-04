@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-02 15:58:58
+ * @LastEditTime: 2023-08-04 11:03:38
  * @input: no param
  * @out: no param
 -->
@@ -18,7 +18,7 @@
       :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '10px' }"></UCBaseLayerSwitch>
     <UCZoomControl class="divZoomCon" ref="ucZoomControl"></UCZoomControl>
     <!-- 比例尺，经纬度 -->
-    <UCCustomMapScale ref="ucCustomMapScale" class="divScale"></UCCustomMapScale>
+    <!-- <UCCustomMapScale ref="ucCustomMapScale" class="divScale"></UCCustomMapScale> -->
     <!-- <div
         class="close_btn"
         @click="_togglePanel"
@@ -26,7 +26,7 @@
       >
         {{ ucSetting.rightPanelVisiable ? "关闭列表" : "展开列表" }}
       </div> -->
-    <UCRightFloatComponent :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '-320px' }" class="divRightLeftFloat"
+    <UCRightFloatComponent  class="divRightLeftFloat"
       ref="ucRightFloatComponent">
     </UCRightFloatComponent>
 
@@ -310,12 +310,22 @@ export default {
         if (this.$refs.ucMapEx) {
           let mapOptions = {
             indoor: false,
-            projection: "EPSG:3857",
+            projection: "EPSG:4326",
           };
           this.$refs.ucMapEx.init(mapOptions, false);
           debugger
-
-          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([this.eventManager.curFeatrue])
+          let polygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
+          let fillStyle = new ol.style.Style({
+          fill: new ol.style.Fill({
+              color: 'rgba(255,255,255,0.2)',
+          }),
+          stroke: new ol.style.Stroke({
+              color: '#ff0000',
+              width: 2,
+          })
+          })
+          polygonFeature.setStyle(fillStyle);
+          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,this.eventManager.curFeatrue,])
           this.$refs.ucMapEx.curMap.getView().setZoom(11);
           this.$refs.ucMapEx.curMap.getView().setCenter(this.eventManager.curFeatrue.getGeometry().getCoordinates());
           // this.$refs.ucMapEx.layerMgr.drawGeometryLayer.addDrawPoint(JSON.parse(this.eventManager.curFeaInfo.geom))
@@ -465,7 +475,7 @@ export default {
       this.eventManager.ucMap = this.$refs.ucMap;
       this.eventManager.ucMapTool = this.$refs.ucMapTool;
       this.eventManager.ucBaseLayerSwitch = this.$refs.ucBaseLayerSwitch;
-      this.eventManager.ucCustomMapScale = this.$refs.ucCustomMapScale;
+      // this.eventManager.ucCustomMapScale = this.$refs.ucCustomMapScale;
       this.eventManager.ucLeftMenu = this.$refs.ucLeftMenu;
       this.eventManager.ucZoomControl = this.$refs.ucZoomControl;
       this.eventManager.ucRightPanel = this.$refs.ucRightFloatComponent;
@@ -480,12 +490,7 @@ export default {
 </script>
 
 <style lang="less" scoped>
-.imgBox {
-  width: 280px;
-  position: absolute;
-  left: 10px;
-  bottom: 60px;
-}
+
 
 .divContainer {
   width: 100%;
@@ -513,7 +518,7 @@ export default {
 
   .baseLayerSwitch {
     position: absolute;
-    bottom: 10px;
+    bottom: calc(30vh + 20px);
     right: 10px;
   }
 
@@ -527,12 +532,13 @@ export default {
 
   .divRightLeftFloat {
     border-radius: 5px;
-    width: 320px;
+    width: calc(100% - 350px);
     position: absolute;
-    right: 10px;
-    top: 10px;
-    height: calc(100% - 180px);
+    left: 340px;
+    bottom: 10px;
+    height:30vh;
     transition: all 0.5s;
+    padding:0 10px;
   }
 
   .close_btn {
@@ -553,12 +559,12 @@ export default {
   .divZoomCon {
     position: absolute;
     right: 10px;
-    bottom: 80px;
+    bottom: calc(30vh + 100px);
   }
 
   .legendBox {
     position: absolute;
-    bottom: 60px;
+    bottom: calc(30vh + 20px);
     left: 385px;
     display: flex;
     align-items: flex-start;
@@ -618,7 +624,7 @@ export default {
     border-radius: 5px;
     position: absolute;
     top: 10px;
-    right: 340px;
+    right: 10px;
 
     &::before {
       margin-right: 5px;
@@ -665,9 +671,6 @@ export default {
   .detail_content {
     width: 80%;
     margin: 0 auto;
-
-
-
     .content_box {
       padding: 10px;
       background: #ffffff;
@@ -723,7 +726,7 @@ export default {
   .legenBtn {
     position: absolute;
     left: 340px;
-    bottom: 60px;
+    bottom: calc(30vh + 20px);
     cursor: pointer;
     background: #ffffff;
     width: 40px;

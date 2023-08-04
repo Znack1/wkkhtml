@@ -18,7 +18,7 @@
       </el-table-column>
 
       <el-table-column
-        :width="header.width"
+        :min-width="header.width"
         v-for="(header, idx) in ucsetting.headers"
         :key="idx"
         :prop="header.props"

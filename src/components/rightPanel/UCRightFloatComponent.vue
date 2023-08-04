@@ -1,7 +1,7 @@
 
 <template>
   <div class="divRightFloat">
-    <div style="height: calc(100% - 0px)">
+    <!-- <div style="height: calc(100% - 0px)"> -->
         <!-- <el-collapse
           v-model="activeNames"
           @change="handleChange"
@@ -24,24 +24,24 @@
           </el-collapse-item>
         </el-collapse> -->
         <div class="topContent echartbox" >
-          <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
-          <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+          <UCPanel style="background:white;color:#3D81EF; border-bottom:1px solid rgb(158, 158, 158);"  :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
+          <div style="width: 100%; height: calc(100% - 40px);margin-top:5px">
             <UCBarXComponent ref="ucBarXComponent"></UCBarXComponent>
           </div>
          
         </div>
         <div class="bottomContent tableContent">
-          <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
+          <UCPanel style="background:white;color:#3D81EF; border-bottom:1px solid rgb(158, 158, 158);" :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
           <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
             <UCDistributionTable
-            style="width: 100%; height: calc(100% - 50px);"
+            style="width: 100%; height: calc(100% - 40px);padding:5px;"
               ref="ucDistributionTable"
               class="table"
             ></UCDistributionTable>
         <!-- </vuescroll> -->
          
         </div>
-    </div>
+    <!-- </div> -->
   </div>
 </template>
 
@@ -75,7 +75,6 @@ export default {
 
   methods: {
     initTitle(curCityInfo){
-      debugger
       let keys = ["sheng","shi","xian"]
       this.firstName="监管等级("  +(curCityInfo.cityLevel == 1? '全国':  curCityInfo[keys[curCityInfo.cityLevel - 2]]) +")";
       this.secondName="数据统计("  +(curCityInfo.cityLevel == 1? '全国':  curCityInfo[keys[curCityInfo.cityLevel - 2]]) +")";
@@ -83,7 +82,6 @@ export default {
 
     // 更新数据
     updateChart(datas, curStat){
-      debugger
       if(!datas){
         let barObj = {
           data: [],
@@ -140,7 +138,7 @@ export default {
               headers.push({
                 name: l.dengji,
                 props: "prop" + index,
-                width:l.dengji.length * 24
+                width:l.dengji.length * 20
               });
             }
 
@@ -252,6 +250,9 @@ export default {
 .divRightFloat {
   height: 100%;
   background: white;
+  display:flex;
+  align-item:center;
+  justify-content: space-between;
   /deep/ .el-collapse-item__header {
     height: 40px;
     line-height: 40px;
@@ -262,16 +263,19 @@ export default {
     padding: 0 15px;
   }
   .echartbox {
-    width: 100%;
-    height: 60%;
-    max-height: 350px;
+    width: 60%;
+    // max-height: 350px;
+    height:100%;
+    border-right:1px solid rgb(158, 158, 158);
   }
   /deep/ .el-collapse-item__content {
     padding-bottom: 10px;
   }
   .tableContent {
-    height: calc(100% - 350px);
-    min-height: 40%;
+    // height: calc(100% - 350px);
+    height:100%;
+    width: 40%;
+   
     .el-collapse-item__content {
       height: 100%;
     }

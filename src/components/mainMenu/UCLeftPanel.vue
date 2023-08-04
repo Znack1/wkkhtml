@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-01 22:36:28
+ * @LastEditTime: 2023-08-04 09:45:48
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-02 15:28:27
+ * @LastEditTime: 2023-08-03 10:53:15
 -->
 <template>
   <div class="divMenuBox">
@@ -154,7 +154,7 @@ export default {
       border-radius:5px;
     }
     .bottomContent{
-      height:calc(40% - 20px);
+      height:calc(40% - 10px);
       width:100%;
       margin-top:10px;
       background:white;

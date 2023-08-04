@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-01 15:33:06
+ * @LastEditTime: 2023-08-03 14:53:27
  * @input: no param
  * @out: no param
  */
@@ -20,6 +20,7 @@ import { LayerFeatureType } from './mainMap/layer/LayerFeatureType.js';
 import { LayerCatalogItem, LayerCatalogItems ,VectorTileLayerItem} from '@/model/LayerCatalogItem.js';
 import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
 import echarts from "echarts";
+import { SystemConfig } from '@/config/SystemConfig.js';
 export class UCMainEventManager {
   constructor() {
     this.ucMain = null;
@@ -285,18 +286,47 @@ export class UCMainEventManager {
     let self = this;
     self.ucMap.layerMgr.poiLayer.clear();
     // 通过key分类
-    let groupByKey = _.groupBy(self.pointDatas, self.typekey)
-    let initDatas = [];
-
-    _.each(groupByKey, (group, key) => {
-      initDatas.push({
-        features: group,
-        img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
-        selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
+    if(self.pointDatas){
+      let groupByKey = _.groupBy(self.pointDatas, self.typekey)
+      let initDatas = [];
+  
+      _.each(groupByKey, (group, key) => {
+        initDatas.push({
+          features: group,
+          img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
+          selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
+        })
       })
-    })
+  
+      self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+    }else{
+      // 获取全国点位
+      let paramsEx = {
+        type: this.checkedNodes[0].parentId,
+        twoType: _.map(this.checkedNodes, "name")
+      }
+      AxiosConfig.spatialdecision
+        .post(ServiceUrlConfig.point_point, paramsEx)
+        .then((res) => {
 
-    self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+          self.pointDatas = res.data.data.pointEntities;
+          let groupByKey = _.groupBy(self.pointDatas, self.typekey)
+          let initDatas = [];
+      
+          _.each(groupByKey, (group, key) => {
+            initDatas.push({
+              features: group,
+              img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
+              selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
+            })
+          })
+      
+          self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+        }).catch((error) => {
+          this.$message.error("全国点位获取失败，请检查网络并刷新页面！")
+        })
+    }
+  
   }
 
 
@@ -399,7 +429,10 @@ export class UCMainEventManager {
           this.getRightTableDatas(params)
             // 定位放大地图
             let extent = districtFea.getExtent();
-            let curExtent = GeometryExtentUtility.expandExtent(extent, 2);
+          let perPixeY =   ((SystemConfig.bodyHeight * 0.3) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
+          let perPixeX =   (340 / SystemConfig.bodyHeight * (extent[2] - extent[0]));
+          let newExtent= [extent[0]-perPixeX,extent[1] - perPixeY,extent[2],extent[3]]
+          let curExtent = GeometryExtentUtility.expandExtent(newExtent,2.1);
             self.ucMap.setMapExtent(curExtent);
 
           //选中要素高亮显示
@@ -419,7 +452,7 @@ export class UCMainEventManager {
     this.ucMap.on_zoomLevelChange(function (e) {
       // 刷新地图右下角的比例尺
       let resolution = self.ucMap.getResolution();
-      self.ucCustomMapScale.refreshScale(resolution);
+      // self.ucCustomMapScale.refreshScale(resolution);
       self._on_zoomLevelChange_districtLayerVisibleChange(e);
     });
 
@@ -451,7 +484,7 @@ export class UCMainEventManager {
 
       }
       // 刷新右下角坐标
-      self.ucCustomMapScale.refreshCoordinate(e.coordinate);
+      // self.ucCustomMapScale.refreshCoordinate(e.coordinate);
 
 
     });
