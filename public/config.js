@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-01 21:52:08
+ * @LastEditTime: 2023-08-04 15:45:06
  * @input: no param
  * @out: no param
  */
@@ -17,6 +17,7 @@ window.BASE_CONFIG = {
 	"defaultToken": "d3182ea02e2a9c206f78d45793bb11ac",
 	"DefaultMapBaseLayerType": "Ter", // 默认加载地图底图类型Image,Vector,Ter
 	"map_view_init_centerPoint": [108.5525, 34.32],
+	// "map_view_init_centerPoint": [12958207.8873,4826182.4452],
 	"map_view_init_initLevel": 4,
 	"map_view_maxLevel": 23,
 	"map_view_minLevel": 4,

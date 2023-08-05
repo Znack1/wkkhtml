@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-03 14:53:27
+ * @LastEditTime: 2023-08-04 16:03:27
  * @input: no param
  * @out: no param
  */
@@ -21,6 +21,7 @@ import { LayerCatalogItem, LayerCatalogItems ,VectorTileLayerItem} from '@/model
 import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
 import echarts from "echarts";
 import { SystemConfig } from '@/config/SystemConfig.js';
+import { GeometryUtility } from '@/utility/ol/GeometryUtility.js';
 export class UCMainEventManager {
   constructor() {
     this.ucMain = null;
@@ -815,6 +816,8 @@ _selectedFeatureHighlight(feature) {
       chart.set("overlyType", "countOverlay")
       this.ucMap.curMap.addOverlay(chart, true);
       //self.map是在mounted里new Map出来的，按openlayer官网操作即可，
+      // let newPoints  = GeometryUtility.transformPoints([[d.zxjd, d.zxwd]],"EPSG:4326","EPSG:3857")
+      // chart.setPosition(newPoints[0]);
       chart.setPosition([d.zxjd, d.zxwd]);
     }
 

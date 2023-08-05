@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-04 11:03:38
+ * @LastEditTime: 2023-08-05 11:49:33
  * @input: no param
  * @out: no param
 -->
@@ -55,7 +55,7 @@
     <i @click="_backCountry" class="allCity iconfont editMapBtn active icon-zuobiao">全国</i>
 
     <el-dialog v-if="detailInfo" :title="detailInfo.mc" fullscreen :visible.sync="dialogVisible" width="100%"
-      :before-close="handleClose">
+      :before-close="handleClose" :destroy-on-close="true">
       <div class="detail_content">
         <div class="content_box">
           <div class="box_title" style="text-align:left;padding:5px 0">基本信息</div>
@@ -256,6 +256,7 @@ import {
   WmsLayerItem,
   WmtsLayerItem,
 } from "@/model/LayerCatalogItem";
+import { GeometryUtility } from '@/utility/ol/GeometryUtility';
 export default {
   name: "ucMain",
   components: {
@@ -313,11 +314,10 @@ export default {
             projection: "EPSG:4326",
           };
           this.$refs.ucMapEx.init(mapOptions, false);
-          debugger
           let polygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
           let fillStyle = new ol.style.Style({
           fill: new ol.style.Fill({
-              color: 'rgba(255,255,255,0.2)',
+              color: 'rgba(255,255,255,1)',
           }),
           stroke: new ol.style.Stroke({
               color: '#ff0000',
@@ -325,7 +325,9 @@ export default {
           })
           })
           polygonFeature.setStyle(fillStyle);
-          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,this.eventManager.curFeatrue,])
+          // GeometryUtility.transformFeatureGeometry([polygonFeature],'EPSG:4326',"EPSG:3857")
+          this.$refs.ucMapEx.layerMgr.detailLayer.clear();
+          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,this.eventManager.curFeatrue])
           this.$refs.ucMapEx.curMap.getView().setZoom(11);
           this.$refs.ucMapEx.curMap.getView().setCenter(this.eventManager.curFeatrue.getGeometry().getCoordinates());
           // this.$refs.ucMapEx.layerMgr.drawGeometryLayer.addDrawPoint(JSON.parse(this.eventManager.curFeaInfo.geom))

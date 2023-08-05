@@ -5,6 +5,7 @@ import yiji from "../../../assets/images/yiji1.png";
 import draw_marker from "../../../assets/images/draw_marker.png";
 import { LayerCatalogItem } from "@/model/LayerCatalogItem.js";
 import { OLLayerUtility } from "@/utility/ol/OLLayerUtility.js";
+import { GeometryUtility } from "@/utility/ol/GeometryUtility.js";
 /**
  * poi搜索图层
  */
@@ -92,7 +93,8 @@ export class POISearchLayer {
 
             _.each(tempData.features,(tempPoiItem,k)=>{
                 tempCoordinate = [tempPoiItem.zxjd, tempPoiItem.zxwd];
-
+                // let newPoints  = GeometryUtility.transformPoints([ [tempPoiItem.zxjd, tempPoiItem.zxwd]],"EPSG:4326","EPSG:3857")
+                // tempCoordinate =newPoints[0];
                 iconStyle = new ol.style.Style({
                     image: new ol.style.Icon(({
                         anchor: [0.5, 8],
