@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-04 09:45:48
+ * @LastEditTime: 2023-08-05 12:04:31
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -44,6 +44,8 @@
         >
           <span
             class="custom-tree-node"
+            @mouseover="_mouseOver(data)"
+            @mouseleave="_mouseLeave(data)"
             slot-scope="{ node, data }"
             :title="node.name"
           >
@@ -52,7 +54,7 @@
             <img
               style="margin-right: 5px"
               
-              :src="(curCheckedNode &&curCheckedNode.id == data.id)?  data.selectImg:data.img"
+              :src="((curOverNode && curOverNode.type == 'group' && curOverNode.id == data.id)|| (curCheckedNode &&curCheckedNode.id == data.id))?  data.selectImg:data.img"
               width="18px"
               height="18px"
             />
@@ -186,6 +188,7 @@ export default {
       ],
       curCheckedNode: null,
       curChecked: new Array(),
+      curOverNode:null
     };
   },
   components: {
@@ -197,6 +200,17 @@ export default {
   },
 
   methods: {
+    // 移动上去
+    _mouseOver(node){
+      this.curOverNode = node;
+    },
+
+    _mouseLeave(node){
+      if(this.curOverNode == node){
+        this.curOverNode = null;
+      }
+    },
+
     handleChange(val) {
       console.log(val);
     },
