@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-05 21:13:54
+ * @LastEditTime: 2023-08-06 13:20:00
  * @input: no param
  * @out: no param
  */
@@ -20,7 +20,7 @@ window.BASE_CONFIG = {
 	"map_view_init_centerPoint": [12958207.8873,4826182.4452],
 	"map_view_init_initLevel": 4,
 	"map_view_maxLevel": 22,
-	"map_view_minLevel": 0,
+	"map_view_minLevel": 3,
 	"canClickMapMinLevel": 7, // 地图要素可以点击的最小级别
 	"polygonLayer":{
 		"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
@@ -39,10 +39,10 @@ window.BASE_CONFIG = {
 				"sort": "100",
 				"edition": null,
 				"metaDataItemString": "",
-				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wwkp/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wwkp&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
-				"serviceName": "wwkp",
-				"serviceEpsg": "EPSG:4326",
-				"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wwkp","layout":{},"paint":{"fill-color":"rgba(237, 106, 104, 0.1)","fill-outline-color":"rgba(255,0,0, 1)"},"id":"wwkp//0/0","type":"fill","minzoom":0,"maxzoom":22},{"source":"featuremap","source-layer":"wkkp","layout":{},"paint":{"line-color":"rgba(230, 255, 0, 1)","line-width":2},"id":"wkkp//0/1/0","type":"line","minzoom":0,"maxzoom":22}]}',
+				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wkkp_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wkkp_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+				"serviceName": "wkkp_3857",
+				"serviceEPSG": "EPSG:3857",
+				"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wkkp_3857","layout":{},"paint":{"fill-color":"rgba(237, 106, 104, 0)","fill-outline-color":"rgba(255,0,0, 1)"},"id":"wwkp//0/0","type":"fill","minzoom":0,"maxzoom":22},{"source":"featuremap","source-layer":"wkkp_3857","layout":{},"paint":{"line-color":"rgba(230, 255, 0, 1)","line-width":2},"id":"wkkp//0/1/0","type":"line","minzoom":0,"maxzoom":22}]}',
 				"styleJsonUrl": "",
 				"sourceName": null,
 				"renderParamsString": "",
@@ -79,7 +79,7 @@ window.BASE_CONFIG = {
 				"metaDataItemString": "",
 				"serviceUrl": " http://223.71.70.150:9977/mapserviceweb/service/weikuangkudian/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=weikuangkudian&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
 				"serviceName": "weikuangkudian",
-				"serviceEpsg": "EPSG:4326",
+				"serviceEPSG": "EPSG:4326",
 				"styleJsonUrlContent":'',
 				"styleJsonUrl": "",
 				"sourceName": null,
@@ -520,10 +520,10 @@ window.BASE_CONFIG = {
 						"sort": "100",
 						"edition": null,
 						"metaDataItemString": "",
-						"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/qghlsj/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=qghlsj&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
-						"serviceName": "qghlsj",
-						"serviceEpsg": "EPSG:4326",
-						"styleJsonUrlContent":'{"version":"8","name":"qghlsjs","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"qghlsj_lv1s","layout":{},"paint":{"line-color":"rgba(0,255,255,1)","line-width":1.5},"id":"qghlsj_lv1s//1","type":"line","minzoom":1,"maxzoom":22},{"source":"featuremap","source-layer":"qghlsj_lv2s","layout":{},"paint":{"line-color":"rgba(0,255,255,1)","line-width":1.5},"id":"qghlsj_lv2s//1","type":"line","minzoom":1,"maxzoom":22},{"source":"featuremap","source-layer":"qghlsj_lv3s","layout":{},"paint":{"line-color":"rgba(0,255,255,1)","line-width":1.5},"id":"qghlsj_lv3s//1","type":"line","minzoom":1,"maxzoom":22},{"source":"featuremap","source-layer":"qghlsj_lv4s","layout":{},"paint":{"line-color":"rgba(0,255,255,1)","line-width":1.5},"id":"qghlsj_lv4s//1","type":"line","minzoom":1,"maxzoom":22},{"source":"featuremap","source-layer":"qghlsj_lv5s","layout":{},"paint":{"line-color":"rgba(0,255,255,1)","line-width":1.5},"id":"qghlsj_lv5s//1","type":"line","minzoom":1,"maxzoom":22},{"source":"featuremap","source-layer":"qghlsj_polys","layout":{},"paint":{"line-color":"rgba(0,255,255,1)","line-width":1.5},"id":"qghlsjs_polys//1","type":"line","minzoom":1,"maxzoom":22}]}',
+						"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/shidaliuyu_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shidaliuyu_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+						"serviceName": "shidaliuyu_3857",
+						"serviceEPSG": "EPSG:3857",
+						"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"shidaliuyu_3857","layout":{},"paint":{"line-color":"rgba(170,198,238,1)","line-width":1.5},"id":"十大流域//1","type":"line","minzoom":1,"maxzoom":22}]}',
 						"styleJsonUrl": "http://223.71.70.150:9977/styles/qghlsjs/styles/root.json",
 						"sourceName": null,
 						"renderParamsString": "",

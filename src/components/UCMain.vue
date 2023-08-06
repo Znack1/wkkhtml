@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-05 20:48:19
+ * @LastEditTime: 2023-08-06 12:30:50
  * @input: no param
  * @out: no param
 -->
@@ -434,7 +434,7 @@ export default {
 
     // 添加尾矿库面
     addLayerByPolygon(layerItemObj) {
-      return; 
+      debugger
       let showTempLayerItem = null;
       if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
         showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
