@@ -138,7 +138,7 @@ export default {
               headers.push({
                 name: l.dengji,
                 props: "prop" + index,
-                width:l.dengji.length * 20
+                width:l.dengji.length * 30
               });
             }
 

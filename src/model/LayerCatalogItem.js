@@ -385,7 +385,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
     createOLLayers () {
         let vtUtility = new VectorTileUtility();
-        // vtUtility.epsg = this.serviceEPSG || vtUtility.epsg;
+        vtUtility.epsg = this.serviceEPSG || vtUtility.epsg;
         vtUtility.serviceName = this.serviceName;
         vtUtility.wmtsUrl = this.serviceUrl;
         vtUtility.tilematrixSuffix = this.tilematrixSuffix
@@ -595,7 +595,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     width: 4
                 }),
                 fill: new ol.style.Fill({
-                    color: 'rgba(255,255,0,0.01)',
+                    color: 'rgba(255,255,0,0.2)',
                 })
             });
         } else if (geometryType === "LineString" || geometryType == "MultiLineString") {

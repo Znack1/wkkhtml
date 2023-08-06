@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-05 11:49:33
+ * @LastEditTime: 2023-08-05 20:48:19
  * @input: no param
  * @out: no param
 -->
@@ -311,7 +311,7 @@ export default {
         if (this.$refs.ucMapEx) {
           let mapOptions = {
             indoor: false,
-            projection: "EPSG:4326",
+            projection: "EPSG:3857",
           };
           this.$refs.ucMapEx.init(mapOptions, false);
           let polygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
@@ -325,7 +325,7 @@ export default {
           })
           })
           polygonFeature.setStyle(fillStyle);
-          // GeometryUtility.transformFeatureGeometry([polygonFeature],'EPSG:4326',"EPSG:3857")
+          GeometryUtility.transformFeatureGeometry([polygonFeature],'EPSG:4326',"EPSG:3857")
           this.$refs.ucMapEx.layerMgr.detailLayer.clear();
           this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,this.eventManager.curFeatrue])
           this.$refs.ucMapEx.curMap.getView().setZoom(11);
@@ -351,7 +351,7 @@ export default {
       if (this.$refs.ucMap) {
         let mapOptions = {
           indoor: false,
-          projection: "EPSG:4326",
+          projection: "EPSG:3857",
         };
         this.$refs.ucMap.init(mapOptions, false);
       }
@@ -395,6 +395,7 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
+      debugger
       if (this.showTempLayerItems) {
         _.each(this.showTempLayerItems, (showTempLayerItem) => {
           showTempLayerItem.defaultVisible = false;
@@ -433,6 +434,7 @@ export default {
 
     // 添加尾矿库面
     addLayerByPolygon(layerItemObj) {
+      return; 
       let showTempLayerItem = null;
       if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
         showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);

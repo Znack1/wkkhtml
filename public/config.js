@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-04 15:45:06
+ * @LastEditTime: 2023-08-05 21:13:54
  * @input: no param
  * @out: no param
  */
@@ -16,11 +16,11 @@ window.BASE_CONFIG = {
 	"tdt_xyz_public_base_url": "https://t{0-7}.tianditu.gov.cn/DataServer?",
 	"defaultToken": "d3182ea02e2a9c206f78d45793bb11ac",
 	"DefaultMapBaseLayerType": "Ter", // 默认加载地图底图类型Image,Vector,Ter
-	"map_view_init_centerPoint": [108.5525, 34.32],
-	// "map_view_init_centerPoint": [12958207.8873,4826182.4452],
+	// "map_view_init_centerPoint": [108.5525, 34.32],
+	"map_view_init_centerPoint": [12958207.8873,4826182.4452],
 	"map_view_init_initLevel": 4,
-	"map_view_maxLevel": 23,
-	"map_view_minLevel": 4,
+	"map_view_maxLevel": 22,
+	"map_view_minLevel": 0,
 	"canClickMapMinLevel": 7, // 地图要素可以点击的最小级别
 	"polygonLayer":{
 		"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
@@ -152,13 +152,13 @@ window.BASE_CONFIG = {
 					"dataSetIdentifier": null,
 					"srid": null,
 					"fileUrl": null,
-					"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/sheng/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=sheng&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+					"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/sheng_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=sheng_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
 					"domainMin": null,
 					"domainMax": null,
-					"serviceName": "sheng",
-					"serviceEPSG": "EPSG:4326",
+					"serviceName": "sheng_3857",
+					"serviceEPSG": "EPSG:3857",
 					"styleJsonUrl": "",
-					"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"xzqbj1","layout":{},"paint":{"fill-color":"rgba(0,0,0,1)"},"id":"xzqbj1//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj1","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj1//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj2","layout":{},"paint":{"fill-color":"rgba(47,74,122,0.1)"},"id":"xzqbj2//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj2","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj2//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj3","layout":{},"paint":{"fill-color":"rgba(115,135,158,0.1)"},"id":"xzqbj3//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj3","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj3//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"fill-color":"rgba(204,169,94, 0.1)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":2},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"fill-color":"rgba(204,169,94,0.01)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"fill-color":"rgba(204,169,94, 0.1)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":1.5},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',
+					"styleJsonUrlContent": '{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"sheng_3857","layout":{},"paint":{"fill-color":"rgba(255, 170, 62,0.01)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng_3857","layout":{},"paint":{"line-color":"rgba(200,163,92,1)","line-width":1.7},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi_3857","layout":{},"paint":{"fill-color":"rgba(255, 170, 62, 0.01)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi_3857","layout":{},"paint":{"line-color":"rgba(255, 170, 62, 1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian_3857","layout":{},"paint":{"fill-color":"rgba(25, 170, 62, 0.01)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian_3857","layout":{},"paint":{"line-color":"rgba(255,239,148,1)","line-width":1.2},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',					"sourceName": null,
 					"sourceName": null,
 					"wmtsUrl": null,
 					"matrixSetName": null,
@@ -283,13 +283,13 @@ window.BASE_CONFIG = {
 					"dataSetIdentifier": null,
 					"srid": null,
 					"fileUrl": null,
-					"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/shi/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shi&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+					"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/shi_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=shi_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
 					"domainMin": null,
 					"domainMax": null,
-					"serviceName": "shi",
-					"serviceEPSG": "EPSG:4326",
+					"serviceName": "shi_3857",
+					"serviceEPSG": "EPSG:3857",
 					"styleJsonUrl": "http://223.71.70.150:9977/styles/qgxzq/styles/root.json",
-					"styleJsonUrlContent": '{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"xzqbj1","layout":{},"paint":{"fill-color":"rgba(0,0,0,1)"},"id":"xzqbj1//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj1","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj1//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj2","layout":{},"paint":{"fill-color":"rgba(47,74,122,0.1)"},"id":"xzqbj2//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj2","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj2//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj3","layout":{},"paint":{"fill-color":"rgba(115,135,158,0.1)"},"id":"xzqbj3//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj3","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj3//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"fill-color":"rgba(204,169,94, 0.1)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":2},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"fill-color":"rgba(204,169,94,0.01)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"fill-color":"rgba(204,169,94, 0.1)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":1.5},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',
+					"styleJsonUrlContent": '{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"sheng_3857","layout":{},"paint":{"fill-color":"rgba(255, 170, 62,0.01)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng_3857","layout":{},"paint":{"line-color":"rgba(200,163,92,1)","line-width":1.7},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi_3857","layout":{},"paint":{"fill-color":"rgba(255, 170, 62, 0.01)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi_3857","layout":{},"paint":{"line-color":"rgba(255, 170, 62, 1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian_3857","layout":{},"paint":{"fill-color":"rgba(25, 170, 62, 0.01)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian_3857","layout":{},"paint":{"line-color":"rgba(255,239,148,1)","line-width":1.2},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',					"sourceName": null,
 					"sourceName": null,
 					"wmtsUrl": null,
 					"matrixSetName": null,
@@ -414,14 +414,13 @@ window.BASE_CONFIG = {
 					"dataSetIdentifier": null,
 					"srid": null,
 					"fileUrl": null,
-					"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/xian/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=xian&TILEMATRIX=EPSG:4326:{z}&TILEMATRIXSET=EPSG:4326&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+					"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/xian_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=xian_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
 					"domainMin": null,
 					"domainMax": null,
-					"serviceName": "xian",
-					"serviceEPSG": "EPSG:4326",
+					"serviceName": "xian_3857",
+					"serviceEPSG": "EPSG:3857",
 					"styleJsonUrl": "http://223.71.70.150:9977/styles/qgxzq/styles/root.json",
-					"styleJsonUrlContent": '{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"xzqbj1","layout":{},"paint":{"fill-color":"rgba(0,0,0,1)"},"id":"xzqbj1//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj1","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj1//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj2","layout":{},"paint":{"fill-color":"rgba(47,74,122,0.1)"},"id":"xzqbj2//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj2","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj2//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj3","layout":{},"paint":{"fill-color":"rgba(115,135,158,0.1)"},"id":"xzqbj3//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xzqbj3","layout":{},"paint":{"line-color":"rgba(202,165,94,1)","line-width":2},"id":"xzqbj3//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"fill-color":"rgba(204,169,94, 0.1)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":2},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"fill-color":"rgba(204,169,94,0.01)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"fill-color":"rgba(204,169,94, 0.1)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian","layout":{},"paint":{"line-color":"rgba(204,169,94,1)","line-width":1.5},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',
-					"sourceName": null,
+					"styleJsonUrlContent": '{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"sheng_3857","layout":{},"paint":{"fill-color":"rgba(255, 170, 62,0.01)"},"id":"省界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"sheng_3857","layout":{},"paint":{"line-color":"rgba(200,163,92,1)","line-width":1.7},"id":"省界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi_3857","layout":{},"paint":{"fill-color":"rgba(255, 170, 62, 0.01)"},"id":"市界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"shi_3857","layout":{},"paint":{"line-color":"rgba(255, 170, 62, 1)","line-width":1.2},"id":"市界//0/1/0","type":"line","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian_3857","layout":{},"paint":{"fill-color":"rgba(25, 170, 62, 0.01)"},"id":"县界//0/0","type":"fill","minzoom":0,"maxzoom":20},{"source":"featuremap","source-layer":"xian_3857","layout":{},"paint":{"line-color":"rgba(255,239,148,1)","line-width":1.2},"id":"县界//0/1/0","type":"line","minzoom":0,"maxzoom":20}]}',					"sourceName": null,
 					"wmtsUrl": null,
 					"matrixSetName": null,
 					"tileSize": [

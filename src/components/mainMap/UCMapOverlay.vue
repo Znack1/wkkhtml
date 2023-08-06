@@ -112,7 +112,6 @@ export default {
         self.curMap.addOverlay(overlayLayout.ucOverlay, true);
 
         // 使弹框居中
-        debugger
         let extent = self.curMap.getView().calculateExtent(self.curMap.getSize());
         let perPixeY =   ((70) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
         let perPixeX =   (260 / SystemConfig.bodyWidth * (extent[2] - extent[0]));

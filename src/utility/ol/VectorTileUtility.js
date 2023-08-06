@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-11-16 10:50:08
- * @LastEditTime: 2023-07-21 17:11:50
+ * @LastEditTime: 2023-08-06 11:18:10
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /高标准农田/src/utility/ol/VectorTileUtility.js
@@ -201,7 +201,7 @@ export class VectorTileUtility {
             projection: projection,
             tileGrid: new ol.tilegrid.WMTS({
                 extent: layerExtent,
-                tileSize: 256, //OLVectorTileConstants.tileSize,// [256, 256],
+                tileSize: [256,256], //OLVectorTileConstants.tileSize,// [256, 256],
                 origin: vtOrigin, // [-180.0, 90.0],
                 resolutions: resolutions,
                 matrixIds: matrixIds
@@ -443,7 +443,7 @@ export const OLVectorTileConstants = {
     ],
 
     epsg3857_matrixIds: [
-        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
+       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20
     ],
 
     tdt4326_matrixIdsEx: [

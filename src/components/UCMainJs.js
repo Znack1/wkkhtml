@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-04 16:03:27
+ * @LastEditTime: 2023-08-05 22:02:46
  * @input: no param
  * @out: no param
  */
@@ -386,7 +386,7 @@ export class UCMainEventManager {
         // 更新echart数据
           
           this.curCityInfo = {
-            cityLevel:properties.layer == 'sheng'?2:(properties.layer == 'shi'?3:4),
+            cityLevel:properties.layer == 'sheng_3857'?2:(properties.layer == 'shi_3857'?3:4),
             sheng:properties['sheng'],
             shi:properties['shi'],
             xian:properties['xian']
@@ -493,7 +493,7 @@ export class UCMainEventManager {
 
   // 获取图层名称数组
   getTypes(){
-   let layerNames= ["xian","shi","sheng"];
+   let layerNames= ["xian_3857","shi_3857","sheng_3857"];
    let level = this.ucMap.getZoomLevel();
   if(level > window.BASE_CONFIG.showDistrictLevel[2]){
       return layerNames
@@ -816,9 +816,9 @@ _selectedFeatureHighlight(feature) {
       chart.set("overlyType", "countOverlay")
       this.ucMap.curMap.addOverlay(chart, true);
       //self.map是在mounted里new Map出来的，按openlayer官网操作即可，
-      // let newPoints  = GeometryUtility.transformPoints([[d.zxjd, d.zxwd]],"EPSG:4326","EPSG:3857")
-      // chart.setPosition(newPoints[0]);
-      chart.setPosition([d.zxjd, d.zxwd]);
+      let newPoints  = GeometryUtility.transformPoints([[d.zxjd, d.zxwd]],"EPSG:4326","EPSG:3857")
+      chart.setPosition(newPoints[0]);
+      // chart.setPosition([d.zxjd, d.zxwd]);
     }
 
   }

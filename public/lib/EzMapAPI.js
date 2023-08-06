@@ -209,7 +209,7 @@ var ezMap = {
      * 默认值：无
      */
     // MapFullExtent: undefined,
-    MapFullExtent: [70,16.9,135,55],
+    // MapFullExtent: [70,16.9,135,55],
 
     /**
      * 参数说明：设置地图初始显示级别
