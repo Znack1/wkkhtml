@@ -42,7 +42,7 @@ window.BASE_CONFIG = {
 				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wkkp_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wkkp_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
 				"serviceName": "wkkp_3857",
 				"serviceEPSG": "EPSG:3857",
-				"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wkkp_3857","layout":{},"paint":{"fill-color":"rgba(237, 106, 104, 0)","fill-outline-color":"rgba(255,0,0, 1)"},"id":"wwkp//0/0","type":"fill","minzoom":0,"maxzoom":22},{"source":"featuremap","source-layer":"wkkp_3857","layout":{},"paint":{"line-color":"rgba(230, 255, 0, 1)","line-width":2},"id":"wkkp//0/1/0","type":"line","minzoom":0,"maxzoom":22}]}',
+				"styleJsonUrlContent":'{"version":"8","name":"featuremap","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wkkp_3857","layout":{},"paint":{"fill-color":"rgba(237, 106, 104, 0)","fill-outline-color":"rgba(255,0,0, 1)"},"id":"wwkp//0/0","type":"fill","minzoom":0,"maxzoom":22},{"source":"featuremap","source-layer":"wkkp_3857","layout":{},"paint":{"line-color":"rgba(255,0, 0, 1)","line-width":2},"id":"wkkp//0/1/0","type":"line","minzoom":0,"maxzoom":22}]}',
 				"styleJsonUrl": "",
 				"sourceName": null,
 				"renderParamsString": "",

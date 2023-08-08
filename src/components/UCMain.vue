@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-06 12:30:50
+ * @LastEditTime: 2023-08-08 20:59:16
  * @input: no param
  * @out: no param
 -->
@@ -26,8 +26,7 @@
       >
         {{ ucSetting.rightPanelVisiable ? "关闭列表" : "展开列表" }}
       </div> -->
-    <UCRightFloatComponent  class="divRightLeftFloat"
-      ref="ucRightFloatComponent">
+    <UCRightFloatComponent class="divRightLeftFloat" ref="ucRightFloatComponent">
     </UCRightFloatComponent>
 
     <!-- 工具条 -->
@@ -54,8 +53,8 @@
     <!-- 返回全国 -->
     <i @click="_backCountry" class="allCity iconfont editMapBtn active icon-zuobiao">全国</i>
 
-    <el-dialog v-if="detailInfo" :title="detailInfo.mc" fullscreen :visible.sync="dialogVisible" width="100%"
-      :before-close="handleClose" :destroy-on-close="true">
+    <el-dialog class="detailMore" v-if="detailInfo" :title="detailInfo.mc" fullscreen :visible.sync="dialogVisible"
+      width="100%" :before-close="handleClose" :destroy-on-close="true">
       <div class="detail_content">
         <div class="content_box">
           <div class="box_title" style="text-align:left;padding:5px 0">基本信息</div>
@@ -231,9 +230,12 @@
     </el-dialog>
 
 
-    <div class="legenBtn" @click="_showLegend" :class="showLegend?'active':''">
+    <div class="legenBtn" @click="_showLegend" :class="showLegend ? 'active' : ''">
       <i class="iconfont icon-tuceng"></i>
     </div>
+
+    <!-- 详情弹框 -->
+    <DetailDialogVue ref="detailDialog"></DetailDialogVue>
   </div>
 </template>
 
@@ -249,6 +251,7 @@ import UCZoomControl from "./customMapControls/UCZoomControl.vue";
 import UCRightFloatComponent from "./rightPanel/UCRightFloatComponent.vue";
 import { DialogSystemJs } from "../common/dialogSystemJs";
 import UCPhotoDialog from "../utility/ui/dialog/UCPhotoDialog.vue"
+import DetailDialogVue from "./mainMap/DetailDialog.vue"
 import {
   LayerCatalogItem,
   LayerCatalogItemType,
@@ -267,7 +270,8 @@ export default {
     UCRightFloatComponent,
     LeftMenu,
     UCZoomControl,
-    UCPhotoDialog
+    UCPhotoDialog,
+    DetailDialogVue
   },
   props: {},
   data() {
@@ -295,7 +299,7 @@ export default {
   },
   methods: {
     // 关闭图例
-    _hideLegbox(){
+    _hideLegbox() {
       this.showLegend = false;
     },
     // 关闭更多详情弹框
@@ -316,18 +320,18 @@ export default {
           this.$refs.ucMapEx.init(mapOptions, false);
           let polygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
           let fillStyle = new ol.style.Style({
-          fill: new ol.style.Fill({
+            fill: new ol.style.Fill({
               color: 'rgba(255,255,255,1)',
-          }),
-          stroke: new ol.style.Stroke({
+            }),
+            stroke: new ol.style.Stroke({
               color: '#ff0000',
               width: 2,
-          })
+            })
           })
           polygonFeature.setStyle(fillStyle);
-          GeometryUtility.transformFeatureGeometry([polygonFeature],'EPSG:4326',"EPSG:3857")
+          GeometryUtility.transformFeatureGeometry([polygonFeature], 'EPSG:4326', "EPSG:3857")
           this.$refs.ucMapEx.layerMgr.detailLayer.clear();
-          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,this.eventManager.curFeatrue])
+          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature, this.eventManager.curFeatrue])
           this.$refs.ucMapEx.curMap.getView().setZoom(11);
           this.$refs.ucMapEx.curMap.getView().setCenter(this.eventManager.curFeatrue.getGeometry().getCoordinates());
           // this.$refs.ucMapEx.layerMgr.drawGeometryLayer.addDrawPoint(JSON.parse(this.eventManager.curFeaInfo.geom))
@@ -474,6 +478,11 @@ export default {
      * 初始化事件
      */
     _initEvents() {
+      // 详情
+      this.$refs.detailDialog.on_showDetail((info) => {
+        this.show();
+      })
+
       this.eventManager = new UCMainEventManager();
       this.eventManager.ucMain = this;
       this.eventManager.ucMap = this.$refs.ucMap;
@@ -483,6 +492,7 @@ export default {
       this.eventManager.ucLeftMenu = this.$refs.ucLeftMenu;
       this.eventManager.ucZoomControl = this.$refs.ucZoomControl;
       this.eventManager.ucRightPanel = this.$refs.ucRightFloatComponent;
+      this.eventManager.detailDialog = this.$refs.detailDialog; // 详情弹框
       this.eventManager.addListener();
     },
   },
@@ -494,8 +504,6 @@ export default {
 </script>
 
 <style lang="less" scoped>
-
-
 .divContainer {
   width: 100%;
   height: 100%;
@@ -540,9 +548,9 @@ export default {
     position: absolute;
     left: 340px;
     bottom: 10px;
-    height:30vh;
+    height: 30vh;
     transition: all 0.5s;
-    padding:0 10px;
+    padding: 0 10px;
   }
 
   .close_btn {
@@ -592,6 +600,7 @@ export default {
 
     .itemContent {
       padding: 10px;
+
       .legendItem {
         // margin-bottom: 5px;
         width: 25%;
@@ -608,7 +617,7 @@ export default {
 
         span {
           display: block;
-          font-size:14px
+          font-size: 14px
         }
       }
     }
@@ -645,87 +654,91 @@ export default {
     }
   }
 
-  /deep/ .el-dialog__header {
-    padding: 20px 20px 10px;
-    text-align: left;
-    padding-left: 10%;
-    padding-bottom: 0;
-  }
+  .detailMore {
+    /deep/ .el-dialog__header {
+      padding: 20px 20px 10px;
+      text-align: left;
+      padding-left: 10%;
+      padding-bottom: 0;
+    }
 
-  /deep/ .el-dialog__headerbtn {
-    right: 10%
-  }
+    /deep/ .el-dialog__headerbtn {
+      right: 10%
+    }
 
-  /deep/ .el-dialog__body {
-    padding: 10px 20px;
-    color: #606266;
-    font-size: 14px;
-    word-break: break-all;
-  }
+    /deep/ .el-dialog__body {
+      padding: 10px 20px;
+      color: #606266;
+      font-size: 14px;
+      word-break: break-all;
+    }
 
-  /deep/ .el-dialog__title {
-    width: 100%;
-    height: 40px;
-    font-weight: bold;
-    text-align: left;
-    color: #3d81ef;
-    font-size: 18px;
-  }
+    /deep/ .el-dialog__title {
+      width: 100%;
+      height: 40px;
+      font-weight: bold;
+      text-align: left;
+      color: #3d81ef;
+      font-size: 18px;
+    }
 
-  .detail_content {
-    width: 80%;
-    margin: 0 auto;
-    .content_box {
-      padding: 10px;
-      background: #ffffff;
-      border-radius: 4px;
-      box-shadow: 0 0 10px 0 rgba(8, 20, 30, 0.50);
+    .detail_content {
+      width: 80%;
+      margin: 0 auto;
 
-      .box_title {
-        padding-left: 16px;
-        text-align: left;
-        border-bottom: 2px solid #8397d4;
-        ;
-        margin-bottom: 5px;
+      .content_box {
+        padding: 10px;
+        background: #ffffff;
+        border-radius: 4px;
+        box-shadow: 0 0 10px 0 rgba(8, 20, 30, 0.50);
 
-        &::before {
-          content: "";
-          height: 20px;
-          width: 5px;
-          display: inline-block;
-          background: blue;
-          margin-right: 5px;
-          margin-left: 5px;
-          vertical-align: bottom;
-        }
-      }
+        .box_title {
+          padding-left: 16px;
+          text-align: left;
+          border-bottom: 2px solid #8397d4;
+          ;
+          margin-bottom: 5px;
 
-      .infoItem {
-        line-height: 20px;
-        color: #323232;
-        display: flex;
-        justify-content: flex-start;
-        padding: 5px;
-
-        .itemName {
-          width: 140px;
-          text-align: right;
-          flex-shrink: 0;
-        }
-
-        .itemContent {
-          width: 100%;
-          padding: 10px;
-
-          .itemValue {
-            text-align: left;
-
+          &::before {
+            content: "";
+            height: 20px;
+            width: 5px;
+            display: inline-block;
+            background: blue;
+            margin-right: 5px;
+            margin-left: 5px;
+            vertical-align: bottom;
           }
         }
 
+        .infoItem {
+          line-height: 20px;
+          color: #323232;
+          display: flex;
+          justify-content: flex-start;
+          padding: 5px;
+
+          .itemName {
+            width: 140px;
+            text-align: right;
+            flex-shrink: 0;
+          }
+
+          .itemContent {
+            width: 100%;
+            padding: 10px;
+
+            .itemValue {
+              text-align: left;
+
+            }
+          }
+
+        }
       }
     }
   }
+
 
   .legenBtn {
     position: absolute;
@@ -754,4 +767,5 @@ export default {
     }
 
   }
-}</style>
+}
+</style>

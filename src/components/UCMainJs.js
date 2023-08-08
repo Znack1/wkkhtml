@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-05 22:02:46
+ * @LastEditTime: 2023-08-07 13:56:48
  * @input: no param
  * @out: no param
  */
@@ -30,6 +30,7 @@ export class UCMainEventManager {
     this.ucBaseLayerSwitch = null;
     this.ucCustomMapScale = null;
     this.ucRightPanel = null;
+    this.detailDialog = null;
     this.ucLeftMenu = null;
     this.printBtn = null; // 打印按钮
     this.editPoint = false; // 是否是编辑
@@ -355,10 +356,10 @@ export class UCMainEventManager {
   _addUCMapListener() {
     let self = this;
 
-    // 详情
-    this.ucMap.on_showDetail((info)=>{
-      this.ucMain.show();
-    })
+    // // 详情
+    // this.ucMap.on_showDetail((info)=>{
+    //   this.ucMain.show();
+    // })
 
     // 点图点击 
     this.ucMap.on_mapClick((e) => {
@@ -740,7 +741,8 @@ _selectedFeatureHighlight(feature) {
           overlay.properties = res.data.data || {};
           overlay.showFields = showFields;
 
-          this.ucMap.showOverlay(overlay);
+          // this.ucMap.showOverlay(overlay);
+          this.detailDialog.showOverlay(overlay)
         }).catch((error) => {
           this.ucMain.loading = false;
           console.log(error)

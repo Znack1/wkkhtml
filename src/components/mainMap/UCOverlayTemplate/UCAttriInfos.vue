@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-03-09 14:31:30
- * @LastEditTime: 2023-08-02 14:19:28
+ * @LastEditTime: 2023-08-07 14:54:29
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\components\mainMap\UCOverlayTemplate\UCAttriInfos.vue
@@ -14,7 +14,7 @@
         :key="item.key">
         <div class="div-attri-key"  :title="item.key">{{item.key.trim()}}</div>
         <div class="div-attri-value"  :title="item.value">{{item.value}}</div>
-      </li>
+        </li>
      
     </ul>
 
@@ -61,9 +61,24 @@ export default {
     font-size: 14px;
     color: #323232;
     border: 1px solid #e4e4e4;
-    border-bottom: 0;
+    width:50%;
+    float: left;
+    border-top:none;
+    &:nth-of-type(2){
+     border-top: 1px solid #e4e4e4;
+      // border: 1px solid #e4e4e4;
+    }
+    &:nth-of-type(1){
+      border-top: 1px solid #e4e4e4;
+      // border: 1px solid #e4e4e4;
+    }
+    &:nth-of-type(2n + 1){
+      border-right: none;
+      // border: 1px solid #e4e4e4;
+    }
     &:last-of-type{
-      border: 1px solid #e4e4e4;
+      border-right: 1px solid #e4e4e4;
+      // border: 1px solid #e4e4e4;
     }
   .div-attri-key {
     width: 110px;
