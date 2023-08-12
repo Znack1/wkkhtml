@@ -58,6 +58,7 @@ export default {
   width: 100%;
   // background: #075cba;
   background: url("../assets/images/header_bg.png") left center no-repeat;
+  background-size: 100%;
   .divLogoBox {
     margin-top: 10px;
     float: left;

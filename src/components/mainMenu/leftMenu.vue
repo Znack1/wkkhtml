@@ -4,19 +4,19 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:30
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-03 10:53:15
+ * @LastEditTime: 2023-08-09 22:29:45
 -->
 <template>
   <div class="divMenuBox">
     <div class="topContent">
       <UCPanel Title="业务数据图层" style="border-radius: 5px 5px 0 0;" iconClass="icon-zuobiao"></UCPanel>
       <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
-        <UCLeftPanel ref="ucLeftPanel" style="padding:10px;"></UCLeftPanel>
+        <UCLeftPanel ref="ucLeftPanel" ></UCLeftPanel>
       </vuescroll>
       
     </div>
     <div class="bottomContent">
-      <UCPanel Title="基础数据图层" style="border-radius: 5px 5px 0 0;" iconClass="icon-gaokong"></UCPanel>
+      <UCPanel Title="基础数据图层" style="border-radius: 5px 5px 0 0;" iconClass="icon-gaokong1"></UCPanel>
       <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px">
         <UCLayerCatalogTree class="div_leftTree" :options="treeOption"  ref="ucLayerTree" @node-click="_nodeClickHandler" @check-change="_nodeCheckChangeHandler" @node-name-click="_nodeNameClick" @node-name-db-click="_nodeNameDbClickHandler"></UCLayerCatalogTree>
       </vuescroll>
@@ -143,7 +143,7 @@ export default {
     .div_leftTree{
       height: 100%;
       width:100%;
-      padding:10px;
+      // padding:10px;
       
     }
     .topContent{

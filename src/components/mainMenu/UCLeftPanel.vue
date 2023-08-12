@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-05 12:04:31
+ * @LastEditTime: 2023-08-12 14:26:36
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -54,7 +54,7 @@
             <img
               style="margin-right: 5px"
               
-              :src="((curOverNode && curOverNode.type == 'group' && curOverNode.id == data.id)|| (curCheckedNode &&curCheckedNode.id == data.id))?  data.selectImg:data.img"
+              :src="data.type == 'group'&& ((curOverNode  && curOverNode.id == data.id)|| (curCheckedNode &&curCheckedNode.id == data.id))?  data.selectImg:data.img"
               width="18px"
               height="18px"
             />
@@ -66,6 +66,7 @@
             >
             <div class="rightSwitch" @click.stop="">
               <el-switch
+                :width="30"
                 v-show="data.type == 'leaf'"
                 v-model="data.checked"
                 @change="
@@ -405,7 +406,10 @@ export default {
 </script>
 <style lang="less" scoped>
 .collapsePanel {
- 
+  .childName{
+    font-size:16px;
+    font-weight: normal;
+  }
   .custom-tree-node {
     display: flex;
     align-items: center;
@@ -419,15 +423,43 @@ export default {
   }
 }
 /deep/ .el-tree-node__content {
-      margin-bottom: 5px;
+      // margin-bottom: 5px;
+      height:32px;
       &:hover{
-        background:#5faeee;
+        background:#d9ecfe;
         .treeName{
-          color: #3636f5!important;
+          color:  #3d81ef!important;
         }  
       }
     }
-  
+  /deep/ .el-switch__core{
+    margin: 0;
+    position: relative;
+    width: 30px;
+    height: 16px;
+    border: 1px solid #DCDFE6;
+    outline: 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background: #DCDFE6;
+    transition: border-color .3s,background-color .3s;
+    vertical-align: middle;
+  }
+  /deep/ .el-switch__core:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 1px;
+    border-radius: 100%;
+    transition: all .3s;
+    width: 14px;
+    height: 14px;
+    background-color: #FFF;
+}
+  /deep/ .el-switch.is-checked .el-switch__core::after {
+    left: 100%;
+    margin-left: -15px;
+}
 // /deep/ .el-tree-node__expand-icon {
 //   pointer-events: none;
 //   }

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-07 13:56:48
+ * @LastEditTime: 2023-08-12 19:56:03
  * @input: no param
  * @out: no param
  */
@@ -248,18 +248,19 @@ export class UCMainEventManager {
 
   // 获取右侧数据
   getRightEechart(chartParams) {
+    debugger
     let self = this;
     AxiosConfig.spatialdecision
       .post(ServiceUrlConfig.point_echars, chartParams)
       .then((res) => {
         if (res.data.data && res.data.data.map && res.data.code == 200) {
-          self.ucRightPanel.updateChart(res.data.data.map, this.ucMain.curStat)
+          self.ucRightPanel.updateChart(res.data.data.map, this.ucMain.curStat,chartParams.type != '3')
         } else {
-          self.ucRightPanel.updateChart([], this.ucMain.curStat)
+          self.ucRightPanel.updateChart([], this.ucMain.curStat,chartParams.type != '3')
         }
 
       }).catch((error) => {
-        self.ucRightPanel.updateChart([], this.ucMain.curStat)
+        self.ucRightPanel.updateChart([], this.ucMain.curStat,chartParams.type != '3')
       })
 
   }
@@ -430,11 +431,13 @@ export class UCMainEventManager {
             }
           this.getRightTableDatas(params)
             // 定位放大地图
-            let extent = districtFea.getExtent();
-          let perPixeY =   ((SystemConfig.bodyHeight * 0.3) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
-          let perPixeX =   (340 / SystemConfig.bodyHeight * (extent[2] - extent[0]));
-          let newExtent= [extent[0]-perPixeX,extent[1] - perPixeY,extent[2],extent[3]]
-          let curExtent = GeometryExtentUtility.expandExtent(newExtent,2.1);
+         let extent = districtFea.getExtent();
+         debugger
+          // let perPixeY =   ((SystemConfig.bodyHeight * 0.3) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
+          // let perPixeX =   (340 / SystemConfig.bodyHeight * (extent[2] - extent[0]));
+          // let newExtent= [extent[0]-perPixeX,extent[1] - perPixeY,extent[2],extent[3]]
+          let curExtent = GeometryExtentUtility.expandExtent(extent,1.5);
+          debugger
             self.ucMap.setMapExtent(curExtent);
 
           //选中要素高亮显示

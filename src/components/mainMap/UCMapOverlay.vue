@@ -113,9 +113,10 @@ export default {
 
         // 使弹框居中
         let extent = self.curMap.getView().calculateExtent(self.curMap.getSize());
-        let perPixeY =   ((70) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
-        let perPixeX =   (260 / SystemConfig.bodyWidth * (extent[2] - extent[0]));
-        self.curMap.getView().setCenter([position[0] + perPixeX,position[1] + perPixeY])
+        // let perPixeY =   ((70) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
+        // let perPixeX =   (260 / SystemConfig.bodyWidth * (extent[2] - extent[0]));
+        // self.curMap.getView().setCenter([position[0] + perPixeX,position[1] + perPixeY])
+        self.curMap.getView().setCenter(position)
       });
     },
 

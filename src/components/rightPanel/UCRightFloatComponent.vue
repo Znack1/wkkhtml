@@ -1,8 +1,8 @@
 
 <template>
   <div class="divRightFloat">
-    <!-- <div style="height: calc(100% - 0px)"> -->
-        <!-- <el-collapse
+    <div style="height: calc(100% - 0px)">
+      <!-- <el-collapse
           v-model="activeNames"
           @change="handleChange"
           style="width: 100%; height: 100%"
@@ -23,29 +23,28 @@
             ></UCDistributionTable>
           </el-collapse-item>
         </el-collapse> -->
-        <div class="topContent echartbox" >
-          <UCPanel style="background:white;color:#3D81EF; border-bottom:1px solid rgb(158, 158, 158);"  :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
-          <div style="width: 100%; height: calc(100% - 40px);margin-top:5px">
-            <UCBarXComponent ref="ucBarXComponent"></UCBarXComponent>
-          </div>
-         
+      <div class="topContent echartbox">
+        <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+          <UCBarYComponent v-if="!isX" ref="ucBarYComponent"></UCBarYComponent>
+          <UCBarXComponent v-if="isX" ref="ucBarXComponent"></UCBarXComponent>
         </div>
-        <div class="bottomContent tableContent">
-          <UCPanel style="background:white;color:#3D81EF; border-bottom:1px solid rgb(158, 158, 158);" :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
-          <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
-            <UCDistributionTable
-            style="width: 100%; height: calc(100% - 40px);padding:5px;"
-              ref="ucDistributionTable"
-              class="table"
-            ></UCDistributionTable>
+
+      </div>
+      <div class="bottomContent tableContent">
+        <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
+        <UCDistributionTable style="width: 100%; height: calc(100% - 50px);" ref="ucDistributionTable" class="table">
+        </UCDistributionTable>
         <!-- </vuescroll> -->
-         
-        </div>
-    <!-- </div> -->
+
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import UCBarYComponent from "../../utility/ui/echarts/UCBarYComponent.vue";
 import UCBarXComponent from "../../utility/ui/echarts/UCBarXComponent.vue";
 import UCDistributionTable from "./UCDistributionTable.vue";
 import UCPanel from '../../utility/ui/UCPanel.vue'
@@ -55,8 +54,9 @@ export default {
   name: "UCRightFloatComponent",
   data() {
     return {
-      firstName:"监管等级",
-      secondName:'数据统计',
+      isX: true,
+      firstName: "监管等级",
+      secondName: '数据统计',
       // ucsetting: {
       //   tabelName: "图表统计", // 项目分布表格名称
       //   tableNameYear: "数据统计", // 历年表格名称
@@ -65,7 +65,7 @@ export default {
     };
   },
 
-  components: { UCBarXComponent, UCDistributionTable, vuescroll,UCPanel },
+  components: { UCBarYComponent, UCDistributionTable, vuescroll, UCPanel, UCBarXComponent },
 
   computed: {},
 
@@ -74,26 +74,34 @@ export default {
   },
 
   methods: {
-    initTitle(curCityInfo){
-      let keys = ["sheng","shi","xian"]
-      this.firstName="监管等级("  +(curCityInfo.cityLevel == 1? '全国':  curCityInfo[keys[curCityInfo.cityLevel - 2]]) +")";
-      this.secondName="数据统计("  +(curCityInfo.cityLevel == 1? '全国':  curCityInfo[keys[curCityInfo.cityLevel - 2]]) +")";
+    initTitle(curCityInfo) {
+      debugger
+      let keys = ["sheng", "shi", "xian"]
+      this.firstName = "监管等级(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
+      this.secondName = "数据统计(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
     },
 
     // 更新数据
-    updateChart(datas, curStat){
-      if(!datas){
+    updateChart(datas, curStat, isX) {
+      this.isX = isX;
+      this.$nextTick(() => {
+        if (!datas) {
+          let barObj = {
+            data: [],
+          };
+          if (isX) {
+            this.$refs.ucBarXComponent.initChart(barObj);
+          } else {
+            this.$refs.ucBarYComponent.initChart(barObj);
+          }
+
+          return;
+        }
         let barObj = {
           data: [],
+          color: ['#3d81ef', '#9fc3ff']
         };
-        this.$refs.ucBarXComponent.initChart(barObj);
-        return;
-      }
-      let barObj = {
-          data: [],
-          color:['#158DFD','#9BC5F1']
-        };
-        datas= _.sortBy(datas, (o) => {
+        datas = _.sortBy(datas, (o) => {
           return parseFloat(o.sort);
         });
         _.each(datas, (n, key) => {
@@ -103,19 +111,26 @@ export default {
             type: "统计",
           });
         });
-        this.$refs.ucBarXComponent.initChart(barObj);
+        if (isX) {
+          this.$refs.ucBarXComponent.initChart(barObj);
+        } else {
+          this.$refs.ucBarYComponent.initChart(barObj);
+        }
+      })
+
+
     },
 
     // 更新table
-    updateTable(datas, curStat){
-      if(!datas){
+    updateTable(datas, curStat) {
+      if (!datas) {
         this.$refs.ucDistributionTable.update([], []);
         return;
       }
       if (datas) {
         let idx = 0;
         let tableDatas = new Array();
-        datas = _.sortBy(datas,(o)=>{
+        datas = _.sortBy(datas, (o) => {
           return -parseFloat(o.sort)
         });
         let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
@@ -129,16 +144,16 @@ export default {
             name: map.name,
           };
 
-          map.list = _.sortBy(map.list,(o)=>{
+          map.list = _.sortBy(map.list, (o) => {
             return parseFloat(o.id)
-        });
+          });
           // {name:'区域',props:'area',width:120}
           _.each(map.list, (l, index) => {
             if (idx == 0) {
               headers.push({
                 name: l.dengji,
                 props: "prop" + index,
-                width:l.dengji.length * 30
+                width: l.dengji.length * 24
               });
             }
 
@@ -148,21 +163,21 @@ export default {
 
           tableDatas.push(temp);
         });
-     
-        _.each(tableDatas,(d,index)=>{
-          d.idx = (index+1)
+
+        _.each(tableDatas, (d, index) => {
+          d.idx = (index + 1)
         })
         this.$refs.ucDistributionTable.update(tableDatas, headers);
       }
-    
+
     },
 
     /**
      * 初始化
      */
     updatePanel(data, curStat) {
-      
-      if(!data){
+
+      if (!data) {
         let barObj = {
           data: [],
         };
@@ -174,9 +189,9 @@ export default {
       if (data.map) {
         let barObj = {
           data: [],
-          color:['#158DFD','#9BC5F1']
+          color: ['#158DFD', '#9BC5F1']
         };
-        datas= _.sortBy(data.map, (o) => {
+        datas = _.sortBy(data.map, (o) => {
           return parseFloat(o.sort);
         });
         _.each(data.map, (n, key) => {
@@ -192,7 +207,7 @@ export default {
       if (data.linkedHashMap) {
         let idx = 0;
         let tableDatas = new Array();
-        data.linkedHashMap = _.sortBy(data.linkedHashMap,(o)=>{
+        data.linkedHashMap = _.sortBy(data.linkedHashMap, (o) => {
           return -parseFloat(o.sort)
         });
         let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
@@ -206,9 +221,9 @@ export default {
             name: map.name,
           };
 
-          map.list = _.sortBy(map.list,(o)=>{
+          map.list = _.sortBy(map.list, (o) => {
             return parseFloat(o.id)
-        });
+          });
           // {name:'区域',props:'area',width:120}
           _.each(map.list, (l, index) => {
             if (idx == 0) {
@@ -228,13 +243,13 @@ export default {
         //   return o.prop0;
         // });
 
-        _.each(tableDatas,(d,index)=>{
-          d.idx = (index+1)
+        _.each(tableDatas, (d, index) => {
+          d.idx = (index + 1)
         })
         this.$refs.ucDistributionTable.update(tableDatas, headers);
       }
 
-     
+
     },
 
     handleChange(val) {
@@ -242,7 +257,7 @@ export default {
     },
 
     // 事件初始化
-    _initEvents() {},
+    _initEvents() { },
   },
 };
 </script>
@@ -250,9 +265,7 @@ export default {
 .divRightFloat {
   height: 100%;
   background: white;
-  display:flex;
-  align-item:center;
-  justify-content: space-between;
+
   /deep/ .el-collapse-item__header {
     height: 40px;
     line-height: 40px;
@@ -262,20 +275,21 @@ export default {
     font-size: 18px;
     padding: 0 15px;
   }
+
   .echartbox {
-    width: 60%;
-    // max-height: 350px;
-    height:100%;
-    border-right:1px solid rgb(158, 158, 158);
+    width: 100%;
+    height: 60%;
+    max-height: 350px;
   }
+
   /deep/ .el-collapse-item__content {
     padding-bottom: 10px;
   }
+
   .tableContent {
-    // height: calc(100% - 350px);
-    height:100%;
-    width: 40%;
-   
+    height: calc(100% - 350px);
+    min-height: 40%;
+
     .el-collapse-item__content {
       height: 100%;
     }

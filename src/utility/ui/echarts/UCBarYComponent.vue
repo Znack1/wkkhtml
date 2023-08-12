@@ -72,6 +72,7 @@ export default {
       let yAxisData = []; // x轴
       let serObj = [];
       let legend = [];
+      newData.data = newData.data.reverse();
       // 获取legend
       let groupByType = _.groupBy(newData.data, "type");
       _.each(groupByType, (item, key) => {
@@ -127,7 +128,7 @@ export default {
                   ]
                 };
               },
-              barBorderRadius: [0, 30, 30, 0]
+              barBorderRadius: [30, 30, 30, 30]
             }
           },
           data: p
@@ -144,10 +145,10 @@ export default {
         },
         toolbox: {},
         grid: {
-          top: 10,
+          top: 0,
           left: 16,
           right: 30,
-          bottom: 10,
+          bottom: 0,
           containLabel: true
         },
         yAxis: [
@@ -197,38 +198,38 @@ export default {
       };
 
       // 是否增加滚动条
-      if (yAxisData.length > 11) {
-        option.dataZoom = [
-          {
-            type: "slider",
-            show: true,
-            start: 74,
-            end: 100,
-            handleSize: 8,
-            yAxisIndex:0,
-          },
-          {
-            type: "inside",
-            start: 74,
-            end: 100,
-            yAxisIndex:0
-          }
-        ];
-      } else {
-        option.grid.bottom = "20";
+      // if (yAxisData.length > 11) {
+      //   option.dataZoom = [
+      //     {
+      //       type: "slider",
+      //       show: true,
+      //       start: 74,
+      //       end: 100,
+      //       handleSize: 8,
+      //       yAxisIndex:0,
+      //     },
+      //     {
+      //       type: "inside",
+      //       start: 74,
+      //       end: 100,
+      //       yAxisIndex:0
+      //     }
+      //   ];
+      // } else {
+        option.grid.bottom = "10";
         option.dataZoom = [];
-      }
+      // }
       // 判断是否有lengend
       if (newData.legend) {
         option.legend = {
           data: legend
         };
-        option.grid.top = 30;
+        option.grid.top = 20;
       } else {
         option.legend = {
           show: false
         };
-        option.grid.top = 20;
+        option.grid.top = 10;
       }
 
       this.charts.setOption(option);

@@ -347,9 +347,10 @@ a:hover {
     /* width: calc(100% - 40px); */
     display: inline-block;
     line-height: 20px;
-    font-size: 16px;
+    font-size: 18px;
     word-break: break-word;
     vertical-align: middle;
+    font-weight: 600;
 }
 
 .el-tree-node__content {

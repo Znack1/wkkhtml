@@ -4,14 +4,14 @@
  * @Author: zkc
  * @Date: 2021-03-23 15:57:10
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-07 14:16:24
+ * @LastEditTime: 2023-08-10 14:59:52
  * @input: no param
  * @out: no param
 -->
 <!--  -->
 <template>
     <el-dialog :title="dialogTitle"  :visible.sync="dialogVisible" width="60%" id="divMapOverlay">
-      <UCStatisticsOverlay ref="ucStatOverlay"></UCStatisticsOverlay>
+      <UCStatisticsOverlay ref="ucStatOverlay" @showDetail="showDetail"></UCStatisticsOverlay>
     </el-dialog>
   </template>
   
@@ -48,13 +48,10 @@
     methods: {
       init() {},
       
-      on_showDetail(callback){
-      if(this.$refs.ucStatOverlay){
-        this.$refs.ucStatOverlay.on_more(callback)
-      }
-    
-    },
-
+     
+      showDetail(){
+        this.$emit("showDetail1",this.info)
+      },
   
       showOverlay(overlayInfo) {
         debugger
@@ -72,12 +69,16 @@
             overlayInfo.showFields
           );
             this.$nextTick(()=>{
+            
+            
                 self._initAttriAndPhotosCallbackHandler(overlayInfo.position, info);
             })
          
         }
       },
-  
+      on_showDetail(callback){
+        this.$on("showDetail1",callback)
+      },
       // 点击详情
       _initAttriAndPhotosCallbackHandler(position, objectInfo) {
         // let divMapOverlayElement = document.getElementById("divMapOverlay");

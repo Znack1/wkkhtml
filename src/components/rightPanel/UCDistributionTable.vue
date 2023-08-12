@@ -25,6 +25,10 @@
         :label="header.name"
         align="center"
       >
+      <template  slot-scope="{row}">
+        <span v-if="idx > 0" :style="{'color':idx % 3 == 1?'#D81E06':(idx % 3 == 2?'#FFB400':'#3D81EF')}">{{ row[header.props] }}个</span>
+        <span v-else> {{ row[header.props] }}</span>
+      </template>
       </el-table-column>
     </el-table>
 
@@ -151,11 +155,11 @@ export default {
   /deep/ .el-table tr {
     cursor: pointer;
   }
-  /deep/ .el-table tr:nth-of-type(2n) {
-    background: #e5e5e5;
+  /deep/ .el-table thead{
+    color:#333
   }
-  /deep/ .el-table thead tr:nth-of-type(2n + 1) {
-    background: #e5e5e5;
+  /deep/ .el-table thead tr {
+    background: #d3e8ff;
   }
   /deep/ .el-table td,
   /deep/ .el-table th.is-leaf {
@@ -196,16 +200,16 @@ export default {
     line-height: 20px;
     border-radius: 10px;
     color: white;
-    background: #3072f6;
-  }
-  .num0 {
-    background: red;
+    background: #79BFFF;
   }
   .num1 {
-    background: rgb(255, 138, 5);
+    background: #E60012;
   }
   .num2 {
-    background: rgb(236, 194, 6);
+    background:#FF7200;
+  }
+  .num3 {
+    background: #F39800;
   }
 }
 </style>

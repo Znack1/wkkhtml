@@ -1,39 +1,17 @@
 <template>
   <div class="noConfig">
     <vuescroll style="width: 100%; height: 100%">
-      <el-tree
-        :filter-node-method="filterNode"
-        style="width: 100%"
-        :show-checkbox="options.showCheckbox"
-        :data="treeNodes.objects"
-        node-key="id"
-        @node-click="_nodeClickHandler"
-        :props="defaultProps"
-        :render-after-expand="false"
-        :expand-on-click-node="true"
-        ref="tree"
-      >
-        <span
-          class="custom-tree-node"
-          slot-scope="{ node, data }"
-          :title="node.label"
-        >
-          <span
-            class="treeName"
-            @click="_nodeNameClickHandler(data)"
-            @dblclick="_nodeNameDbClickHandler(data)"
-            :title="node.label"
-            >{{ node.label }}</span
-          >
+      <el-tree :filter-node-method="filterNode" style="width: 100%" :show-checkbox="options.showCheckbox"
+        :data="treeNodes.objects" node-key="id" @node-click="_nodeClickHandler" :props="defaultProps"
+        :render-after-expand="false" :expand-on-click-node="true" ref="tree">
+        <span class="custom-tree-node" slot-scope="{ node, data }" :title="node.label">
+          <span class="treeName" @click="_nodeNameClickHandler(data)" @dblclick="_nodeNameDbClickHandler(data)"
+            :title="node.label">{{ node.label }}</span>
           <div @click.stop="" class="rightSwitch">
-            <el-switch
-              v-model="node.defaultVisible"
-              @change="
-                (val) => {
-                  _nodeCheckChangeHandler(data, val);
-                }
-              "
-            >
+            <el-switch  :width="30" v-model="node.defaultVisible" @change="(val) => {
+                _nodeCheckChangeHandler(data, val);
+              }
+              ">
             </el-switch>
           </div>
         </span>
@@ -85,7 +63,7 @@ export default {
     },
   },
   computed: {},
-  mounted() {},
+  mounted() { },
   methods: {
     init(callback) {
       this.reset(callback);
@@ -191,62 +169,111 @@ export default {
 /** @format */
 .noConfig {
   .el-tree {
-  background: none;
-  // color: rgb(39, 37, 37);
-}
-
-/deep/ .el-tree-node {
-  line-height: 36px;
-  font-size: 18px;
-}
-
-/deep/ .el-button--small,
-/deep/ .el-button--small.is-round {
-  padding: 0 15px;
-}
-.el-tree-node:focus > .el-tree-node__content {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-&.el-tree-node__content:hover {
-  background-color: rgba(255, 255, 255, 0.15);
-}
-.el-checkbox__inner {
-  background: rgba(255, 255, 255, 0.5);
-}
-.el-tree-node__label {
-  font-size: 14px;
-}
-
-/deep/ .el-button {
-  color: #409eff;
-  background: 0 0;
-  padding-left: 0;
-  background: none;
-  padding-right: 0;
-}
-
-/deep/ .el-tree-node__content {
-  display: flex;
-  align-items: center;
-  height: 26px;
-  cursor: pointer;
-}
-
-.custom-tree-node {
-  display: flex;
-  align-items: center;
-  justify-content: flex-start;
-  .el-tree-node__content {
-    margin-bottom: 5px;
-  }
-  .rightSwitch {
-    display: inline-block;
-    margin-left: auto;
+    background: none;
+    // color: rgb(39, 37, 37);
   }
 
+  /deep/ .el-tree-node {
+    line-height: 36px;
+    font-size: 18px;
+  }
+
+  /deep/ .el-button--small,
+  /deep/ .el-button--small.is-round {
+    padding: 0 15px;
+  }
+
+  .el-tree-node:focus>.el-tree-node__content {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  &.el-tree-node__content:hover {
+    background-color: rgba(255, 255, 255, 0.15);
+  }
+
+  .el-checkbox__inner {
+    background: rgba(255, 255, 255, 0.5);
+  }
+
+  .el-tree-node__label {
+    font-size: 14px;
+  }
+
+  /deep/ .el-button {
+    color: #409eff;
+    background: 0 0;
+    padding-left: 0;
+    background: none;
+    padding-right: 0;
+  }
+
+  /deep/ .el-tree-node__content {
+    display: flex;
+    align-items: center;
+    height: 26px;
+    cursor: pointer;
+  }
+
+  .custom-tree-node {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+
+    .el-tree-node__content {
+      margin-bottom: 5px;
+    }
+
+    .rightSwitch {
+      display: inline-block;
+      margin-left: auto;
+    }
+
+  }
+
+  /deep/ .el-tree-node__content {
+    // margin-bottom: 5px;
+    height: 32px;
+
+    &:hover {
+      background: #d9ecfe;
+
+      .treeName {
+        color: #3d81ef !important;
+      }
+    }
+  }
+
+
 }
 
+/deep/ .el-switch__core {
+    margin: 0;
+    position: relative;
+    width: 30px;
+    height: 16px;
+    border: 1px solid #DCDFE6;
+    outline: 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background: #DCDFE6;
+    transition: border-color .3s, background-color .3s;
+    vertical-align: middle;
+  }
 
-} 
+  /deep/ .el-switch__core:after {
+    content: "";
+    position: absolute;
+    top: 0px;
+    left: 1px;
+    border-radius: 100%;
+    transition: all .3s;
+    width: 14px;
+    height: 14px;
+    background-color: #FFF;
+  }
 
+  /deep/ .el-switch.is-checked .el-switch__core::after {
+    left: 100%;
+    margin-left: -15px;
+  }
 </style>
