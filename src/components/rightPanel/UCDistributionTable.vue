@@ -142,7 +142,7 @@ export default {
 .tableAreaDist {
   /deep/ .el-table--border {
     background: none;
-    border: none;
+    // border: none;
   }
   /deep/ .el-table::before {
     background: none;
@@ -161,15 +161,20 @@ export default {
   /deep/ .el-table thead tr {
     background: #d3e8ff;
   }
+  /deep/.el-table td.el-table__cell, 
+  /deep/.el-table th.el-table__cell.is-leaf{
+    border-bottom: 1px solid #dddfe3;
+  }
+
   /deep/ .el-table td,
   /deep/ .el-table th.is-leaf {
-    border: none;
+    // border: none;
   }
   /deep/ .el-table--enable-row-transition .el-table__body td {
     color: #323232;
   }
   /deep/ .el-table--border td {
-    border: none;
+    // border: none;
   }
   /deep/ .el-table__body tr:hover td {
     background: none;

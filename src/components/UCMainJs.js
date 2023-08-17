@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-12 19:56:03
+ * @LastEditTime: 2023-08-17 22:39:52
  * @input: no param
  * @out: no param
  */
@@ -17,7 +17,7 @@ import AxiosConfig from "@/config/AxiosConfigJs";
 import draw_marker from "../assets/images/draw_marker.png";
 import _ from 'lodash'
 import { LayerFeatureType } from './mainMap/layer/LayerFeatureType.js';
-import { LayerCatalogItem, LayerCatalogItems ,VectorTileLayerItem} from '@/model/LayerCatalogItem.js';
+import { LayerCatalogItem, LayerCatalogItems, VectorTileLayerItem } from '@/model/LayerCatalogItem.js';
 import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
 import echarts from "echarts";
 import { SystemConfig } from '@/config/SystemConfig.js';
@@ -42,10 +42,11 @@ export class UCMainEventManager {
     // 获取分类key
     this.typekey = null;
     this.curCityInfo = {
-      cityLevel:1,
-      sheng:null,
-            shi:null,
-            xian:null
+      cityLevel: 1,
+      sheng: null,
+      shi: null,
+      xian: null,
+      liuyu: null
     };
     // 当前要素信息
     this.curFeaInfo = null;
@@ -127,22 +128,26 @@ export class UCMainEventManager {
   // 获取页面数据更新
   getPageData() {
     let self = this;
+    self.showLegend = false;
     this.ucMain.checkedNodes = _.sortBy(this.checkedNodes, (node) => {
       return parseFloat(node.sort);
     });
+    this.ucMain.showLegend = false;// 关闭图例
+
     if (this.checkedNodes.length == 0) {
       self.ucMap.layerMgr.poiLayer.clear();
-      self.ucRightPanel.updatePanel(null, this.ucMain.curStat)
+      self.ucMain.updatePanel(null, this.ucMain.curStat)
     } else {
       let rootParent = self.ucLeftMenu.$refs.ucLeftPanel.getParentNode(this.checkedNodes[0].parentId)
       // 获取分类key
       self.typekey = null;
       if (rootParent) {
         self.typekey = window.BASE_CONFIG.useFieldConfig[rootParent.name];
-        this.ucRightPanel.firstName = rootParent.name
+        this.ucMain.firstName = rootParent.name
       }
-      
+
       // 获取右侧数据
+      debugger
       this.getRightPanel()
 
       // 获取地图交互
@@ -185,7 +190,7 @@ export class UCMainEventManager {
           self.datas = res.data.data;
           if (level <= 6) {
             self.ucMain.loading = false;
-            self.ucMap.layerMgr.poiLayer.clear();
+            // self.ucMap.layerMgr.poiLayer.clear();
             this.showType = 'count';
             self.addColumnChart()
           }
@@ -194,7 +199,7 @@ export class UCMainEventManager {
           // self.ucMap.layerMgr.datacountLayer.addMarkers(datas);
 
           // 更新右侧面板
-          // self.ucRightPanel.updatePanel(res.data.data, this.ucMain.curStat)
+          // self.ucMain.updatePanel(res.data.data, this.ucMain.curStat)
         }).catch((error) => {
           self.ucMain.loading = false;
 
@@ -206,7 +211,7 @@ export class UCMainEventManager {
 
   // 获取右测数据
   getRightPanel() {
-    this.ucRightPanel.initTitle(this.curCityInfo)
+    this.ucMain.initTitle(this.curCityInfo)
     // 更新echart数据
     let chartParams = {
       type: this.checkedNodes[0].parentId,
@@ -224,22 +229,22 @@ export class UCMainEventManager {
       "shengName": null,
       "shiName": null,
     }
-    if(this.ucMain.curStat.value == 'ssly'){
+    if (this.ucMain.curStat.value == 'ssly') {
       params.qvbie = 'ssly'
-    }else{
-      switch(this.curCityInfo.cityLevel){
-          case 1:
-            params.qvbie = 'sheng'
-            break;
-            case 2:
-            params.qvbie = 'shi'
-            break;
-            case 3:
-            params.qvbie = 'xian'
-            break;
-        }
-        params.shengName = this.curCityInfo.sheng;
-        params.shiName = this.curCityInfo.shi
+    } else {
+      switch (this.curCityInfo.cityLevel) {
+        case 1:
+          params.qvbie = 'sheng'
+          break;
+        case 2:
+          params.qvbie = 'shi'
+          break;
+        case 3:
+          params.qvbie = 'xian'
+          break;
+      }
+      params.shengName = this.curCityInfo.sheng;
+      params.shiName = this.curCityInfo.shi
     }
     this.getRightTableDatas(params)
 
@@ -248,19 +253,18 @@ export class UCMainEventManager {
 
   // 获取右侧数据
   getRightEechart(chartParams) {
-    debugger
     let self = this;
     AxiosConfig.spatialdecision
       .post(ServiceUrlConfig.point_echars, chartParams)
       .then((res) => {
         if (res.data.data && res.data.data.map && res.data.code == 200) {
-          self.ucRightPanel.updateChart(res.data.data.map, this.ucMain.curStat,chartParams.type != '3')
+          self.ucMain.updateChart(res.data.data.map, this.ucMain.curStat, chartParams.type != '4')
         } else {
-          self.ucRightPanel.updateChart([], this.ucMain.curStat,chartParams.type != '3')
+          self.ucMain.updateChart([], this.ucMain.curStat, chartParams.type != '4')
         }
 
       }).catch((error) => {
-        self.ucRightPanel.updateChart([], this.ucMain.curStat,chartParams.type != '3')
+        self.ucMain.updateChart([], this.ucMain.curStat, chartParams.type != '4')
       })
 
   }
@@ -272,13 +276,13 @@ export class UCMainEventManager {
       .post(ServiceUrlConfig.point_findForm, tableParams)
       .then((res) => {
         if (res.data.data && res.data.data.linkedHashMap && res.data.code == 200) {
-          self.ucRightPanel.updateTable(res.data.data.linkedHashMap, this.ucMain.curStat)
+          self.ucMain.updateTable(res.data.data.linkedHashMap, this.ucMain.curStat)
         } else {
-          self.ucRightPanel.updateTable([], this.ucMain.curStat)
+          self.ucMain.updateTable([], this.ucMain.curStat)
         }
 
       }).catch((error) => {
-        self.ucRightPanel.updateTable([], this.ucMain.curStat)
+        self.ucMain.updateTable([], this.ucMain.curStat)
       })
 
   }
@@ -286,50 +290,55 @@ export class UCMainEventManager {
 
   // 绘制点位
   _addPointDatas() {
+
     let self = this;
     self.ucMap.layerMgr.poiLayer.clear();
+    if (!this.ucMain.pointsLayerItem) return;
+    this.ucMain.pointsLayerItem.defaultVisible = true;
+    this._changeLayerItemVisible(this.ucMain.pointsLayerItem, true)
     // 通过key分类
-    if(self.pointDatas){
-      let groupByKey = _.groupBy(self.pointDatas, self.typekey)
-      let initDatas = [];
-  
-      _.each(groupByKey, (group, key) => {
-        initDatas.push({
-          features: group,
-          img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
-          selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
-        })
-      })
-  
-      self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
-    }else{
-      // 获取全国点位
-      let paramsEx = {
-        type: this.checkedNodes[0].parentId,
-        twoType: _.map(this.checkedNodes, "name")
-      }
-      AxiosConfig.spatialdecision
-        .post(ServiceUrlConfig.point_point, paramsEx)
-        .then((res) => {
+    return;
+    // if (self.pointDatas) {
+    //   let groupByKey = _.groupBy(self.pointDatas, self.typekey)
+    //   let initDatas = [];
 
-          self.pointDatas = res.data.data.pointEntities;
-          let groupByKey = _.groupBy(self.pointDatas, self.typekey)
-          let initDatas = [];
-      
-          _.each(groupByKey, (group, key) => {
-            initDatas.push({
-              features: group,
-              img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
-              selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
-            })
-          })
-      
-          self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
-        }).catch((error) => {
-          this.$message.error("全国点位获取失败，请检查网络并刷新页面！")
-        })
-    }
-  
+    //   _.each(groupByKey, (group, key) => {
+    //     initDatas.push({
+    //       features: group,
+    //       img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
+    //       selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
+    //     })
+    //   })
+
+    //   self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+    // } else {
+    //   // 获取全国点位
+    //   let paramsEx = {
+    //     type: this.checkedNodes[0].parentId,
+    //     twoType: _.map(this.checkedNodes, "name")
+    //   }
+    //   AxiosConfig.spatialdecision
+    //     .post(ServiceUrlConfig.point_point, paramsEx)
+    //     .then((res) => {
+
+    //       self.pointDatas = res.data.data.pointEntities;
+    //       let groupByKey = _.groupBy(self.pointDatas, self.typekey)
+    //       let initDatas = [];
+
+    //       _.each(groupByKey, (group, key) => {
+    //         initDatas.push({
+    //           features: group,
+    //           img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
+    //           selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
+    //         })
+    //       })
+
+    //       self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
+    //     }).catch((error) => {
+    //       this.$message.error("全国点位获取失败，请检查网络并刷新页面！")
+    //     })
+    // }
+
   }
 
 
@@ -372,76 +381,81 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-      
+
       let findItem = _.find(features, (fea) => {
         let tempProperties = fea.getProperties();
         return tempProperties.featureType == LayerFeatureType.treeLayerFeature
       })
 
-      
+
 
       if (!findItem) {
-        let districtFea = this.findDistrictFeature(features,this.getTypes(),0)
+        let districtFea = this.findDistrictFeature(features, this.getTypes(), 0)
         // && (properties.layer == 'sheng' || properties.layer == 'shi' || properties.layer == 'xian')
-        if(!districtFea) return;
-        let properties = districtFea.getProperties();  
+        if (!districtFea) return;
+        let properties = districtFea.getProperties();
         // 更新echart数据
-          
-          this.curCityInfo = {
-            cityLevel:properties.layer == 'sheng_3857'?2:(properties.layer == 'shi_3857'?3:4),
-            sheng:properties['sheng'],
-            shi:properties['shi'],
-            xian:properties['xian']
-          }
-          this.ucRightPanel.initTitle(this.curCityInfo)
 
-          let chartParams = {
+        this.curCityInfo = {
+          cityLevel: properties.layer == 'sheng_3857' ? 2 : (properties.layer == 'shi_3857' ? 3 : (properties.layer == 'xian_3857' ? 4 : 5)),
+          sheng: properties['sheng'],
+          shi: properties['shi'],
+          xian: properties['xian'],
+          liuyu: properties['liuyu']
+        }
+        this.ucMain.initTitle(this.curCityInfo)
+
+        let chartParams = {
+          type: this.checkedNodes[0].parentId,
+          twoType: _.map(this.checkedNodes, "name"),
+          "rank": properties.layer,
+          "shengName": properties['sheng'],
+          "shiName": properties['shi']
+        }
+        this.getRightEechart(chartParams)
+        if (this.curCityInfo.cityLevel >= 4) {
+          this.ucMain.staticsTable = false;
+          this.ucMain.ucSetting.rightPanelTableVisiable = false;
+
+        } else {
+          // 更新table数据
+          let params = {
             type: this.checkedNodes[0].parentId,
             twoType: _.map(this.checkedNodes, "name"),
-            "rank": properties.layer,
-            "shengName": properties['sheng'],
-            "shiName":properties['shi']
-          }   
-            this.getRightEechart(chartParams)
-
-            // 更新table数据
-            let params = {
-              type: this.checkedNodes[0].parentId,
-              twoType: _.map(this.checkedNodes, "name"),
-              qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'xzq',
-              "shengName": null,
-              "shiName":null
-            }
-            if(this.ucMain.curStat.value == 'ssly'){
+            qvbie: this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'xzq',
+            "shengName": null,
+            "shiName": null
+          }
+          if (this.ucMain.curStat.value == 'ssly') {
             params.qvbie = 'ssly';
-            }else{
-              switch(this.curCityInfo.cityLevel){
-                case 1:
-                  params.qvbie = 'sheng'
-                  break;
-                  case 2:
-                  params.qvbie = 'shi'
-                  break;
-                  case 3:
-                  params.qvbie = 'xian'
-                  break;
-              }
-              params.shengName = this.curCityInfo.sheng;
-              params.shiName = this.curCityInfo.shi
+          } else {
+            switch (this.curCityInfo.cityLevel) {
+              case 1:
+                params.qvbie = 'sheng'
+                break;
+              case 2:
+                params.qvbie = 'shi'
+                break;
+              case 3:
+                params.qvbie = 'xian'
+                break;
             }
+            params.shengName = this.curCityInfo.sheng;
+            params.shiName = this.curCityInfo.shi
+          }
           this.getRightTableDatas(params)
-            // 定位放大地图
-         let extent = districtFea.getExtent();
-         debugger
-          // let perPixeY =   ((SystemConfig.bodyHeight * 0.3) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
-          // let perPixeX =   (340 / SystemConfig.bodyHeight * (extent[2] - extent[0]));
-          // let newExtent= [extent[0]-perPixeX,extent[1] - perPixeY,extent[2],extent[3]]
-          let curExtent = GeometryExtentUtility.expandExtent(extent,1.5);
-          debugger
-            self.ucMap.setMapExtent(curExtent);
+        }
 
-          //选中要素高亮显示
-          self._selectedFeatureHighlight(districtFea);
+        // 定位放大地图
+        let extent = districtFea.getExtent();
+        // let perPixeY =   ((SystemConfig.bodyHeight * 0.3) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
+        // let perPixeX =   (340 / SystemConfig.bodyHeight * (extent[2] - extent[0]));
+        // let newExtent= [extent[0]-perPixeX,extent[1] - perPixeY,extent[2],extent[3]]
+        let curExtent = GeometryExtentUtility.expandExtent(extent, 2.5);
+        self.ucMap.setMapExtent(curExtent);
+
+        //选中要素高亮显示
+        self._selectedFeatureHighlight(districtFea);
       } else if (findItem) {
         let level = self.ucMap.getZoomLevel();
         if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
@@ -496,80 +510,85 @@ export class UCMainEventManager {
   }
 
   // 获取图层名称数组
-  getTypes(){
-   let layerNames= ["xian_3857","shi_3857","sheng_3857"];
-   let level = this.ucMap.getZoomLevel();
-  if(level > window.BASE_CONFIG.showDistrictLevel[2]){
-      return layerNames
-  }else if(level <= window.BASE_CONFIG.showDistrictLevel[0]){
-    return layerNames.slice(2)
-  }else{
-    return layerNames.slice(1)
+  getTypes() {
+    if (this.ucMain.curStat.value == 'ssly') {
+      return ['shidaliuyu_3857']
+    } else {
+      let layerNames = ["xian_3857", "shi_3857", "sheng_3857"];
+      let level = this.ucMap.getZoomLevel();
+      if (level > window.BASE_CONFIG.showDistrictLevel[2]) {
+        return layerNames
+      } else if (level <= window.BASE_CONFIG.showDistrictLevel[0]) {
+        return layerNames.slice(2)
+      } else {
+        return layerNames.slice(1)
+      }
+    }
+
   }
-}
 
   // 查找省市县按顺序
-  findDistrictFeature(features,types,idx){
-    if(types.length < idx){
+  findDistrictFeature(features, types, idx) {
+    if (types.length < idx) {
       return null
     }
     let findItem = _.find(features, (fea) => {
       let tempProperties = fea.getProperties();
-      return tempProperties.layer ==types[idx]
+      return tempProperties.layer == types[idx]
     })
-    if(findItem){
+    if (findItem) {
       return findItem
-    }else{
-      findItem =  this.findDistrictFeature(features,types,idx+1);
-      if(findItem){
+    } else {
+      findItem = this.findDistrictFeature(features, types, idx + 1);
+      if (findItem) {
         return findItem;
       }
     }
     return findItem;
   }
-  
-/**
-     * 选中要素高亮
-     * @param {*} feature 
-     */
-_selectedFeatureHighlight(feature) {
 
-  //清除选中图层
-  LayerCatalogItems.visibleItems.clearSelectedFeatures();
+  /**
+       * 选中要素高亮
+       * @param {*} feature 
+       */
+  _selectedFeatureHighlight(feature) {
 
-  if (!feature) return;
+    //清除选中图层
+    LayerCatalogItems.visibleItems.clearSelectedFeatures();
 
-  let featureId = feature.getId();
-  if (!featureId) return;
+    if (!feature) return;
 
-  let layerCatalogItem = null;
+    let featureId = feature.getId();
+    if (!featureId) return;
 
-  let properties = feature.getProperties();
-  if (properties && properties["layer"]) {
+    let layerCatalogItem = null;
+
+    let properties = feature.getProperties();
+    if (properties && properties["layer"]) {
       let layerName = properties["layer"];
 
       let tempItem = null;
       for (let tempIndex = 0; tempIndex < this.ucMain.showTempLayerItems.length; tempIndex++) {
         tempItem = this.ucMain.showTempLayerItems[tempIndex];
-          if (!tempItem || !tempItem.serviceName) continue;
+        if (!tempItem || !tempItem.serviceName) continue;
 
-          if (tempItem.serviceName.toLowerCase() === layerName.toLowerCase()) {
-            layerCatalogItem = tempItem;
-              break;
-          }
+        if (tempItem.serviceName.toLowerCase() === layerName.toLowerCase()) {
+          layerCatalogItem = tempItem;
+          break;
+        }
       }
-  }
+    }
 
-  if (!layerCatalogItem || !layerCatalogItem.olLayers || !layerCatalogItem.defaultVisible) return;
+    if (!layerCatalogItem || !layerCatalogItem.olLayers || !layerCatalogItem.defaultVisible) return;
 
-  //如果是矢量切片图层，选中要素
-  if (layerCatalogItem instanceof VectorTileLayerItem) {
+    //如果是矢量切片图层，选中要素
+    if (layerCatalogItem instanceof VectorTileLayerItem) {
       layerCatalogItem.clearSelectedFeatures();
       let selectedIds = new Array();
       selectedIds.push(featureId);
       layerCatalogItem.updateSelectedFeatures(selectedIds);
+    }
   }
-}
 
   // 地图要素闪烁
   twinklePoint(feature, count) {
@@ -675,8 +694,15 @@ _selectedFeatureHighlight(feature) {
         //   break;
         case MapTools.mapEventCode.District:
         case MapTools.mapEventCode.River:
-          self.ucMain.handleCommand(toolItem.eventCode)
 
+          self.curCityInfo = {
+            cityLevel: 1,
+            sheng: null,
+            shi: null,
+            xian: null,
+            liuyu: null
+          };
+          self.ucMain.handleCommand(toolItem.eventCode)
       }
     })
   }
@@ -795,8 +821,13 @@ _selectedFeatureHighlight(feature) {
     return guid;
   }
   // 添加echart图表
-  addColumnChart(datas) {   //向点位添加柱状图的方法
+  addColumnChart(datas) {   //向点位添加柱状图的方法4
     let self = this;
+    if (this.ucMain.pointsLayerItem){
+      this.ucMain.pointsLayerItem.defaultVisible = false;
+      this._changeLayerItemVisible(this.ucMain.pointsLayerItem, false)
+    }
+   
     this.showType = 'count';
     var html = '';
     this.ucMap.clearOverlays('countOverlay', true);
@@ -821,7 +852,7 @@ _selectedFeatureHighlight(feature) {
       chart.set("overlyType", "countOverlay")
       this.ucMap.curMap.addOverlay(chart, true);
       //self.map是在mounted里new Map出来的，按openlayer官网操作即可，
-      let newPoints  = GeometryUtility.transformPoints([[d.zxjd, d.zxwd]],"EPSG:4326","EPSG:3857")
+      let newPoints = GeometryUtility.transformPoints([[d.zxjd, d.zxwd]], "EPSG:4326", "EPSG:3857")
       chart.setPosition(newPoints[0]);
       // chart.setPosition([d.zxjd, d.zxwd]);
     }
@@ -833,16 +864,16 @@ _selectedFeatureHighlight(feature) {
     * 地图级别改变时，行政区划图层显隐改变
     */
   _on_zoomLevelChange_districtLayerVisibleChange(level) {
-// 级别区间显示不同数据
-if (level > 6 && this.showType == 'count') {
-  this.ucMap.clearOverlays('countOverlay', true);
-  this.showType = 'point'
-  this._addPointDatas();
-} else if (level <= 6 && this.showType == 'point') {
-  this.ucMap.layerMgr.poiLayer.clear();
-  this.showType = 'count';
-  this.addColumnChart();
-}
+    // 级别区间显示不同数据
+    if (level > 6 && this.showType == 'count') {
+      this.ucMap.clearOverlays('countOverlay', true);
+      this.showType = 'point'
+      this._addPointDatas();
+    } else if (level <= 6 && this.showType == 'point') {
+      // this.ucMap.layerMgr.poiLayer.clear();
+      this.showType = 'count';
+      this.addColumnChart();
+    }
     if (this.ucMain.curStat.value !== window.BASE_CONFIG.statTypes[0].value) return;
     //0-7级显示市、8级显示市县、8级以上显示县
     if (level <= window.BASE_CONFIG.showDistrictLevel[0]) {
@@ -864,7 +895,7 @@ if (level > 6 && this.showType == 'count') {
       // this._changeLayerItemVisible( this.ucMain.showTempLayerItems[2], false);
       //县区显示
 
-    } else if (level <=  window.BASE_CONFIG.showDistrictLevel[1]) {
+    } else if (level <= window.BASE_CONFIG.showDistrictLevel[1]) {
       if (this.ucMain.showTempLayerItems[0]) {
         this.ucMain.showTempLayerItems[0].setLayersVisible(false);
       }
@@ -874,7 +905,7 @@ if (level > 6 && this.showType == 'count') {
       if (this.ucMain.showTempLayerItems[2]) {
         this.ucMain.showTempLayerItems[2].setLayersVisible(false);
       }
-    } else if (level >  window.BASE_CONFIG.showDistrictLevel[2]) {
+    } else if (level > window.BASE_CONFIG.showDistrictLevel[2]) {
       if (this.ucMain.showTempLayerItems[0]) {
         this.ucMain.showTempLayerItems[0].setLayersVisible(false);
       }
@@ -886,17 +917,17 @@ if (level > 6 && this.showType == 'count') {
       }
     }
 
-    
+
   }
 
 
   // 返回全国数据
-  backCountryReset(){
+  backCountryReset() {
     this.curCityInfo = {
-      cityLevel:1,
-      sheng:null,
-      shi:null,
-      xian:null
+      cityLevel: 1,
+      sheng: null,
+      shi: null,
+      xian: null
     };
     LayerCatalogItems.visibleItems.clearSelectedFeatures();
     this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);

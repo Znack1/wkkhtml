@@ -72,7 +72,10 @@ export default {
       let yAxisData = []; // x轴
       let serObj = [];
       let legend = [];
-      newData.data = newData.data.reverse();
+      debugger
+      newData.data = _.sortBy(newData.data,(d)=>{
+        return parseFloat(d.value);
+      })
       // 获取legend
       let groupByType = _.groupBy(newData.data, "type");
       _.each(groupByType, (item, key) => {

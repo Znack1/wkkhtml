@@ -543,7 +543,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     width: 4
                 }),
                 fill: new ol.style.Fill({
-                    color: 'rgba(255,255,0,0.3)',
+                    color: 'rgba(201, 199, 245,0.5)',
                 })
             });
         } else if (featureType === "Polyline") {
@@ -595,7 +595,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     width: 4
                 }),
                 fill: new ol.style.Fill({
-                    color: 'rgba(255,255,0,0.2)',
+                    color: 'rgba(201, 199, 245,0.5)',
                 })
             });
         } else if (geometryType === "LineString" || geometryType == "MultiLineString") {

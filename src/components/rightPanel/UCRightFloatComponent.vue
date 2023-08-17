@@ -23,7 +23,7 @@
             ></UCDistributionTable>
           </el-collapse-item>
         </el-collapse> -->
-      <div class="topContent echartbox">
+      <div class="topContent echartbox" style="display:none">
         <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
           <UCBarYComponent v-if="!isX" ref="ucBarYComponent"></UCBarYComponent>
@@ -153,7 +153,7 @@ export default {
               headers.push({
                 name: l.dengji,
                 props: "prop" + index,
-                width: l.dengji.length * 24
+                width: l.dengji.length * 30
               });
             }
 
@@ -263,7 +263,6 @@ export default {
 </script>
 <style lang="less" scoped >
 .divRightFloat {
-  height: 100%;
   background: white;
 
   /deep/ .el-collapse-item__header {
@@ -278,8 +277,7 @@ export default {
 
   .echartbox {
     width: 100%;
-    height: 60%;
-    max-height: 350px;
+    height:300px;
   }
 
   /deep/ .el-collapse-item__content {
@@ -287,8 +285,8 @@ export default {
   }
 
   .tableContent {
-    height: calc(100% - 350px);
-    min-height: 40%;
+    height: calc(100vh - 440px);
+   
 
     .el-collapse-item__content {
       height: 100%;

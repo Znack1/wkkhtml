@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-12 14:20:15
+ * @LastEditTime: 2023-08-15 23:48:27
  * @input: no param
  * @out: no param
 -->
@@ -18,7 +18,8 @@
       <UCMap ref="ucMap" :id="'map'"></UCMap>
       <!-- 右侧控制端 -->
       <UCBaseLayerSwitch class="baseLayerSwitch" ref="ucBaseLayerSwitch"
-        :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '10px' }"></UCBaseLayerSwitch>
+        :style="{ right: (ucSetting.rightPanelVisiable || ucSetting.rightPanelTableVisiable) ? '10px' : '10px' }">
+      </UCBaseLayerSwitch>
       <UCZoomControl class="divZoomCon" ref="ucZoomControl"></UCZoomControl>
       <!-- 比例尺，经纬度 -->
       <!-- <UCCustomMapScale ref="ucCustomMapScale" class="divScale"></UCCustomMapScale> -->
@@ -29,9 +30,22 @@
       >
         {{ ucSetting.rightPanelVisiable ? "关闭列表" : "展开列表" }}
       </div> -->
-      <UCRightFloatComponent :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '-310px' }"
-        class="divRightLeftFloat" ref="ucRightFloatComponent">
-      </UCRightFloatComponent>
+      <div class="topContent echartbox" :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '-310px' }">
+        <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
+          <UCBarYComponent v-if="!isX" ref="ucBarYComponent"></UCBarYComponent>
+          <UCBarXComponent v-if="isX" ref="ucBarXComponent"></UCBarXComponent>
+        </div>
+
+      </div>
+      <div class="bottomContent tableContent" :style="{ right: ucSetting.rightPanelTableVisiable ? '10px' : '-310px',top:ucSetting.rightPanelVisiable?'360px':'10px' }">
+        <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
+        <UCDistributionTable style="width: 100%; height: calc(100% - 50px); padding: 10px;" ref="ucDistributionTable" class="table">
+        </UCDistributionTable>
+        <!-- </vuescroll> -->
+
+      </div>
       <!-- 工具条 -->
       <UCMapTool ref="ucMapTool" class="mapTool"></UCMapTool>
 
@@ -54,9 +68,11 @@
       <div style="display: none;" id="echart" ref="chart"></div>
 
       <!-- 返回全国 -->
-      <div class="btnBox" :style="{ right: ucSetting.rightPanelVisiable ? '330px' : '10px' }">
+      <div class="btnBox"
+        :style="{ right: (ucSetting.rightPanelVisiable || ucSetting.rightPanelTableVisiable) ? '330px' : '10px' }">
         <i @click="_backCountry" class="allCity iconfont editMapBtn active icon-zuobiao" style="margin-right:10px">全国</i>
-        <i @click="_togglePanel" :class="ucSetting.rightPanelVisiable?'active':''" class="allCity iconfont editMapBtn  icon-zuobiao">统计</i>
+        <i @click="_togglePanel" :class="ucSetting.rightPanelVisiable ? 'active' : ''" class="allCity ">柱图统计</i>
+        <i @click="_togglePanel1" :class="ucSetting.rightPanelTableVisiable ? 'active' : ''" class="allCity ">表格统计</i>
       </div>
 
 
@@ -260,6 +276,13 @@ import UCRightFloatComponent from "./rightPanel/UCRightFloatComponent.vue";
 import { DialogSystemJs } from "../common/dialogSystemJs";
 import UCPhotoDialog from "../utility/ui/dialog/UCPhotoDialog.vue"
 import DetailDialogVue from "./mainMap/DetailDialog.vue"
+import UCBarYComponent from "../utility/ui/echarts/UCBarYComponent.vue";
+import UCBarXComponent from "../utility/ui/echarts/UCBarXComponent.vue";
+import UCDistributionTable from "./rightPanel/UCDistributionTable.vue";
+import UCPanel from '../utility/ui/UCPanel.vue'
+import vuescroll from "vuescroll";
+import _ from "lodash";
+import draw_marker from "../assets/images/draw_marker.png";
 import {
   LayerCatalogItem,
   LayerCatalogItemType,
@@ -279,11 +302,16 @@ export default {
     LeftMenu,
     UCZoomControl,
     UCPhotoDialog,
-    DetailDialogVue
+    DetailDialogVue,
+    UCBarYComponent, UCDistributionTable, vuescroll, UCPanel, UCBarXComponent
   },
   props: {},
   data() {
     return {
+      isX: true,
+      firstName: "监管等级",
+      secondName: '数据统计',
+      staticsTable:true, // 是否可以展开表格统计
       detailInfo: null,
       dialogVisible: false,// 更多详情弹框
       chart: null, // echart容器
@@ -301,11 +329,202 @@ export default {
       statTypes: window.BASE_CONFIG.statTypes, // 统计类型
       ucSetting: {
         rightPanelVisiable: false,
+        rightPanelTableVisiable: false,
       },
       showTempLayerItems: new Array(),
     };
   },
   methods: {
+
+    initTitle(curCityInfo) {
+     
+      let keys = ["sheng", "shi", "xian",'liuyu']
+      this.firstName = "监管等级(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
+      if(curCityInfo.cityLevel >= 4 ){
+        this.staticsTable= false;
+        this.ucSetting.rightPanelTableVisiable = false;
+      }else{
+        this.staticsTable= true;
+        this.secondName = "数据统计(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
+      }
+    },
+
+    // 更新数据
+    updateChart(datas, curStat, isX) {
+      this.isX = isX;
+      this.$nextTick(() => {
+        if (!datas) {
+          let barObj = {
+            data: [],
+          };
+          if (isX) {
+            this.$refs.ucBarXComponent.initChart(barObj);
+          } else {
+            this.$refs.ucBarYComponent.initChart(barObj);
+          }
+
+          return;
+        }
+        let barObj = {
+          data: [],
+          color: ['#3d81ef', '#9fc3ff']
+        };
+        datas = _.sortBy(datas, (o) => {
+          return parseFloat(o.sort);
+        });
+        _.each(datas, (n, key) => {
+          barObj.data.push({
+            value: n.value,
+            name: n.name,
+            type: "统计",
+          });
+        });
+        if (isX) {
+          this.$refs.ucBarXComponent.initChart(barObj);
+        } else {
+          this.$refs.ucBarYComponent.initChart(barObj);
+        }
+      })
+
+
+    },
+
+    // 更新table
+    updateTable(datas, curStat) {
+      if (!datas) {
+        this.$refs.ucDistributionTable.update([], []);
+        return;
+      }
+      if (datas) {
+        let idx = 0;
+        let tableDatas = new Array();
+        datas = _.sortBy(datas, (o) => {
+          return -parseFloat(o.sort)
+        });
+        let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
+        if (curStat) {
+          headers = _.cloneDeep(curStat.defalutHeader);
+        }
+
+        // 解析数据
+        _.each(datas, (map) => {
+          let temp = {
+            name: map.name,
+          };
+
+          map.list = _.sortBy(map.list, (o) => {
+            return parseFloat(o.id)
+          });
+          // {name:'区域',props:'area',width:120}
+          _.each(map.list, (l, index) => {
+            if (idx == 0) {
+              headers.push({
+                name: l.dengji,
+                props: "prop" + index,
+                width: l.dengji.length * 30
+              });
+            }
+
+            temp["prop" + index] = l.number;
+          });
+          idx++;
+
+          tableDatas.push(temp);
+        });
+
+        _.each(tableDatas, (d, index) => {
+          d.idx = (index + 1)
+        })
+        this.$refs.ucDistributionTable.update(tableDatas, headers);
+      }
+
+    },
+
+    /**
+     * 初始化
+     */
+    updatePanel(data, curStat) {
+
+      if (!data) {
+        let barObj = {
+          data: [],
+        };
+        this.$refs.ucBarXComponent.initChart(barObj);
+        this.$refs.ucDistributionTable.update([], []);
+        return;
+      }
+      // echart
+      if (data.map) {
+        let barObj = {
+          data: [],
+          color: ['#158DFD', '#9BC5F1']
+        };
+        datas = _.sortBy(data.map, (o) => {
+          return parseFloat(o.sort);
+        });
+        _.each(data.map, (n, key) => {
+          barObj.data.push({
+            value: n.value,
+            name: n.name,
+            type: "统计",
+          });
+        });
+        this.$refs.ucBarXComponent.initChart(barObj);
+      }
+      // table
+      if (data.linkedHashMap) {
+        let idx = 0;
+        let tableDatas = new Array();
+        data.linkedHashMap = _.sortBy(data.linkedHashMap, (o) => {
+          return -parseFloat(o.sort)
+        });
+        let headers = window.BASE_CONFIG.statTypes[0].defalutHeader || [];
+        if (curStat) {
+          headers = _.cloneDeep(curStat.defalutHeader);
+        }
+
+        // 解析数据
+        _.each(data.linkedHashMap, (map) => {
+          let temp = {
+            name: map.name,
+          };
+
+          map.list = _.sortBy(map.list, (o) => {
+            return parseFloat(o.id)
+          });
+          // {name:'区域',props:'area',width:120}
+          _.each(map.list, (l, index) => {
+            if (idx == 0) {
+              headers.push({
+                name: l.dengji,
+                props: "prop" + index,
+              });
+            }
+
+            temp["prop" + index] = l.number;
+          });
+          idx++;
+
+          tableDatas.push(temp);
+        });
+        // tableDatas = _.sortBy(tableDatas, (o) => {
+        //   return o.prop0;
+        // });
+
+        _.each(tableDatas, (d, index) => {
+          d.idx = (index + 1)
+        })
+        this.$refs.ucDistributionTable.update(tableDatas, headers);
+      }
+
+
+    },
+
+    handleChange(val) {
+      console.log(val);
+    },
+
+
     // 关闭图例
     _hideLegbox() {
       this.showLegend = false;
@@ -324,6 +543,7 @@ export default {
           let mapOptions = {
             indoor: false,
             projection: "EPSG:3857",
+
           };
           this.$refs.ucMapEx.init(mapOptions, false);
           let polygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
@@ -336,12 +556,22 @@ export default {
               width: 2,
             })
           })
+          let  iconStyle = new ol.style.Style({
+                    image: new ol.style.Icon(({
+                        anchor: [0.5, 8],
+                        anchorXUnits: 'fraction',
+                        anchorYUnits: 'pixels',
+                        src: draw_marker
+                    }))
+                });
+                let cloneFeature = _.cloneDeep(this.eventManager.curFeatrue);
+                cloneFeature.setStyle(iconStyle);
           polygonFeature.setStyle(fillStyle);
           GeometryUtility.transformFeatureGeometry([polygonFeature], 'EPSG:4326', "EPSG:3857")
           this.$refs.ucMapEx.layerMgr.detailLayer.clear();
-          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature, this.eventManager.curFeatrue])
+          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,cloneFeature])
           this.$refs.ucMapEx.curMap.getView().setZoom(11);
-          this.$refs.ucMapEx.curMap.getView().setCenter(this.eventManager.curFeatrue.getGeometry().getCoordinates());
+          this.$refs.ucMapEx.curMap.getView().setCenter(cloneFeature.getGeometry().getCoordinates());
           // this.$refs.ucMapEx.layerMgr.drawGeometryLayer.addDrawPoint(JSON.parse(this.eventManager.curFeaInfo.geom))
         }
       })
@@ -364,6 +594,7 @@ export default {
         let mapOptions = {
           indoor: false,
           projection: "EPSG:3857",
+          rotation: 0.13
         };
         this.$refs.ucMap.init(mapOptions, false);
       }
@@ -377,11 +608,6 @@ export default {
       let toolFlag = [
         MapTools.mapEventCode.District,
         MapTools.mapEventCode.River,
-        // MapTools.mapEventCode.DrawPolygon,
-        // MapTools.mapEventCode.Location,
-        // MapTools.mapEventCode.MeasureLine,
-        // MapTools.mapEventCode.MeasureArea,
-        // MapTools.mapEventCode.ClearMap,
       ];
       this.$refs.ucMapTool.init(toolFlag, MapTools.mapEventCode.District);
       if (this.statTypes.length > 0) {
@@ -391,11 +617,32 @@ export default {
 
       // 添加尾矿库面图层
       this.addLayerByPolygon(window.BASE_CONFIG.polygonLayer)
+      // 添加尾矿库图层
+      // this.addLayerByPolygon(window.BASE_CONFIG.polygonLayer1)
+      this.pointsLayerItem = null;
+      let layerItemObj = window.BASE_CONFIG.polygonLayer1;
+      if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
+        this.pointsLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+      } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
+      } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
+        this.pointsLayerItem = WmtsLayerItem.fromJson(layerItemObj);
+      } else if (layerItemObj.type === LayerCatalogItemType.wms) {
+        this.pointsLayerItem = WmsLayerItem.fromJson(layerItemObj);
+      }
     },
 
     // 切换面板显隐
     _togglePanel() {
       this.ucSetting.rightPanelVisiable = !this.ucSetting.rightPanelVisiable;
+    },
+
+    _togglePanel1() {
+      if(this.staticsTable){
+        this.ucSetting.rightPanelTableVisiable = !this.ucSetting.rightPanelTableVisiable;
+      }else{
+        this.$message.warning("当前选中级别下无统计！")
+      }
+     
     },
 
     // 下拉菜单事件
@@ -407,7 +654,6 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
-      debugger
       if (this.showTempLayerItems) {
         _.each(this.showTempLayerItems, (showTempLayerItem) => {
           showTempLayerItem.defaultVisible = false;
@@ -446,7 +692,6 @@ export default {
 
     // 添加尾矿库面
     addLayerByPolygon(layerItemObj) {
-      debugger
       let showTempLayerItem = null;
       if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
         showTempLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
@@ -521,10 +766,15 @@ export default {
   .leftBox {
     width: 280px;
     height: 100%;
-    background:  #f5f7ff;
+    background: #f5f7ff;
     border-radius: 6px;
     padding: 10px;
     float: left;
+    position:absolute;
+    top:0;
+    left:0;
+    box-shadow:0 0px 15px rgb(162 206 252 / 75%); 
+    z-index:100;
 
     .leftpanel {
       // position: absolute;
@@ -579,7 +829,6 @@ export default {
       position: absolute;
       right: 10px;
       top: 10px;
-      height: calc(100% - 140px);
       transition: all 0.5s;
       box-shadow: 0 0 10px #000;
     }
@@ -609,14 +858,14 @@ export default {
     .legendBox {
       position: absolute;
       bottom: 10px;
-      left:60px;
+      left: 60px;
       display: flex;
       align-items: flex-start;
       flex-wrap: wrap;
       background: #fff;
       flex-direction: column;
       width: 300px;
-      border-radius:10px;
+      border-radius: 10px;
 
       .legendTitle {
         width: 100%;
@@ -629,12 +878,12 @@ export default {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        border-radius:10px 10px 0 0 ;
+        border-radius: 10px 10px 0 0;
       }
 
       .itemContent {
         padding: 10px;
-
+        width:100%;
         .legendItem {
           // margin-bottom: 5px;
           width: 25%;
@@ -664,26 +913,28 @@ export default {
       right: 10px;
 
       .allCity {
+        display: block;
         font-size: 16px;
         cursor: pointer;
-        display: inline-block;
+        // display: inline-block;
         background: rgba(0, 0, 0, 1);
         line-height: 32px;
         color: white;
         margin: 0 3px;
         text-align: center;
         padding: 5px 10px;
+        width: 100px;
         border-radius: 5px;
         box-shadow: 0px 3px 10px rgb(71, 71, 71);
-
+        margin-bottom: 10px;
 
         &::before {
           margin-right: 5px;
         }
       }
 
-      .editMapBtn:hover,
-      .editMapBtn.active {
+      .allCity:hover,
+      .allCity.active {
         background: #3D81EF;
         color: white;
 
@@ -809,4 +1060,32 @@ export default {
     }
   }
 
+  .echartbox {
+    height: 340px;
+    border-radius: 5px;
+    width: 310px;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+    transition: all 0.5s;
+    box-shadow: 0 0 10px #000;
+    background: white
+  }
+
+
+
+  .tableContent {
+    height: calc(100vh - 510px);
+    border-radius: 5px;
+    width: 310px;
+    position: absolute;
+    right: 10px;
+    top: 360px;
+    transition: all 0.5s;
+    box-shadow: 0 0 10px #000;
+    background:white;
+    .el-collapse-item__content {
+      height: 100%;
+    }
+  }
 }</style>

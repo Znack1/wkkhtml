@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-12 14:26:36
+ * @LastEditTime: 2023-08-15 21:35:54
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -66,7 +66,7 @@
             >
             <div class="rightSwitch" @click.stop="">
               <el-switch
-                :width="30"
+                :width="24"
                 v-show="data.type == 'leaf'"
                 v-model="data.checked"
                 @change="
@@ -436,7 +436,7 @@ export default {
     margin: 0;
     position: relative;
     width: 30px;
-    height: 16px;
+    height: 12px;
     border: 1px solid #DCDFE6;
     outline: 0;
     border-radius: 10px;
@@ -448,17 +448,17 @@ export default {
   /deep/ .el-switch__core:after {
     content: "";
     position: absolute;
-    top: 0px;
+    top: -1px;
     left: 1px;
     border-radius: 100%;
     transition: all .3s;
-    width: 14px;
-    height: 14px;
+    width: 10px;
+    height: 10px;
     background-color: #FFF;
 }
   /deep/ .el-switch.is-checked .el-switch__core::after {
     left: 100%;
-    margin-left: -15px;
+    margin-left: -10px;
 }
 // /deep/ .el-tree-node__expand-icon {
 //   pointer-events: none;

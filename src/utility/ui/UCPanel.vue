@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-04-12 21:10:29
- * @LastEditTime: 2023-06-06 09:37:22
+ * @LastEditTime: 2023-08-15 22:43:27
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\utility\ui\UCPanel.vue
@@ -9,7 +9,7 @@
 <template>
   <div class="divPanel">
     <el-row type="flex" class="rowBg">
-      <el-col :span="18" class="panel-title"><i class="iconfont" :class="iconClass"></i>{{ Title }}</el-col>
+      <el-col :span="24" class="panel-title"><i class="iconfont" :class="iconClass"></i>{{ Title }}</el-col>
     </el-row>
   </div>
 </template>

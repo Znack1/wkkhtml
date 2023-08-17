@@ -118,6 +118,7 @@ export default {
                         : newData.color[idx * 2],
                   },
                 ]),
+                barBorderRadius: [30, 30, 30, 30]
               },
             },
           });
