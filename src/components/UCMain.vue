@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-15 23:48:27
+ * @LastEditTime: 2023-08-19 11:12:36
  * @input: no param
  * @out: no param
 -->
@@ -654,6 +654,7 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
+      debugger
       if (this.showTempLayerItems) {
         _.each(this.showTempLayerItems, (showTempLayerItem) => {
           showTempLayerItem.defaultVisible = false;

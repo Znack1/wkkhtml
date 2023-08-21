@@ -2,8 +2,8 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-07-17 15:13:50
- * @LastEditTime: 2020-11-04 13:59:25
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-20 21:25:45
+ * @LastEditors: zkc
  */
 export class OLLayerUtility {
     /**
@@ -110,7 +110,7 @@ export class OLLayerUtility {
     }
 
     static ascLayer(mapLayers, sortfield) {
-
+debugger
         //原始索引-图层-排序序号
 
         let layerArray = mapLayers.getArray();

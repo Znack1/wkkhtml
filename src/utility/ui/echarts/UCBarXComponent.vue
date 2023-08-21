@@ -56,7 +56,7 @@ export default {
       let xAxisData = []; // x轴
       let serObj = [];
       let legend = [];
-      debugger
+      
       // 获取legend
       _.each(newData.data,(d)=>{
         if(d.name.length > 3){

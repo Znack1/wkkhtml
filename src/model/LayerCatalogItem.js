@@ -476,6 +476,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     renderMode: 'vector',
                     source: olVtLayer.getSource(),
                     style: this.selectedStyleFunction,
+                    zIndex:4
                 });
                 selectedOLVtLayer.set(LayerCatalogItem.sortFieldName,90);
                 this.selectedOLLayer = selectedOLVtLayer;
@@ -645,6 +646,319 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
         // return selectedStyles;
         return selectedStyle;
+    }
+
+    /**
+     * 通过默认样式设置矢量切片
+     */
+    setDefaultStyleForOLLayer() {
+
+        if (!this.ollayers || this.ollayers.length == 0) {
+            this.ollayers = this.createOLLayers();
+        };
+
+        let mbsJson = new MapboxStyleJson();
+        mbsJson.stylePath = this.styleJsonUrl;
+        mbsJson.filterName = this.filterName;
+        mbsJson.filterValues = this.filterValues;
+        mbsJson.sourceLayerString = this.sourceName;
+
+        let olVtLayer = null;
+        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
+            olVtLayer = this.ollayers[tempIndex];
+            if (!olVtLayer) continue;
+
+            if (olVtLayer instanceof ol.layer.VectorTile) {
+                mbsJson.olVTLayer = olVtLayer;
+                mbsJson.renderer();
+            }
+        }
+    }
+
+    /**
+     * 通过样式筛选
+     * @param {*} vectorStyle 
+     */
+    filterOLLayerEx(vectorStyle) {
+
+        if (!this.ollayers || this.ollayers.length == 0) {
+            this.ollayers = this.createOLLayers();
+        };
+
+        let mbsJson = new MapboxStyleJson();
+        mbsJson.stylePath = vectorStyle.styleJsonUrl;
+        mbsJson.filterName = vectorStyle.filterName;
+        mbsJson.filterValues = vectorStyle.filterValues;
+        mbsJson.sourceLayerString = vectorStyle.sourceName;
+
+        let olVtLayer = null;
+        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
+            olVtLayer = this.ollayers[tempIndex];
+            if (!olVtLayer) continue;
+
+            if (olVtLayer instanceof ol.layer.VectorTile) {
+                mbsJson.olVTLayer = olVtLayer;
+                mbsJson.renderer();
+            }
+        }
+    }
+
+    /**
+     * 通过空间图形筛选
+     * @param {*} olIntersectGeometry 
+     */
+    filterOLLayerByGeometry(olIntersectGeometry) {
+
+        if (!this.ollayers || this.ollayers.length == 0) {
+            this.ollayers = this.createOLLayers();
+        };
+
+        let turfIntersectGeometry = null;
+        if (olIntersectGeometry) {
+            turfIntersectGeometry = TurfUtility.olgeometryToTurfGeometry(olIntersectGeometry);
+        }
+
+
+        let olVtLayer = null;
+        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
+            olVtLayer = this.ollayers[tempIndex];
+            if (!olVtLayer) continue;
+
+            if (olVtLayer instanceof ol.layer.VectorTile) {
+
+                var defaultStyles = olVtLayer.getStyleFunction();
+
+                var styleFunction = function(feature, resolution) {
+
+                    if (turfIntersectGeometry) {
+                        let featGeometry = feature.getGeometry();
+                        if (TurfUtility.olGeometryIsIntersectEx(turfIntersectGeometry, featGeometry)) {
+                            return defaultStyles(feature, resolution);
+                        }
+                    } else {
+                        return defaultStyles(feature, resolution);
+                    }
+                };
+
+                olVtLayer.setStyle(styleFunction);
+            }
+        }
+    }
+
+    /**
+     * 通过属性筛选
+     * @param {*} fieldName 
+     * @param {*} fieldValue 
+     */
+    filterOLLayerByAttribute(fieldName, fieldValue) {
+
+        //如果当前是不可见的，不执行矢量切片的筛选
+        if (!this.defaultVisible) return;
+
+
+        if (!this.ollayers || this.ollayers.length == 0) {
+            this.ollayers = this.createOLLayers();
+        };
+
+        let self = this;
+
+
+
+
+        let olVtLayer = null;
+        let olVtLayerVisible = false;
+        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
+            olVtLayer = this.ollayers[tempIndex];
+            if (!olVtLayer) continue;
+
+            if (olVtLayer instanceof ol.layer.VectorTile) {
+                olVtLayerVisible = olVtLayer.getVisible();
+                //仅在图层可见的情况下筛选
+                if (!olVtLayerVisible) continue;
+
+                if (!self.curStyleFunction) {
+                    self.curStyleFunction = olVtLayer.getStyleFunction();
+                }
+
+                var defaultStyles = self.curStyleFunction;
+
+                var styleFunction = function(feature, resolution) {
+
+                    if (fieldName && fieldValue) {
+                        let featureProperties = feature.getProperties();
+
+                        if (featureProperties && featureProperties[fieldName] && featureProperties[fieldName] == fieldValue) {
+                            return defaultStyles(feature, resolution);
+                        }
+                    } else {
+                        return defaultStyles(feature, resolution);
+                    }
+                };
+                olVtLayer.setStyle(null);
+                olVtLayer.setStyle(styleFunction);
+            }
+        }
+    }
+
+    /**
+     * 通过属性筛选 
+     * 字段名称和字段值必须都有值，否则不进行筛选
+     * @param {*} fieldName 
+     * @param {*} fieldValue 
+     */
+    filterOLLayerByAttributeEx(fieldNames, fieldValues) {
+
+        //如果当前是不可见的，不执行矢量切片的筛选
+        if (!this.defaultVisible) return;
+        // ;
+
+        if (!this.ollayers || this.ollayers.length == 0) {
+            this.ollayers = this.createOLLayers();
+        };
+
+        let self = this;
+
+
+
+
+        let olVtLayer = null;
+        let olVtLayerVisible = false;
+        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
+            olVtLayer = this.ollayers[tempIndex];
+            if (!olVtLayer) continue;
+
+            if (olVtLayer instanceof ol.layer.VectorTile) {
+                olVtLayerVisible = olVtLayer.getVisible();
+                //仅在图层可见的情况下筛选
+                if (!olVtLayerVisible) continue;
+
+                if (!self.curStyleFunction) {
+                    self.curStyleFunction = olVtLayer.getStyleFunction();
+                }
+
+                var defaultStyles = self.curStyleFunction;
+
+                var styleFunction = function(feature, resolution) {
+                    let styleStatus = true;
+                    if (fieldNames.length > 0 && fieldValues.length > 0) {
+                        let featureProperties = feature.getProperties();
+                        for (let fieldNameIndex = 0; fieldNameIndex < fieldNames.length; fieldNameIndex++) {
+                            let tempFieldName = fieldNames[fieldNameIndex];
+
+                            if (!tempFieldName) continue;
+
+                            let tempFieldValue = fieldValues[fieldNameIndex];
+                            if (!tempFieldValue) continue;
+
+                            if (featureProperties && featureProperties[tempFieldName] && featureProperties[tempFieldName] == tempFieldValue) {
+                                continue;
+                            } else {
+                                styleStatus = false;
+                                break;
+                            }
+
+                        }
+                        if (styleStatus) {
+                            return defaultStyles(feature, resolution);
+                        }
+
+                    } else {
+                        return defaultStyles(feature, resolution);
+                    }
+                };
+                olVtLayer.setStyle(null);
+                olVtLayer.setStyle(styleFunction);
+            }
+        }
+    }
+
+      /**
+     * 通过属性筛选 
+     * 字段名称和字段值必须都有值，否则不进行筛选
+     * @param {*} fieldName 
+     * @param {*} fieldValue 
+     */
+      filterOLLayerByAttributesEx(fieldNames, fieldValues) {
+
+        //如果当前是不可见的，不执行矢量切片的筛选
+        if (!this.defaultVisible) return;
+        // ;
+
+        if (!this.ollayers || this.ollayers.length == 0) {
+            this.ollayers = this.createOLLayers();
+        };
+
+        let self = this;
+
+
+
+
+        let olVtLayer = null;
+        let olVtLayerVisible = false;
+        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
+            olVtLayer = this.ollayers[tempIndex];
+            if (!olVtLayer) continue;
+
+            if (olVtLayer instanceof ol.layer.VectorTile) {
+                olVtLayerVisible = olVtLayer.getVisible();
+                //仅在图层可见的情况下筛选
+                if (!olVtLayerVisible) continue;
+
+                if (!self.curStyleFunction) {
+                    self.curStyleFunction = olVtLayer.getStyleFunction();
+                }
+
+                var defaultStyles = self.curStyleFunction;
+
+                var styleFunction = function(feature, resolution) {
+                    let styleStatus = true;
+                    if (fieldNames.length > 0 && fieldValues.length > 0) {
+                        let featureProperties = feature.getProperties();
+                        for (let fieldNameIndex = 0; fieldNameIndex < fieldNames.length; fieldNameIndex++) {
+                            let tempFieldName = fieldNames[fieldNameIndex];
+
+                            if (!tempFieldName) continue;
+
+                            let tempFieldValue = fieldValues[fieldNameIndex];
+                            if (!tempFieldValue) continue;
+                            if(tempFieldValue instanceof Array){
+                                styleStatus = false;
+                                for(let idx = 0; idx <tempFieldValue.length;idx++   ){
+                                    if (featureProperties && featureProperties[tempFieldName] && featureProperties[tempFieldName] == tempFieldValue[idx]) {
+                                        styleStatus = true;
+                                        break;
+                                    }
+                                }
+                                if(styleStatus){
+                                    continue;
+                                }else{
+                                    break;
+                                }
+    
+                            }else{
+                                if (featureProperties && featureProperties[tempFieldName] && featureProperties[tempFieldName] == tempFieldValue) {
+                                    continue;
+                                } else {
+                                    styleStatus = false;
+                                    break;
+                                }
+    
+                            }
+
+                           
+                        }
+                        if (styleStatus) {
+                            return defaultStyles(feature, resolution);
+                        }
+
+                    } else {
+                        return defaultStyles(feature, resolution);
+                    }
+                };
+                olVtLayer.setStyle(null);
+                olVtLayer.setStyle(styleFunction);
+            }
+        }
     }
 
     getRequestVectorLayer () {
@@ -939,17 +1253,7 @@ export class WmtsLayerItem extends LayerCatalogItem {
 
     }
 
-    removeLayers (curMap) {
-        if (!this.olLayers || this.olLayers.length == 0) return;
-
-        let echartLayer = null;
-        for (let tempIndex = 0; tempIndex < this.olLayers.length; tempIndex++) {
-            echartLayer = this.olLayers[tempIndex];
-            if (!echartLayer) continue;
-            echartLayer.remove();
-        }
-    }
-
+ 
     /**
      * 设置ollayer是否可见
      * @param {*} visibleStatus 
@@ -992,10 +1296,10 @@ export class WmtsLayerItem extends LayerCatalogItem {
 
         let wmtsOlVtLayer = wmtsUtility.createWmtsLayer();
 
-        wmtsOlVtLayer.setOpacity(this.opacity);
+        // wmtsOlVtLayer.setOpacity(this.opacity);
         wmtsOlVtLayer.setVisible(this.defaultVisible);
         if (this.sort) {
-            wmtsOlVtLayer.set(LayerCatalogItem.sortFieldName, this.sort);
+            wmtsOlVtLayer.set(LayerCatalogItem.sortFieldName, 1000);
         }
         this.olLayer = wmtsOlVtLayer;
 
@@ -1066,13 +1370,41 @@ export class WmtsLayerItem extends LayerCatalogItem {
         layerItem.wmtsUrl = jsonObject.wmtsUrl;
         layerItem.serviceName = jsonObject.serviceName;
         layerItem.sourceName = jsonObject.serviceName; // 等于服务名称 serviceName
-        layerItem.matrixSetName = jsonObject.matrixSetName;
+        layerItem.matrixSetName = jsonObject.matrixsetName;
         layerItem.formatName = jsonObject.formatName;
         layerItem.tileSize = jsonObject.tileSize;
-        layerItem.tileGridExtent = jsonObject.tileGridExtent;
-        layerItem.tileGridOrigin = jsonObject.tileGridOrigin;
-        layerItem.tileGridResolutions = jsonObject.tileGridResolutions;
-        layerItem.tileGridMatrixIds = jsonObject.tileGridMatrixIds;
+        layerItem.tileGridExtent = [];
+        if(jsonObject.tileGridExtentString){
+            let tileGridExtent = jsonObject.tileGridExtentString.split(',');
+            for(let i = 0; i<tileGridExtent.length;i++){
+                layerItem.tileGridExtent.push(parseFloat(tileGridExtent[i]))
+            }
+        }
+
+        layerItem.tileGridOrigin = []
+        if(jsonObject.tileGridOriginString){
+            let tileGridOriginString = jsonObject.tileGridOriginString.split(',');
+            for(let i = 0; i<tileGridOriginString.length;i++){
+                layerItem.tileGridOrigin.push(parseFloat(tileGridOriginString[i]))
+            }
+        }
+
+        layerItem.tileGridResolutions = []
+        if(jsonObject.tileGridResolutionsString){
+            let tileGridResolutions =  JSON.parse(jsonObject.tileGridResolutionsString);
+            for(let i = 0; i<tileGridResolutions.length;i++){
+                layerItem.tileGridResolutions.push(parseFloat(tileGridResolutions[i]))
+            }
+        }
+
+        layerItem.tileGridMatrixIds = []
+        if(jsonObject.tileGridMatrixIdsString){
+            let tileGridMatrixIds =  JSON.parse(jsonObject.tileGridMatrixIdsString);
+            for(let i = 0; i<tileGridMatrixIds.length;i++){
+                layerItem.tileGridMatrixIds.push(parseFloat(tileGridMatrixIds[i]))
+            }
+        }
+
         layerItem.tileSchemeType = jsonObject.tileSchemeType;
         layerItem.createOLLayers();
         return layerItem;
@@ -1462,6 +1794,7 @@ export class LayerCatalogItems extends CustomArray {
 
 
     static fromJsons (jsonObjects) {
+        
         let layers = new LayerCatalogItems();
         if (!jsonObjects) return layers;
         let tempJsonItem = null;

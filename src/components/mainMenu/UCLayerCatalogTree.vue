@@ -43,49 +43,6 @@ export default {
         treeState: UCOperationType,
         operationType: UCOperationType.operation_preview, // 是否是可编辑状态
       },
-      params:{
-    "filterType": null,
-    "fuzzyName": null,
-    "groupId": null,
-    "groupIds": null,
-    "id": null,
-    "layerItemFilters": [
-        {
-            "useBuildTree": false,
-            "useEdition": true,
-            "useEditionClassify": false,
-            "useLayerItemFilters": true,
-            "useName": true,
-            "usePagination": true,
-            "useParentId": true,
-            "useParentIds": true,
-            "useSort": true
-        }
-    ],
-    "name": null,
-    "paginationStart": 0,
-    "paginationCount": 10,
-    "parentId": null,
-    "parentIds": null,
-    "sort": null,
-    "type": null,
-    "useBuildTree": false,
-    "useFuzzyName": false,
-    "useGroupId": false,
-    "useGroupIds": false,
-    "useId": false,
-    "useIds": false,
-    "useLayerItemFilters": true,
-    "useName": false,
-    "usePagination": false,
-    "useParentId": false,
-    "useParentIds": false,
-    "useSort": false,
-    "useType": false,
-    "useEdition": false,
-    "edition": null,
-    "useEditionClassify": false
-},
     };
   },
   components: {
@@ -130,10 +87,10 @@ export default {
     reset(callback) {
       let self = this;
       this.treeNodes = new LayerCatalogItems();
-      AxiosConfig.layercatalogweb
-        .post(ServiceUrlConfig.nextDir_allInformation,{parmas:this.params})
+      AxiosConfig.spatialdecision
+        .get(ServiceUrlConfig.nextDir_allInformation)
         .then((resonse) => {
-          debugger
+          
           this.treeNodes = LayerCatalogItems.fromJsons(resonse.data.data);
           //设置图层目录组全局分组
         })

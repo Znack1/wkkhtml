@@ -6,7 +6,7 @@ import { WMTSLayerUtility } from "../../../utility/ol/WMTSLayerUtilityJs";
 /*
  * @Author: your name
  * @Date: 2020-03-05 17:39:41
- * @LastEditTime: 2023-07-21 14:33:08
+ * @LastEditTime: 2023-08-20 21:53:40
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /html/src/components/mainMap/layer/LayerCatalogItemLayer.js
@@ -29,7 +29,6 @@ export class LayerCatalogItemLayer {
         }
 
         if (layerItem.olLayers && layerItem.olLayers.length > 0) {
-
             layerItem.setLayersVisible(layerItem.defaultVisible);
             // remove移除图层
             layerItem.removeLayers(this.curMap);

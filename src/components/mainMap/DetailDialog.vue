@@ -54,7 +54,7 @@
       },
   
       showOverlay(overlayInfo) {
-        debugger
+        
         let self = this;
         if (!overlayInfo) return;
         this.dialogVisible = true;
@@ -113,7 +113,7 @@
         let self = this;
   
         this.$refs.ucStatOverlay.init(objectInfo, function () {
-            debugger
+            
         //   overlayLayout.contentElement.appendChild(self.$refs.ucStatOverlay.$el); // = innerHtml;
   
         //   //设置overlay的显示位置

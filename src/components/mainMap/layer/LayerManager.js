@@ -2,7 +2,7 @@
  * @Description: In User Settings Edit
  * @Author: your name
  * @Date: 2019-06-17 14:44:23
- * @LastEditTime: 2023-07-31 09:23:22
+ * @LastEditTime: 2023-08-20 21:44:00
  * @LastEditors: zkc
  */
 
@@ -44,6 +44,7 @@ export class LayerManager {
     init() {
 
         //获取map默认的marker图层
+        debugger
         let layers = this.currentMap.getMarkerLayers().getLayers().getArray();
         this.markerLayer = OLLayerUtility.findByLayerAttribute(layers, 'name', 'marker_default');
         // this.markerLayer.set('sort',90);

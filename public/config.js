@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-15 23:35:18
+ * @LastEditTime: 2023-08-20 12:11:44
  * @input: no param
  * @out: no param
  */
@@ -24,7 +24,7 @@ window.BASE_CONFIG = {
 	"map_view_minLevel": 4,
 	"canClickMapMinLevel": 7, // 地图要素可以点击的最小级别
 	"polygonLayer":{
-		"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
+		"id": "wkkmian",
 				"name": "尾矿库面图层",
 				"description": null,
 				"groupId": "",
@@ -62,7 +62,7 @@ window.BASE_CONFIG = {
 	}, // 尾矿库面图层
 
 	"polygonLayer1":{
-		"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
+		"id": "wkkdian",
 				"name": "测试点位服务",
 				"description": null,
 				"groupId": "",
@@ -75,7 +75,7 @@ window.BASE_CONFIG = {
 				"extent": "",
 				"initLevel": "-1",
 				"tag": "",
-				"sort": "100",
+				"sort": 100000,
 				"edition": null,
 				"metaDataItemString": "",
 				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wkkd_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wkkd_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
@@ -505,7 +505,7 @@ window.BASE_CONFIG = {
 			name: '流域统计', value: 'ssly', defalutHeader: [
 				{ name: '流域', props: 'name', width: 120 }
 			], service: [{
-				"id": "8cd57ca1324f4b45b6f1d6361265ec4c",
+				"id": "sdly",
 						"name": "全国河流数据",
 						"description": null,
 						"groupId": "",

@@ -72,7 +72,7 @@ export default {
       let yAxisData = []; // x轴
       let serObj = [];
       let legend = [];
-      debugger
+      
       newData.data = _.sortBy(newData.data,(d)=>{
         return parseFloat(d.value);
       })

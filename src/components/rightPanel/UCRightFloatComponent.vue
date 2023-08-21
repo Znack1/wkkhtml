@@ -75,7 +75,7 @@ export default {
 
   methods: {
     initTitle(curCityInfo) {
-      debugger
+      
       let keys = ["sheng", "shi", "xian"]
       this.firstName = "监管等级(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
       this.secondName = "数据统计(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";

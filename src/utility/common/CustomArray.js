@@ -1,8 +1,8 @@
 /*
  * @Author: your name
  * @Date: 2020-02-28 11:08:06
- * @LastEditTime: 2020-03-08 16:12:48
- * @LastEditors: Please set LastEditors
+ * @LastEditTime: 2023-08-19 13:05:44
+ * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\utility\common\CustomArray.js
  */
@@ -18,6 +18,7 @@ export class CustomArray {
 
 
     push(item) {
+        debugger
         this.objects.push(item);
         this.length=this.objects.length;
     }
