@@ -561,5 +561,6 @@ window.BASE_CONFIG = {
 		"生产状况": "sczk",
 		"主要矿种": "zykz"
 	},
-	showDistrictLevel:[5,7,7] // 省最大级别，市最大级别，县最小级别
+	showDistrictLevel:[5,7,7], // 省最大级别，市最大级别，县最小级别
+	pointLayerName:"wkkd_3857"  // 点位图层名称
 };

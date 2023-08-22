@@ -110,7 +110,7 @@ export class OLLayerUtility {
     }
 
     static ascLayer(mapLayers, sortfield) {
-debugger
+
         //原始索引-图层-排序序号
 
         let layerArray = mapLayers.getArray();

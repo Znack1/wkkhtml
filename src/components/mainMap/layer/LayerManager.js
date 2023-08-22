@@ -44,7 +44,7 @@ export class LayerManager {
     init() {
 
         //获取map默认的marker图层
-        debugger
+        
         let layers = this.currentMap.getMarkerLayers().getLayers().getArray();
         this.markerLayer = OLLayerUtility.findByLayerAttribute(layers, 'name', 'marker_default');
         // this.markerLayer.set('sort',90);

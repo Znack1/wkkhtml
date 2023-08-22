@@ -18,7 +18,7 @@ export class CustomArray {
 
 
     push(item) {
-        debugger
+        
         this.objects.push(item);
         this.length=this.objects.length;
     }

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-20 21:19:16
+ * @LastEditTime: 2023-08-22 10:38:35
  * @input: no param
  * @out: no param
  */
@@ -315,7 +315,6 @@ export class UCMainEventManager {
 
   // 绘制点位
   _addPointDatas() {
-
     let self = this;
     self.ucMap.layerMgr.poiLayer.clear();
     if (!this.ucMain.pointsLayerItem) return;
@@ -324,9 +323,11 @@ export class UCMainEventManager {
     // 过滤数据
     // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
     if(this.curCityInfo.cityLevel > 1){
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
+      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
+      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
     }else{
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([],[])
+      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey],[_.map(this.checkedNodes, "name")])
+      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([],[])
     }
    
     this._changeLayerItemVisible(this.ucMain.pointsLayerItem, true)
@@ -415,10 +416,9 @@ export class UCMainEventManager {
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
-
       let findItem = _.find(features, (fea) => {
         let tempProperties = fea.getProperties();
-        return tempProperties.featureType == LayerFeatureType.treeLayerFeature
+        return tempProperties.layer == window.BASE_CONFIG.pointLayerName
       })
 
 
@@ -490,7 +490,7 @@ export class UCMainEventManager {
         // let perPixeY =   ((SystemConfig.bodyHeight * 0.3) / SystemConfig.bodyHeight * (extent[3] - extent[1]));
         // let perPixeX =   (340 / SystemConfig.bodyHeight * (extent[2] - extent[0]));
         // let newExtent= [extent[0]-perPixeX,extent[1] - perPixeY,extent[2],extent[3]]
-        let curExtent = GeometryExtentUtility.expandExtent(extent, 2.5);
+        let curExtent = GeometryExtentUtility.expandExtent(extent, 3);
         self.ucMap.setMapExtent(curExtent);
 
         //选中要素高亮显示
@@ -498,7 +498,7 @@ export class UCMainEventManager {
       } else if (findItem) {
         let level = self.ucMap.getZoomLevel();
         if (level >= window.BASE_CONFIG.canClickMapMinLevel) {
-          self.twinklePoint(findItem)
+          // self.twinklePoint(findItem) // shansh
         }
         self._on_showOverlay([findItem], e.coordinate);
       }
@@ -630,25 +630,25 @@ export class UCMainEventManager {
       // 过滤字段名称
       switch(this.curCityInfo.cityLevel){
         case 2:
-          this.curFilter.district = "省"
+          this.curFilter.district = "sheng"
           this.curFilter.valueName = properties['sheng']
             break;
           case 3:
-            this.curFilter.district = "市"
+            this.curFilter.district = "shi"
             this.curFilter.valueName = properties['shi']
             break;
             case 4:
-              this.curFilter.district = "县"
+              this.curFilter.district = "xian"
               this.curFilter.valueName =properties['xian']
               break;
               case 5:
-                this.curFilter.district = "流域"
-                this.curFilter.valueName =properties['liuyu']
+                this.curFilter.district = "ssly"
+                this.curFilter.valueName =properties['ssly']
                 break;
       }
       // 过滤数据
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
-      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
+      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
+      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
     }
   }
 
@@ -810,7 +810,7 @@ export class UCMainEventManager {
     }
     let feature = features[0];
     let properties = feature.getProperties();
-    if (properties.featureType == LayerFeatureType.treeLayerFeature && properties.bindingObject && properties.bindingObject.gid) {
+    if (properties.layer == window.BASE_CONFIG.pointLayerName &&  properties.gid) {
       this.ucMap.clearOverlays('countOverlay', false);
       let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
@@ -820,7 +820,7 @@ export class UCMainEventManager {
         return -field.index;
       })
       let params = {
-        gid: properties.bindingObject.gid
+        gid: properties.gid
       }
       this.ucMain.loading = true;
       this.curFeatrue = feature;
@@ -992,6 +992,14 @@ export class UCMainEventManager {
       shi: null,
       xian: null
     };
+
+    // 重置过滤
+    this.curFilter = {
+      district:null,
+      valueName:null
+    }
+    this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey],[_.map(this.checkedNodes, "name")])
+    // 清空选中
     LayerCatalogItems.visibleItems.clearSelectedFeatures();
     this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);
     this.ucMap.curMap.getView().setCenter(window.BASE_CONFIG.map_view_init_centerPoint);

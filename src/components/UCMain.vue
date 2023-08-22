@@ -654,7 +654,7 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
-      debugger
+      
       if (this.showTempLayerItems) {
         _.each(this.showTempLayerItems, (showTempLayerItem) => {
           showTempLayerItem.defaultVisible = false;
