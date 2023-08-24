@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-22 17:09:29
+ * @LastEditTime: 2023-08-24 08:30:02
  * @input: no param
  * @out: no param
  */
@@ -78,8 +78,8 @@ window.BASE_CONFIG = {
 				"sort": 100000,
 				"edition": null,
 				"metaDataItemString": "",
-				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wkkd2_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wkkd2_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
-				"serviceName": "wkkd2_3857",
+				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wkkd_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wkkd_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
+				"serviceName": "wkkd_3857",
 				"serviceEPSG": "EPSG:3857",
 				"styleJsonUrlContent":'',
 				"styleJsonUrl": "",

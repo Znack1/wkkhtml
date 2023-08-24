@@ -19,6 +19,7 @@
 
       <el-table-column
         :min-width="header.width"
+        show-overflow-tooltip
         v-for="(header, idx) in ucsetting.headers"
         :key="idx"
         :prop="header.props"

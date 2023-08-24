@@ -8,7 +8,7 @@
           <span class="treeName" @click="_nodeNameClickHandler(data)" @dblclick="_nodeNameDbClickHandler(data)"
             :title="node.label">{{ node.label }}</span>
           <div @click.stop="" class="rightSwitch">
-            <el-switch  :width="30" v-model="node.defaultVisible" @change="(val) => {
+            <el-switch   :width="18" v-model="node.defaultVisible" @change="(val) => {
                 _nodeCheckChangeHandler(data, val);
               }
               ">
@@ -277,4 +277,32 @@ export default {
     left: 100%;
     margin-left: -15px;
   }
+
+  /deep/ .el-switch__core{
+    margin: 0;
+    position: relative;
+    height: 8px;
+    border: 1px solid #DCDFE6;
+    outline: 0;
+    border-radius: 10px;
+    box-sizing: border-box;
+    background: #DCDFE6;
+    transition: border-color .3s,background-color .3s;
+    vertical-align: middle;
+  }
+  /deep/ .el-switch__core:after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: 1px;
+    border-radius: 100%;
+    transition: all .3s;
+    width: 8px;
+    height: 8px;
+    background-color: #FFF;
+}
+  /deep/ .el-switch.is-checked .el-switch__core::after {
+    left: 100%;
+    margin-left: -7px;
+}
 </style>

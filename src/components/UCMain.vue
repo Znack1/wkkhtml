@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-19 11:12:36
+ * @LastEditTime: 2023-08-24 11:17:58
  * @input: no param
  * @out: no param
 -->
@@ -38,10 +38,12 @@
         </div>
 
       </div>
-      <div class="bottomContent tableContent" :style="{ right: ucSetting.rightPanelTableVisiable ? '10px' : '-310px',top:ucSetting.rightPanelVisiable?'360px':'10px' }">
+      <div class="bottomContent tableContent"
+        :style="{ right: ucSetting.rightPanelTableVisiable ? '10px' : '-310px', top: ucSetting.rightPanelVisiable ? '360px' : '10px' }">
         <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
-        <UCDistributionTable style="width: 100%; height: calc(100% - 50px); padding: 10px;" ref="ucDistributionTable" class="table">
+        <UCDistributionTable style="width: 100%; height: calc(100% - 50px); padding: 10px;" ref="ucDistributionTable"
+          class="table">
         </UCDistributionTable>
         <!-- </vuescroll> -->
 
@@ -72,7 +74,7 @@
         :style="{ right: (ucSetting.rightPanelVisiable || ucSetting.rightPanelTableVisiable) ? '330px' : '10px' }">
         <i @click="_backCountry" class="allCity iconfont editMapBtn active icon-zuobiao" style="margin-right:10px">全国</i>
         <i @click="_togglePanel" :class="ucSetting.rightPanelVisiable ? 'active' : ''" class="allCity ">柱图统计</i>
-        <i @click="_togglePanel1" :class="ucSetting.rightPanelTableVisiable ? 'active' : ''" class="allCity ">表格统计</i>
+        <i @click="_togglePanel1" v-if="staticsTable" :class="ucSetting.rightPanelTableVisiable ? 'active' : ''" class="allCity ">表格统计</i>
       </div>
 
 
@@ -291,6 +293,7 @@ import {
   WmtsLayerItem,
 } from "@/model/LayerCatalogItem";
 import { GeometryUtility } from '@/utility/ol/GeometryUtility';
+import { LayerFeatureType } from "./mainMap/layer/LayerFeatureType";
 export default {
   name: "ucMain",
   components: {
@@ -311,7 +314,7 @@ export default {
       isX: true,
       firstName: "监管等级",
       secondName: '数据统计',
-      staticsTable:true, // 是否可以展开表格统计
+      staticsTable: true, // 是否可以展开表格统计
       detailInfo: null,
       dialogVisible: false,// 更多详情弹框
       chart: null, // echart容器
@@ -337,14 +340,14 @@ export default {
   methods: {
 
     initTitle(curCityInfo) {
-     
-      let keys = ["sheng", "shi", "xian",'liuyu']
+
+      let keys = ["sheng", "shi", "xian", 'liuyu']
       this.firstName = "监管等级(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
-      if(curCityInfo.cityLevel >= 4 ){
-        this.staticsTable= false;
+      if (curCityInfo.cityLevel >= 4) {
+        this.staticsTable = false;
         this.ucSetting.rightPanelTableVisiable = false;
-      }else{
-        this.staticsTable= true;
+      } else {
+        this.staticsTable = true;
         this.secondName = "数据统计(" + (curCityInfo.cityLevel == 1 ? '全国' : curCityInfo[keys[curCityInfo.cityLevel - 2]]) + ")";
       }
     },
@@ -556,25 +559,51 @@ export default {
               width: 2,
             })
           })
-          let  iconStyle = new ol.style.Style({
-                    image: new ol.style.Icon(({
-                        anchor: [0.5, 8],
-                        anchorXUnits: 'fraction',
-                        anchorYUnits: 'pixels',
-                        src: draw_marker
-                    }))
-                });
-                let cloneFeature = _.cloneDeep(this.eventManager.curFeatrue);
-                cloneFeature.setStyle(iconStyle);
           polygonFeature.setStyle(fillStyle);
           GeometryUtility.transformFeatureGeometry([polygonFeature], 'EPSG:4326', "EPSG:3857")
+          let properties = this.eventManager.curFeatrue.getProperties()
+          let cloneFeature = this._createFeature(properties)
+
+
           this.$refs.ucMapEx.layerMgr.detailLayer.clear();
-          this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature,cloneFeature])
+          if (cloneFeature) {
+            this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature, cloneFeature])
+          } else {
+            this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([cloneFeature])
+          }
+
           this.$refs.ucMapEx.curMap.getView().setZoom(11);
           this.$refs.ucMapEx.curMap.getView().setCenter(cloneFeature.getGeometry().getCoordinates());
           // this.$refs.ucMapEx.layerMgr.drawGeometryLayer.addDrawPoint(JSON.parse(this.eventManager.curFeaInfo.geom))
         }
       })
+    },
+
+
+
+    // 创建要素
+    _createFeature(tempPoiItem) {
+      let tempFeature = null;
+      let newPoints = GeometryUtility.transformPoints([[tempPoiItem.zxjd, tempPoiItem.zxwd]], "EPSG:4326", "EPSG:3857")
+      let tempCoordinate = newPoints[0];
+      let iconStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+          anchor: [0.5, 8],
+          anchorXUnits: 'fraction',
+          anchorYUnits: 'pixels',
+          src: draw_marker
+        }))
+      });
+      tempFeature = new ol.Feature({
+        geometry: new ol.geom.Point(tempCoordinate),
+        featureType: LayerFeatureType.treeLayerFeature,
+        featureTypeIsOverlay: true,
+        bindingObject: tempPoiItem
+      });
+
+      tempFeature.setId(tempPoiItem.gid);
+      tempFeature.setStyle(iconStyle);
+      return tempFeature
     },
 
     // _backCountry
@@ -637,12 +666,12 @@ export default {
     },
 
     _togglePanel1() {
-      if(this.staticsTable){
+      if (this.staticsTable) {
         this.ucSetting.rightPanelTableVisiable = !this.ucSetting.rightPanelTableVisiable;
-      }else{
+      } else {
         this.$message.warning("当前选中级别下无统计！")
       }
-     
+
     },
 
     // 下拉菜单事件
@@ -654,7 +683,7 @@ export default {
 
     // 添加流域或者行政区划服务
     addLayerByUrl(curStat) {
-      
+
       if (this.showTempLayerItems) {
         _.each(this.showTempLayerItems, (showTempLayerItem) => {
           showTempLayerItem.defaultVisible = false;
@@ -771,11 +800,11 @@ export default {
     border-radius: 6px;
     padding: 10px;
     float: left;
-    position:absolute;
-    top:0;
-    left:0;
-    box-shadow:0 0px 15px rgb(162 206 252 / 75%); 
-    z-index:100;
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: 0 0px 15px rgb(162 206 252 / 75%);
+    z-index: 100;
 
     .leftpanel {
       // position: absolute;
@@ -884,7 +913,8 @@ export default {
 
       .itemContent {
         padding: 10px;
-        width:100%;
+        width: 100%;
+
         .legendItem {
           // margin-bottom: 5px;
           width: 25%;
@@ -1084,7 +1114,8 @@ export default {
     top: 360px;
     transition: all 0.5s;
     box-shadow: 0 0 10px #000;
-    background:white;
+    background: white;
+
     .el-collapse-item__content {
       height: 100%;
     }
