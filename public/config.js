@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-24 08:30:02
+ * @LastEditTime: 2023-08-24 14:16:03
  * @input: no param
  * @out: no param
  */
@@ -94,6 +94,8 @@ window.BASE_CONFIG = {
 				"checked": "false",
 				"fields": null,
 				"rendererSettingsString": "",
+				"styleJsonUrl": "http://223.71.70.150:9977/styles/wkkd_3857/styles/root.json",
+				"styleJsonUrlContent": '{"version":"8","name":"featuremap","sprite":"http://223.71.70.150:9977/styles/wkkd_3857/sprites/sprite","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wkkd_3857","layout":{"symbol-placement":"point","icon-image":"wkkd"},"paint":{},"id":"wkkd","type":"symbol","minzoom":0,"maxzoom":22}]}',
 				"styleName": "featuremap",
 				"tileSchemeType": "tdt_4326",
 				"rendererSettings": null

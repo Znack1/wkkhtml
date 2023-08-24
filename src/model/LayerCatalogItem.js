@@ -476,7 +476,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     renderMode: 'vector',
                     source: olVtLayer.getSource(),
                     style: this.selectedStyleFunction,
-                    zIndex:4
+                    zIndex:0
                 });
                 selectedOLVtLayer.set(LayerCatalogItem.sortFieldName,90);
                 this.selectedOLLayer = selectedOLVtLayer;
