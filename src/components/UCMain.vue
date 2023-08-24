@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-24 11:17:58
+ * @LastEditTime: 2023-08-24 14:04:01
  * @input: no param
  * @out: no param
 -->
@@ -623,7 +623,7 @@ export default {
         let mapOptions = {
           indoor: false,
           projection: "EPSG:3857",
-          rotation: 0.13
+          // rotation: 0.13
         };
         this.$refs.ucMap.init(mapOptions, false);
       }
