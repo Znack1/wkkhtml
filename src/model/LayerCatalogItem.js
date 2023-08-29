@@ -380,6 +380,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
         if (this.selectedOLLayer) {
             this.selectedOLLayer.changed();
+
         }
     }
 
@@ -388,6 +389,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         vtUtility.epsg = this.serviceEPSG || vtUtility.epsg;
         vtUtility.serviceName = this.serviceName;
         vtUtility.wmtsUrl = this.serviceUrl;
+        vtUtility.zindex = this.sort;
         vtUtility.tilematrixSuffix = this.tilematrixSuffix
         if (this.extent) {
             vtUtility.olExtent = this.getOLExtent();
@@ -476,10 +478,12 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     renderMode: 'vector',
                     source: olVtLayer.getSource(),
                     style: this.selectedStyleFunction,
-                    zIndex:0
+                    zIndex:1
                 });
                 selectedOLVtLayer.set(LayerCatalogItem.sortFieldName,90);
                 this.selectedOLLayer = selectedOLVtLayer;
+            //    var layerArray = curMap.getLayers();
+            //    layerArray.insertAt(Math.floor(layerArray.getArray().length), olVtLayer);
             }
         }
     }
@@ -597,7 +601,8 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                 }),
                 fill: new ol.style.Fill({
                     color: 'rgba(201, 199, 245,0.5)',
-                })
+                }),
+                zIndex: 4
             });
         } else if (geometryType === "LineString" || geometryType == "MultiLineString") {
 
@@ -620,7 +625,8 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                 stroke: new ol.style.Stroke({
                     color: '#FCFF00',
                     width: 4
-                })
+                }),
+                zIndex: 4
             });
         } else if (geometryType === "Point" || geometryType == "MultiPoint") {
             // selectedStyle = new ol.style.Style({
@@ -640,7 +646,8 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     fill: new ol.style.Fill({
                         color: '#FCFF00',
                     })
-                })
+                }),
+                zIndex: 4
             });
         }
 
@@ -1203,6 +1210,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         layerItem.serviceEPSG = jsonObject.serviceEPSG;
         layerItem.styleJsonUrl = jsonObject.styleJsonUrl;
         layerItem.sourceName = jsonObject.sourceName;
+        debugger
         layerItem.selectedOLLayer = this.selectedOLLayer;
         layerItem.selectedFeatureIds = this.selectedFeatureIds;
         layerItem.selectedStyle = this.selectedStyle;

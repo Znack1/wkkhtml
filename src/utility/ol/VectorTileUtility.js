@@ -288,6 +288,7 @@ export class VectorTileUtility {
         let olLayer = new ol.layer.VectorTile({
             style: initStyle,
             source: olSource,
+            zIndex: this.zindex,
             minResolution: visibleMinResolution,
             maxResolution: visibleMaxResolution,
         });

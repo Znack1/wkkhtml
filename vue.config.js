@@ -26,6 +26,15 @@ module.exports = defineConfig({
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
+    },
+    proxy: {
+      '/sprite': {
+        target: 'http://223.71.70.150:9977/styles/wkkd_3857/sprites/sprite',
+        changeOrigin: true,
+        pathRewrite: {
+          '^/sprite': ''
+        }
+      }
     }
 
   },

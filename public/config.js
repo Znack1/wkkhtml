@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-04-07 15:52:42
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-24 14:16:03
+ * @LastEditTime: 2023-08-28 09:09:49
  * @input: no param
  * @out: no param
  */
@@ -75,7 +75,7 @@ window.BASE_CONFIG = {
 				"extent": "",
 				"initLevel": "-1",
 				"tag": "",
-				"sort": 100000,
+				"sort": 100,
 				"edition": null,
 				"metaDataItemString": "",
 				"serviceUrl": "http://223.71.70.150:9977/mapserviceweb/service/wkkd_3857/wmts?REQUEST=GetTile&SERVICE=WMTS&VERSION=1.0.0&LAYER=wkkd_3857&TILEMATRIX=EPSG:3857:{z}&TILEMATRIXSET=EPSG:3857&FORMAT=application/x-protobuf;type=mapbox-vector&TILECOL={x}&TILEROW={y}",
@@ -94,8 +94,8 @@ window.BASE_CONFIG = {
 				"checked": "false",
 				"fields": null,
 				"rendererSettingsString": "",
-				"styleJsonUrl": "http://223.71.70.150:9977/styles/wkkd_3857/styles/root.json",
-				"styleJsonUrlContent": '{"version":"8","name":"featuremap","sprite":"http://223.71.70.150:9977/styles/wkkd_3857/sprites/sprite","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wkkd_3857","layout":{"symbol-placement":"point","icon-image":"wkkd"},"paint":{},"id":"wkkd","type":"symbol","minzoom":0,"maxzoom":22}]}',
+				// "styleJsonUrl": "http://223.71.70.150:9977/styles/wkkd_3857/styles/root.json",
+				// "styleJsonUrlContent": '{"version":"8","name":"featuremap","sprite":"/sprite","sources":{"featuremap":{"url":"../../","type":"vector"}},"layers":[{"source":"featuremap","source-layer":"wkkd_3857","layout":{"symbol-placement":"point","icon-image":"wkkd"},"paint":{},"id":"wkkd","type":"symbol","minzoom":0,"maxzoom":22}]}',
 				"styleName": "featuremap",
 				"tileSchemeType": "tdt_4326",
 				"rendererSettings": null
@@ -350,7 +350,7 @@ window.BASE_CONFIG = {
 					"rendererSettingsString": "",
 					"filterName": null,
 					"styleJsons": null,
-					"sort": 6,
+					"sort":7,
 					"tilematrixSuffix": null,
 					"fieldItems": null,
 					"tilingScheme": null,
@@ -480,7 +480,7 @@ window.BASE_CONFIG = {
 					"rendererSettingsString": "",
 					"filterName": null,
 					"styleJsons": null,
-					"sort": 6,
+					"sort": 8,
 					"tilematrixSuffix": null,
 					"fieldItems": null,
 					"tilingScheme": null,
