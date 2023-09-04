@@ -72,7 +72,7 @@ export class LayerCatalogItem {
         this.tag = new TagItems();
 
         this.tilematrixSuffix = null;
-
+        this.img = null;
     }
 
     removeLayers (curMap) {
@@ -250,7 +250,7 @@ export class LayerCatalogItem {
         layerItem.type = jsonObject.type;
         layerItem.token = jsonObject.token;
         layerItem.tilematrixSuffix = jsonObject.tilematrixSuffix;
-
+        layerItem.img = jsonObject.img; // 图例图片
         layerItem.sort = jsonObject.sort;
         //初始化级别
         layerItem.initLevel = jsonObject.initLevel;
@@ -366,14 +366,20 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         this.selectedOLLayer = null;
 
         this.selectedFeatureIds = new Array();
-
         this.selectedStyle = null;
+
+        this.selectedFeatureParentName = null;
+        this.selectedFeatureParentValue = null;
+        this.childselectedStyle = null;
+        
     }
 
 
     clearSelectedFeatures () {
         this.updateSelectedFeatures(new Array());
     }
+
+   
 
     updateSelectedFeatures (featureIds) {
         this.selectedFeatureIds = featureIds;
@@ -383,6 +389,21 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
         }
     }
+
+    clearSelectedFeaturesByParent () {
+        this.updateSelectedFeaturesEX(null,null);
+    }
+
+    updateSelectedFeaturesEX (parentName,parentValue) {
+        this.selectedFeatureParentName = parentName;
+        this.selectedFeatureParentValue = parentValue;
+
+        if (this.selectedOLLayer) {
+            this.selectedOLLayer.changed();
+
+        }
+    }
+
 
     createOLLayers () {
         let vtUtility = new VectorTileUtility();
@@ -521,21 +542,34 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         if (properties && properties["layer"]) {
             layerName = properties["layer"];
         }
-
         if (!layerName) return;
         //通过图层名称查找到图层目录项
         let layerCatalogItem = LayerCatalogItems.visibleItems.findBysourceName(layerName);
-        if (!layerCatalogItem || !layerCatalogItem.selectedFeatureIds) return;
-
-        if (layerCatalogItem.selectedFeatureIds.indexOf(featureId) != -1) {
-            if (!layerCatalogItem.selectedStyle) {
-                let geometryType = feature.getGeometry().getType();
-
-                layerCatalogItem.selectedStyle = layerCatalogItem.initSelectedStyleByGeometryType(geometryType);
+        // if (!layerCatalogItem || !layerCatalogItem.selectedFeatureIds) return;
+        if(layerCatalogItem && layerCatalogItem.selectedFeatureIds){
+            if (layerCatalogItem.selectedFeatureIds.indexOf(featureId) != -1) {
+                if (!layerCatalogItem.selectedStyle) {
+                    let geometryType = feature.getGeometry().getType();
+    
+                    layerCatalogItem.selectedStyle = layerCatalogItem.initSelectedStyleByGeometryType(geometryType);
+                }
+    
+                return layerCatalogItem.selectedStyle;
             }
-
-            return layerCatalogItem.selectedStyle;
+            if(layerCatalogItem && layerCatalogItem.selectedFeatureParentName){
+                if (layerCatalogItem.selectedFeatureParentValue == properties[layerCatalogItem.selectedFeatureParentName]) {
+                    if (!layerCatalogItem.childselectedStyle) {
+                        let geometryType = feature.getGeometry().getType();
+                        layerCatalogItem.childselectedStyle = layerCatalogItem.initSelectedStyleByGeometryTypeEx(geometryType);
+                    }
+        
+                    return layerCatalogItem.childselectedStyle;
+                }
+            }
+        }else {
+            return;
         }
+       
     }
 
     initSelectedStyle (featureType) {
@@ -652,6 +686,47 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         }
 
         // return selectedStyles;
+        return selectedStyle;
+    }
+
+    initSelectedStyleByGeometryTypeEx (geometryType) {
+        let selectedStyles = new Array();
+        let selectedStyle = null;
+
+
+        if (geometryType === "Circle" || geometryType == "LinearRing" || geometryType == "MultiPolygon" || geometryType == "Polygon") {
+            selectedStyle = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: '#000',
+                    width: 2
+                }),
+                fill: new ol.style.Fill({
+                    color: 'rgba(201, 199, 245,0.05)',
+                }),
+                zIndex: 4
+            });
+        } else if (geometryType === "LineString" || geometryType == "MultiLineString") {
+
+            selectedStyle = new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: '#000',
+                    width: 2
+                }),
+                zIndex: 4
+            });
+        } else if (geometryType === "Point" || geometryType == "MultiPoint") {
+            selectedStyle = new ol.style.Style({
+
+                image: new ol.style.Circle({
+                    radius: 10,
+                    fill: new ol.style.Fill({
+                        color: '#FCFF00',
+                    })
+                }),
+                zIndex: 4
+            });
+        }
+
         return selectedStyle;
     }
 
@@ -1210,9 +1285,10 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         layerItem.serviceEPSG = jsonObject.serviceEPSG;
         layerItem.styleJsonUrl = jsonObject.styleJsonUrl;
         layerItem.sourceName = jsonObject.sourceName;
-        debugger
         layerItem.selectedOLLayer = this.selectedOLLayer;
         layerItem.selectedFeatureIds = this.selectedFeatureIds;
+        layerItem.selectedFeatureParentName =  this.selectedFeatureParentName;
+        layerItem.selectedFeatureParentValue=this.selectedFeatureParentValue;
         layerItem.selectedStyle = this.selectedStyle;
 
         layerItem.token = this.token;
@@ -1726,7 +1802,8 @@ export class LayerCatalogItems extends CustomArray {
         for (let tempIndex = 0; tempIndex < this.objects.length; tempIndex++) {
             tempItem = this.objects[tempIndex];
             if (tempItem && tempItem instanceof VectorTileLayerItem) {
-                tempItem.clearSelectedFeatures()
+                tempItem.clearSelectedFeatures();
+                tempItem.clearSelectedFeaturesByParent();
             }
         }
     }

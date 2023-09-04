@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-11-16 10:50:08
- * @LastEditTime: 2023-08-06 11:18:10
+ * @LastEditTime: 2023-08-29 09:25:41
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /高标准农田/src/utility/ol/VectorTileUtility.js
@@ -191,7 +191,6 @@ export class VectorTileUtility {
 
         // url = url.slice(0, -1);
 
-
         let self = this;
 
         let olSource = new ol.source.VectorTile({
@@ -209,6 +208,7 @@ export class VectorTileUtility {
             wrapX: false,
 
             tileUrlFunction: function (tileMarker, pixelRatio, proj) {
+                
                 if (!tileMarker) return;
 
                 let tileLevel = tileMarker[0];

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-22 10:38:35
+ * @LastEditTime: 2023-09-04 08:52:18
  * @input: no param
  * @out: no param
  */
@@ -54,9 +54,10 @@ export class UCMainEventManager {
     this.chartParams = null; // echart参数
     this.tableParams = null; // 表格数据
     this.curFilter = {
-      district:null,
-      valueName:null
+      district: null,
+      valueName: null
     }; // 当前过滤条件
+    this.curBaseLayerItems=[];// 打开的基础图层
   }
 
   /**
@@ -128,6 +129,17 @@ export class UCMainEventManager {
         layerItem,
         layerItem.defaultVisible
       );
+      debugger
+      if(layerItem.defaultVisible){
+        this.curBaseLayerItems.push(layerItem)
+      }else{
+        _.remove(this.curBaseLayerItems,(layer)=>{
+          return layer.id == layerItem.id;
+        })
+      }
+      this.ucMain.refrshLeg(this.curBaseLayerItems)
+      
+
     })
   }
 
@@ -153,7 +165,7 @@ export class UCMainEventManager {
       }
 
       // 获取右侧数据
-      
+
       this.getRightPanel()
 
       // 获取地图交互
@@ -171,12 +183,12 @@ export class UCMainEventManager {
       //     self.pointDatas = res.data.data.pointEntities;
 
       //     // 如果当前级别大于6
-          if (level > 6) {
-            self.ucMain.loading = false;
-            this.ucMap.clearOverlays('countOverlay', true);
-            this.showType = 'point';
-            this._addPointDatas();
-          }
+      if (level > 6) {
+        self.ucMain.loading = false;
+        this.ucMap.clearOverlays('countOverlay', true);
+        this.showType = 'point';
+        this._addPointDatas();
+      }
       //   }).catch((error) => {
       //     self.ucMain.loading = false;
 
@@ -219,31 +231,31 @@ export class UCMainEventManager {
   getRightPanel() {
     this.ucMain.initTitle(this.curCityInfo)
     // 更新echart数据
-    if(this.chartParams){
+    if (this.chartParams) {
       this.chartParams.type = this.checkedNodes[0].parentId;
-      this.chartParams.twoType = _.map(this.checkedNodes,"name");
-    }else{
+      this.chartParams.twoType = _.map(this.checkedNodes, "name");
+    } else {
       this.chartParams = {
         type: this.checkedNodes[0].parentId,
         twoType: _.map(this.checkedNodes, "name"),
         "shiName": null,
         "shengName": null,
-  
+
       }
     }
-  
+
     this.getRightEechart(this.chartParams)
     // 更新table数据
     if (this.curCityInfo.cityLevel >= 4) {
       this.ucMain.staticsTable = false;
       this.ucMain.ucSetting.rightPanelTableVisiable = false;
       return;
-    } 
-    if(this.tableParams){
+    }
+    if (this.tableParams) {
       this.tableParams.type = this.checkedNodes[0].parentId;
-      this.tableParams.twoType = _.map(this.checkedNodes,"name");
-      this.tableParams.qvbie= this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'sheng';
-    }else{
+      this.tableParams.twoType = _.map(this.checkedNodes, "name");
+      this.tableParams.qvbie = this.ucMain.curStat.value == 'ssly' ? 'ssly' : 'sheng';
+    } else {
       this.tableParams = {
         type: this.checkedNodes[0].parentId,
         twoType: _.map(this.checkedNodes, "name"),
@@ -270,7 +282,7 @@ export class UCMainEventManager {
       }
     }
 
-  
+
     this.getRightTableDatas(this.tableParams)
 
 
@@ -322,14 +334,14 @@ export class UCMainEventManager {
     // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx(["省"],[['甘肃省',"山东省"]])
     // 过滤数据
     // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
-    if(this.curCityInfo.cityLevel > 1){
+    if (this.curCityInfo.cityLevel > 1) {
       // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
-    }else{
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey],[_.map(this.checkedNodes, "name")])
+      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
+    } else {
+      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey], [_.map(this.checkedNodes, "name")])
       // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([],[])
     }
-   
+
     this._changeLayerItemVisible(this.ucMain.pointsLayerItem, true)
     // 通过key分类
     return;
@@ -437,19 +449,19 @@ export class UCMainEventManager {
           xian: properties['xian'],
           liuyu: properties['liuyu']
         }
-        
-        
 
-        
+
+
+
 
         this.ucMain.initTitle(this.curCityInfo)
         this.chartParams = {
           type: this.checkedNodes[0].parentId,
           twoType: _.map(this.checkedNodes, "name"),
-          'qvbie':properties['liuyu'],
-          "rank":  this.ucMain.curStat.value == 'ssly' ? null:properties.layer,
-          "shengName": this.ucMain.curStat.value == 'ssly' ? null: properties['sheng'],
-          "shiName":  this.ucMain.curStat.value == 'ssly' ? null:properties['shi']
+          'qvbie': properties['liuyu'],
+          "rank": this.ucMain.curStat.value == 'ssly' ? null : properties.layer,
+          "shengName": this.ucMain.curStat.value == 'ssly' ? null : properties['sheng'],
+          "shiName": this.ucMain.curStat.value == 'ssly' ? null : properties['shi']
         }
         this.getRightEechart(this.chartParams)
         if (this.curCityInfo.cityLevel >= 4) {
@@ -598,14 +610,26 @@ export class UCMainEventManager {
     if (!feature) return;
 
     let featureId = feature.getId();
+
     if (!featureId) return;
 
-    let layerCatalogItem = null;
+    let layerCatalogItem = null; // 当前所属图层
+    let childLayerCatalogItem = null; // 子集图层
 
     let properties = feature.getProperties();
     if (properties && properties["layer"]) {
       let layerName = properties["layer"];
-
+      let childLyaerName = null;
+      let parentName = null;
+      // 获取自己图层
+      switch (layerName) {
+        case "sheng_3857":
+          childLyaerName = "shi_3857";
+          break;
+        case "shi_3857":
+          childLyaerName = "xian_3857"
+          break;
+      }
       let tempItem = null;
       for (let tempIndex = 0; tempIndex < this.ucMain.showTempLayerItems.length; tempIndex++) {
         tempItem = this.ucMain.showTempLayerItems[tempIndex];
@@ -613,6 +637,11 @@ export class UCMainEventManager {
 
         if (tempItem.serviceName.toLowerCase() === layerName.toLowerCase()) {
           layerCatalogItem = tempItem;
+
+        } else if (tempItem.serviceName.toLowerCase() === childLyaerName.toLowerCase()) {
+          childLayerCatalogItem = tempItem;
+        }
+        if (layerCatalogItem && childLayerCatalogItem) {
           break;
         }
       }
@@ -628,27 +657,61 @@ export class UCMainEventManager {
       layerCatalogItem.updateSelectedFeatures(selectedIds);
 
       // 过滤字段名称
-      switch(this.curCityInfo.cityLevel){
+      switch (this.curCityInfo.cityLevel) {
         case 2:
           this.curFilter.district = "sheng"
           this.curFilter.valueName = properties['sheng']
-            break;
-          case 3:
-            this.curFilter.district = "shi"
-            this.curFilter.valueName = properties['shi']
-            break;
-            case 4:
-              this.curFilter.district = "xian"
-              this.curFilter.valueName =properties['xian']
-              break;
-              case 5:
-                this.curFilter.district = "ssly"
-                this.curFilter.valueName =properties['ssly']
-                break;
+          break;
+        case 3:
+          this.curFilter.district = "shi"
+          this.curFilter.valueName = properties['shi']
+          break;
+        case 4:
+          this.curFilter.district = "xian"
+          this.curFilter.valueName = properties['xian']
+          break;
+        case 5:
+          this.curFilter.district = "ssly"
+          this.curFilter.valueName = properties['ssly']
+          break;
       }
       // 过滤数据
       // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
+      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
+    }
+
+    // 过滤字段名称
+    switch (this.curCityInfo.cityLevel) {
+      case 2:
+        this.curFilter.district = "sheng"
+        this.curFilter.valueName = properties['sheng']
+        break;
+      case 3:
+        this.curFilter.district = "shi"
+        this.curFilter.valueName = properties['shi']
+        break;
+      case 4:
+        this.curFilter.district = "xian"
+        this.curFilter.valueName = properties['xian']
+        break;
+      case 5:
+        this.curFilter.district = "ssly"
+        this.curFilter.valueName = properties['ssly']
+        break;
+    }
+    // 过滤数据
+    // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
+    this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
+
+
+    if (!childLayerCatalogItem || !childLayerCatalogItem.olLayers || !childLayerCatalogItem.defaultVisible) return;
+
+    //如果是矢量切片图层，选中要素  --子集
+    if (childLayerCatalogItem instanceof VectorTileLayerItem) {
+      childLayerCatalogItem.clearSelectedFeaturesByParent();
+
+      childLayerCatalogItem.updateSelectedFeaturesEX(this.curFilter.district,this.curFilter.valueName );
+
     }
   }
 
@@ -810,7 +873,7 @@ export class UCMainEventManager {
     }
     let feature = features[0];
     let properties = feature.getProperties();
-    if (properties.layer == window.BASE_CONFIG.pointLayerName &&  properties.gid) {
+    if (properties.layer == window.BASE_CONFIG.pointLayerName && properties.gid) {
       this.ucMap.clearOverlays('countOverlay', false);
       let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
@@ -886,11 +949,11 @@ export class UCMainEventManager {
   // 添加echart图表
   addColumnChart(datas) {   //向点位添加柱状图的方法4
     let self = this;
-    if (this.ucMain.pointsLayerItem){
+    if (this.ucMain.pointsLayerItem) {
       this.ucMain.pointsLayerItem.defaultVisible = false;
       this._changeLayerItemVisible(this.ucMain.pointsLayerItem, false)
     }
-   
+
     this.showType = 'count';
     var html = '';
     this.ucMap.clearOverlays('countOverlay', true);
@@ -995,10 +1058,10 @@ export class UCMainEventManager {
 
     // 重置过滤
     this.curFilter = {
-      district:null,
-      valueName:null
+      district: null,
+      valueName: null
     }
-    this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey],[_.map(this.checkedNodes, "name")])
+    this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey], [_.map(this.checkedNodes, "name")])
     // 清空选中
     LayerCatalogItems.visibleItems.clearSelectedFeatures();
     this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);

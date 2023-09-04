@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-24 14:04:01
+ * @LastEditTime: 2023-09-04 09:07:31
  * @input: no param
  * @out: no param
 -->
@@ -57,9 +57,20 @@
           <i class="el-icon-close" @click="_hideLegbox"></i>
         </div>
         <div class="itemContent">
-          <div v-for="node in checkedNodes" :key="node.id" class="legendItem">
+          <div class="titleType">业务数据图例</div>
+          <div class="imgbox">
+            <div v-for="node in checkedNodes" :key="node.id" class="legendItem">
             <img style="margin-right: 5px" :src="node.img" width="16px" height="16px" />
             <span>{{ node.name }}</span>
+          </div>
+          </div>
+        
+          <div  class="titleType" style="margin-top:10px">基础数据图例</div>
+          <div class="imgbox">
+            <div v-for="(leg,index) in curLegs" :key="index" class="legendItem">
+            <img style="margin-right: 5px" :src="leg.img" width="16px" height="16px" />
+            <span>{{ leg.name }}</span>
+          </div>
           </div>
         </div>
       </div>
@@ -311,6 +322,7 @@ export default {
   props: {},
   data() {
     return {
+      curLegs:[],// 基础数据图例
       isX: true,
       firstName: "监管等级",
       secondName: '数据统计',
@@ -338,7 +350,24 @@ export default {
     };
   },
   methods: {
-
+    // 刷新图例
+    refrshLeg(legs){
+      this.curLegs =[];
+      _.each(legs,(leg)=>{
+        debugger
+        if(leg.img){
+          let imgs = leg.img.split(",")
+          _.each(imgs,(img)=>{
+            this.curLegs.push({
+              img:img,
+              name:leg.name
+            });
+          })
+        }
+        // this.curLegs = leg.
+      }) 
+    },
+    // 初始化右侧面板标题
     initTitle(curCityInfo) {
 
       let keys = ["sheng", "shi", "xian", 'liuyu']
@@ -549,7 +578,7 @@ export default {
 
           };
           this.$refs.ucMapEx.init(mapOptions, false);
-          let polygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
+          let polygonFeatures  = [];
           let fillStyle = new ol.style.Style({
             fill: new ol.style.Fill({
               color: 'rgba(255,255,255,1)',
@@ -559,15 +588,23 @@ export default {
               width: 2,
             })
           })
-          polygonFeature.setStyle(fillStyle);
-          GeometryUtility.transformFeatureGeometry([polygonFeature], 'EPSG:4326', "EPSG:3857")
+          if(this.eventManager.curFeaInfo.mianGeom){
+            _.each(this.eventManager.curFeaInfo.mianGeom,(geom)=>{
+              let temppolygonFeature = new ol.format.GeoJSON().readFeature(JSON.parse(this.eventManager.curFeaInfo.mianGeom))
+              temppolygonFeature.setStyle(fillStyle);
+              polygonFeatures.push(temppolygonFeature)
+            })
+          } 
+          
+          GeometryUtility.transformFeatureGeometry(polygonFeatures, 'EPSG:4326', "EPSG:3857")
+          // 创建点位
           let properties = this.eventManager.curFeatrue.getProperties()
           let cloneFeature = this._createFeature(properties)
 
 
           this.$refs.ucMapEx.layerMgr.detailLayer.clear();
           if (cloneFeature) {
-            this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([polygonFeature, cloneFeature])
+            this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([...polygonFeatures, cloneFeature])
           } else {
             this.$refs.ucMapEx.layerMgr.detailLayer.addFeatures([cloneFeature])
           }
@@ -914,7 +951,16 @@ export default {
       .itemContent {
         padding: 10px;
         width: 100%;
-
+        .titleType{
+          text-align: left;
+    height: 30px;
+    line-height: 30px;
+    font-weight: bold;
+        }
+        .imgbox{
+          overflow:hidden;
+          margin-top:5px;
+        }
         .legendItem {
           // margin-bottom: 5px;
           width: 25%;
@@ -923,6 +969,7 @@ export default {
           flex-direction: column;
           align-items: center;
           margin-bottom: 10px;
+          padding:0 5px;
 
           img {
             display: block;
