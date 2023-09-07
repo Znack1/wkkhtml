@@ -1,7 +1,7 @@
 /*
  * @Author: your name
  * @Date: 2019-11-16 10:50:08
- * @LastEditTime: 2023-08-29 09:25:41
+ * @LastEditTime: 2023-09-07 13:33:12
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: /高标准农田/src/utility/ol/VectorTileUtility.js
@@ -239,15 +239,15 @@ export class VectorTileUtility {
             },
 
             // //切片加载功能： 
-            // tileLoadFunction: function (vtTile, src) {
-            //     //+ '&time=' + Date.now()
+            tileLoadFunction: function (vtTile, src) {
+                //+ '&time=' + Date.now()
 
-            //     let loader=ol.featureloader.loadFeaturesXhr(src, vtTile.getFormat(), 
-            //     vtTile.onLoad.bind(vtTile),                                                 
-            //     vtTile.onError.bind(vtTile));
+                let loader=ol.featureloader.loadFeaturesXhr(src, vtTile.getFormat(), 
+                vtTile.onLoad.bind(vtTile),                                                 
+                vtTile.onError.bind(vtTile));
 
-            //     vtTile.setLoader(loader)
-            // }
+                vtTile.setLoader(loader)
+            }
 
             // //不加载切片： 
             // tileLoadFunction: function (vtTile, src) {

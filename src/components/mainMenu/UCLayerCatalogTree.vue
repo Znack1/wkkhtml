@@ -294,7 +294,7 @@ export default {
     content: "";
     position: absolute;
     top: -1px;
-    left: 1px;
+    left: -1px;
     border-radius: 100%;
     transition: all .3s;
     width: 8px;
@@ -304,5 +304,9 @@ export default {
   /deep/ .el-switch.is-checked .el-switch__core::after {
     left: 100%;
     margin-left: -7px;
+}
+/deep/ .el-switch__core{
+    border: 1px solid #000;
+    background: #000000;
 }
 </style>

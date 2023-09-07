@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-08-24 11:24:07
+ * @LastEditTime: 2023-09-07 09:40:54
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -448,7 +448,7 @@ export default {
     content: "";
     position: absolute;
     top: -1px;
-    left: 1px;
+    left: -1px;
     border-radius: 100%;
     transition: all .3s;
     width: 8px;
@@ -458,6 +458,10 @@ export default {
   /deep/ .el-switch.is-checked .el-switch__core::after {
     left: 100%;
     margin-left: -7px;
+}
+/deep/ .el-switch__core{
+    border: 1px solid #000;
+    background: #000000;
 }
 // /deep/ .el-tree-node__expand-icon {
 //   pointer-events: none;

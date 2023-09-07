@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-04 16:33:32
  * @LastEditors: zkc
- * @LastEditTime: 2023-07-13 14:25:21
+ * @LastEditTime: 2023-09-07 09:26:39
  */
 const { defineConfig } = require('@vue/cli-service')
 const CopyWebpackPlugin = require('copy-webpack-plugin')
@@ -26,15 +26,6 @@ module.exports = defineConfig({
     },
     headers: {
       'Access-Control-Allow-Origin': '*',
-    },
-    proxy: {
-      '/sprite': {
-        target: 'http://223.71.70.150:9977/styles/wkkd_3857/sprites/sprite',
-        changeOrigin: true,
-        pathRewrite: {
-          '^/sprite': ''
-        }
-      }
     }
 
   },

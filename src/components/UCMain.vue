@@ -804,6 +804,7 @@ export default {
       })
 
       this.eventManager = new UCMainEventManager();
+      this
       this.eventManager.ucMain = this;
       this.eventManager.ucMap = this.$refs.ucMap;
       this.eventManager.ucMapTool = this.$refs.ucMapTool;

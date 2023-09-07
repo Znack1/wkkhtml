@@ -33,7 +33,6 @@ export class LayerCatalogItemLayer {
             // remove移除图层
             layerItem.removeLayers(this.curMap);
 
-
             //如果可见，将该图层在最前面显示
             if (layerItem.defaultVisible) {
 

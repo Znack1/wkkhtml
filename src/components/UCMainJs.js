@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-04 08:52:18
+ * @LastEditTime: 2023-09-07 13:35:59
  * @input: no param
  * @out: no param
  */
@@ -129,7 +129,6 @@ export class UCMainEventManager {
         layerItem,
         layerItem.defaultVisible
       );
-      debugger
       if(layerItem.defaultVisible){
         this.curBaseLayerItems.push(layerItem)
       }else{
@@ -151,9 +150,15 @@ export class UCMainEventManager {
       return parseFloat(node.sort);
     });
     this.ucMain.showLegend = false;// 关闭图例
-
+    let level = self.ucMap.getZoomLevel();
     if (this.checkedNodes.length == 0) {
-      self.ucMap.layerMgr.poiLayer.clear();
+      // self.ucMap.layerMgr.poiLayer.clear();
+      if (level > 6) {
+        self.ucMain.loading = false;
+        this.ucMap.clearOverlays('countOverlay', true);
+        this.showType = 'point';
+        this._addPointDatas();
+      }
       self.ucMain.updatePanel(null, this.ucMain.curStat)
     } else {
       let rootParent = self.ucLeftMenu.$refs.ucLeftPanel.getParentNode(this.checkedNodes[0].parentId)
@@ -169,7 +174,7 @@ export class UCMainEventManager {
       this.getRightPanel()
 
       // 获取地图交互
-      let level = self.ucMap.getZoomLevel();
+     
       // 获取全国点位
       // let paramsEx = {
       //   type: this.checkedNodes[0].parentId,
@@ -327,8 +332,9 @@ export class UCMainEventManager {
 
   // 绘制点位
   _addPointDatas() {
+    debugger
     let self = this;
-    self.ucMap.layerMgr.poiLayer.clear();
+    // self.ucMap.layerMgr.poiLayer.clear();
     if (!this.ucMain.pointsLayerItem) return;
     this.ucMain.pointsLayerItem.defaultVisible = true;
     // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx(["省"],[['甘肃省',"山东省"]])
@@ -635,10 +641,10 @@ export class UCMainEventManager {
         tempItem = this.ucMain.showTempLayerItems[tempIndex];
         if (!tempItem || !tempItem.serviceName) continue;
 
-        if (tempItem.serviceName.toLowerCase() === layerName.toLowerCase()) {
+        if (layerName && tempItem.serviceName.toLowerCase() === layerName.toLowerCase()) {
           layerCatalogItem = tempItem;
 
-        } else if (tempItem.serviceName.toLowerCase() === childLyaerName.toLowerCase()) {
+        } else if (childLyaerName && tempItem.serviceName.toLowerCase() === childLyaerName.toLowerCase()) {
           childLayerCatalogItem = tempItem;
         }
         if (layerCatalogItem && childLayerCatalogItem) {
@@ -676,32 +682,8 @@ export class UCMainEventManager {
           break;
       }
       // 过滤数据
-      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
       this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
     }
-
-    // 过滤字段名称
-    switch (this.curCityInfo.cityLevel) {
-      case 2:
-        this.curFilter.district = "sheng"
-        this.curFilter.valueName = properties['sheng']
-        break;
-      case 3:
-        this.curFilter.district = "shi"
-        this.curFilter.valueName = properties['shi']
-        break;
-      case 4:
-        this.curFilter.district = "xian"
-        this.curFilter.valueName = properties['xian']
-        break;
-      case 5:
-        this.curFilter.district = "ssly"
-        this.curFilter.valueName = properties['ssly']
-        break;
-    }
-    // 过滤数据
-    // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
-    this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
 
 
     if (!childLayerCatalogItem || !childLayerCatalogItem.olLayers || !childLayerCatalogItem.defaultVisible) return;

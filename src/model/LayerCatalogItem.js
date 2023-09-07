@@ -993,6 +993,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                 var defaultStyles = self.curStyleFunction;
 
                 var styleFunction = function(feature, resolution) {
+                    debugger
                     let styleStatus = true;
                     if (fieldNames.length > 0 && fieldValues.length > 0) {
                         let featureProperties = feature.getProperties();
@@ -1034,7 +1035,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                         }
 
                     } else {
-                        return defaultStyles(feature, resolution);
+                        // return defaultStyles(feature, resolution);
                     }
                 };
                 olVtLayer.setStyle(null);
@@ -1098,12 +1099,12 @@ export class VectorTileLayerItem extends LayerCatalogItem {
      * 重置矢量切片图层的切片urlfunction
      */
     resetTileUrlFunction () {
-
         let vtUtility = new VectorTileUtility();
-        // vtUtility.epsg = this.serviceEPSG;
+        vtUtility.epsg = this.serviceEPSG || vtUtility.epsg;
         vtUtility.serviceName = this.serviceName;
         vtUtility.wmtsUrl = this.serviceUrl;
-        vtUtility.tilematrixSuffix = this.tilematrixSuffix;
+        vtUtility.zindex = this.sort;
+        vtUtility.tilematrixSuffix = this.tilematrixSuffix
         if (this.extent) {
             vtUtility.olExtent = this.getOLExtent();
         }
