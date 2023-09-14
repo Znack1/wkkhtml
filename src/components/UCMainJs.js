@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-07 13:35:59
+ * @LastEditTime: 2023-09-14 21:55:44
  * @input: no param
  * @out: no param
  */
@@ -22,6 +22,7 @@ import { ServiceUrlConfig } from '@/config/ServiceUrlConfigJs.js';
 import echarts from "echarts";
 import { SystemConfig } from '@/config/SystemConfig.js';
 import { GeometryUtility } from '@/utility/ol/GeometryUtility.js';
+import { MapboxStyleJsonRenderer } from '@/utility/ol/MapboxStyleJsonRenderer.js';
 export class UCMainEventManager {
   constructor() {
     this.ucMain = null;
@@ -58,6 +59,7 @@ export class UCMainEventManager {
       valueName: null
     }; // 当前过滤条件
     this.curBaseLayerItems=[];// 打开的基础图层
+    this.curWkkdianIdx = 1;
   }
 
   /**
@@ -102,15 +104,11 @@ export class UCMainEventManager {
   _addUCLeftMenuListener() {
     let self = this;
     this.ucLeftMenu.on_checkLayer((nodes) => {
-
+      if(nodes[0] && nodes[0].parentId && this.curWkkdianIdx != nodes[0].parentId){
+        this.curWkkdianIdx = nodes[0].parentId;
+      }
+     
       this.checkedNodes = nodes;
-      // _.each(nodes, (node) => {
-      //   if (node.layerItem) {
-      //     this._changeLayerItemVisible(node.layerItem, true)
-      //   }
-
-      // })
-
       this.getPageData();
 
     })
@@ -173,19 +171,7 @@ export class UCMainEventManager {
 
       this.getRightPanel()
 
-      // 获取地图交互
-     
-      // 获取全国点位
-      // let paramsEx = {
-      //   type: this.checkedNodes[0].parentId,
-      //   twoType: _.map(this.checkedNodes, "name")
-      // }
-      // self.ucMain.loading = true;
-      // AxiosConfig.spatialdecision
-      //   .post(ServiceUrlConfig.point_point, paramsEx)
-      //   .then((res) => {
 
-      //     self.pointDatas = res.data.data.pointEntities;
 
       //     // 如果当前级别大于6
       if (level > 6) {
@@ -194,10 +180,6 @@ export class UCMainEventManager {
         this.showType = 'point';
         this._addPointDatas();
       }
-      //   }).catch((error) => {
-      //     self.ucMain.loading = false;
-
-      //   })
 
       // 获取数量统计
       let params = {
@@ -217,9 +199,6 @@ export class UCMainEventManager {
             this.showType = 'count';
             self.addColumnChart()
           }
-          // self.ucMap.layerMgr.datacountLayer.clear();
-
-          // self.ucMap.layerMgr.datacountLayer.addMarkers(datas);
 
           // 更新右侧面板
           // self.ucMain.updatePanel(res.data.data, this.ucMain.curStat)
@@ -332,65 +311,33 @@ export class UCMainEventManager {
 
   // 绘制点位
   _addPointDatas() {
-    debugger
     let self = this;
     // self.ucMap.layerMgr.poiLayer.clear();
-    if (!this.ucMain.pointsLayerItem) return;
-    this.ucMain.pointsLayerItem.defaultVisible = true;
-    // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx(["省"],[['甘肃省',"山东省"]])
+    let tempLayer = this.ucMain.pointsLayerItems[parseFloat(this.curWkkdianIdx) - 1];
+    if (!tempLayer) return;
+    tempLayer.defaultVisible = true;
     // 过滤数据
     // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district,this.typekey],[ this.curFilter.valueName,_.map(this.checkedNodes, "name")])
-    if (this.curCityInfo.cityLevel > 1) {
-      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
-    } else {
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey], [_.map(this.checkedNodes, "name")])
-      // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([],[])
-    }
-
-    this._changeLayerItemVisible(this.ucMain.pointsLayerItem, true)
+   
+    _.each(this.ucMain.pointsLayerItems,(pointsLayerItem,idx)=>{
+      if (this.curCityInfo.cityLevel > 1) {
+        // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district],[ this.curFilter.valueName])
+        pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
+      } else {
+        pointsLayerItem.filterOLLayerByAttributesEx([this.typekey], [_.map(this.checkedNodes, "name")])
+        // this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([],[])
+      }
+      if(idx == (parseFloat(this.curWkkdianIdx) - 1)){
+        pointsLayerItem.defaultVisible = true;
+        this._changeLayerItemVisible(pointsLayerItem, true)
+      }else{
+        pointsLayerItem.defaultVisible = false;
+        this._changeLayerItemVisible(pointsLayerItem, false)
+      }
+    })
+   
     // 通过key分类
     return;
-    // if (self.pointDatas) {
-    //   let groupByKey = _.groupBy(self.pointDatas, self.typekey)
-    //   let initDatas = [];
-
-    //   _.each(groupByKey, (group, key) => {
-    //     initDatas.push({
-    //       features: group,
-    //       img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
-    //       selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
-    //     })
-    //   })
-
-    //   self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
-    // } else {
-    //   // 获取全国点位
-    //   let paramsEx = {
-    //     type: this.checkedNodes[0].parentId,
-    //     twoType: _.map(this.checkedNodes, "name")
-    //   }
-    //   AxiosConfig.spatialdecision
-    //     .post(ServiceUrlConfig.point_point, paramsEx)
-    //     .then((res) => {
-
-    //       self.pointDatas = res.data.data.pointEntities;
-    //       let groupByKey = _.groupBy(self.pointDatas, self.typekey)
-    //       let initDatas = [];
-
-    //       _.each(groupByKey, (group, key) => {
-    //         initDatas.push({
-    //           features: group,
-    //           img: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).img : null,
-    //           selectImg: _.find(this.checkedNodes, { "name": key }) ? _.find(this.checkedNodes, { "name": key }).icon : null
-    //         })
-    //       })
-
-    //       self.ucMap.layerMgr.poiLayer.addMarkersEx(initDatas);
-    //     }).catch((error) => {
-    //       this.$message.error("全国点位获取失败，请检查网络并刷新页面！")
-    //     })
-    // }
 
   }
 
@@ -682,7 +629,10 @@ export class UCMainEventManager {
           break;
       }
       // 过滤数据
-      this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
+      _.each(this.ucMain.pointsLayerItems,(pointsLayerItem,idx)=>{
+        pointsLayerItem.filterOLLayerByAttributesEx([this.curFilter.district, this.typekey], [this.curFilter.valueName, _.map(this.checkedNodes, "name")])
+      })
+    
     }
 
 
@@ -931,9 +881,9 @@ export class UCMainEventManager {
   // 添加echart图表
   addColumnChart(datas) {   //向点位添加柱状图的方法4
     let self = this;
-    if (this.ucMain.pointsLayerItem) {
-      this.ucMain.pointsLayerItem.defaultVisible = false;
-      this._changeLayerItemVisible(this.ucMain.pointsLayerItem, false)
+    if (this.ucMain.pointsLayerItems[parseFloat(this.curWkkdianIdx) - 1]) {
+     this.ucMain.pointsLayerItems[parseFloat(this.curWkkdianIdx) - 1].defaultVisible = false;
+      this._changeLayerItemVisible(this.ucMain.pointsLayerItems[parseFloat(this.curWkkdianIdx) - 1], false)
     }
 
     this.showType = 'count';
@@ -1043,7 +993,9 @@ export class UCMainEventManager {
       district: null,
       valueName: null
     }
-    this.ucMain.pointsLayerItem.filterOLLayerByAttributesEx([this.typekey], [_.map(this.checkedNodes, "name")])
+    _.each(this.ucMain.pointsLayerItems,(pointsLayerItem,idx)=>{
+      pointsLayerItem.filterOLLayerByAttributesEx([this.typekey], [_.map(this.checkedNodes, "name")])
+    })
     // 清空选中
     LayerCatalogItems.visibleItems.clearSelectedFeatures();
     this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);

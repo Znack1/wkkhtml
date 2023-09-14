@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-04 09:07:31
+ * @LastEditTime: 2023-09-14 21:21:00
  * @input: no param
  * @out: no param
 -->
@@ -322,6 +322,7 @@ export default {
   props: {},
   data() {
     return {
+      pointsLayerItems:[], // 点图层
       curLegs:[],// 基础数据图例
       isX: true,
       firstName: "监管等级",
@@ -360,7 +361,7 @@ export default {
           _.each(imgs,(img)=>{
             this.curLegs.push({
               img:img,
-              name:leg.name
+              name:img.split("/")[img.split("/").length - 1].split(".")[0]
             });
           })
         }
@@ -683,18 +684,23 @@ export default {
 
       // 添加尾矿库面图层
       this.addLayerByPolygon(window.BASE_CONFIG.polygonLayer)
-      // 添加尾矿库图层
-      // this.addLayerByPolygon(window.BASE_CONFIG.polygonLayer1)
-      this.pointsLayerItem = null;
-      let layerItemObj = window.BASE_CONFIG.polygonLayer1;
-      if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
-        this.pointsLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
+      // 添加尾矿库点图层
+      this.pointsLayerItems = [];
+
+      let layerItemObjs = window.BASE_CONFIG.polygonLayer1;
+      _.each(layerItemObjs,(layerItemObj)=>{
+        let pointsLayerItem = null;
+        if (layerItemObj.type === LayerCatalogItemType.vectorTile) {
+        pointsLayerItem = VectorTileLayerItem.fronJson(layerItemObj);
       } else if (layerItemObj.type === LayerCatalogItemType.wfs) {
       } else if (layerItemObj.type === LayerCatalogItemType.wmts) {
-        this.pointsLayerItem = WmtsLayerItem.fromJson(layerItemObj);
+        pointsLayerItem = WmtsLayerItem.fromJson(layerItemObj);
       } else if (layerItemObj.type === LayerCatalogItemType.wms) {
-        this.pointsLayerItem = WmsLayerItem.fromJson(layerItemObj);
+        pointsLayerItem = WmsLayerItem.fromJson(layerItemObj);
       }
+      this.pointsLayerItems.push(pointsLayerItem)
+      })
+    
     },
 
     // 切换面板显隐
@@ -952,6 +958,8 @@ export default {
       .itemContent {
         padding: 10px;
         width: 100%;
+        display: flex;
+    flex-wrap: wrap;
         .titleType{
           text-align: left;
     height: 30px;

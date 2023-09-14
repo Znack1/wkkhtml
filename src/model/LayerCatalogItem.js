@@ -882,78 +882,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
         }
     }
 
-    /**
-     * 通过属性筛选 
-     * 字段名称和字段值必须都有值，否则不进行筛选
-     * @param {*} fieldName 
-     * @param {*} fieldValue 
-     */
-    filterOLLayerByAttributeEx(fieldNames, fieldValues) {
-
-        //如果当前是不可见的，不执行矢量切片的筛选
-        if (!this.defaultVisible) return;
-        // ;
-
-        if (!this.ollayers || this.ollayers.length == 0) {
-            this.ollayers = this.createOLLayers();
-        };
-
-        let self = this;
-
-
-
-
-        let olVtLayer = null;
-        let olVtLayerVisible = false;
-        for (let tempIndex = 0; tempIndex < this.ollayers.length; tempIndex++) {
-            olVtLayer = this.ollayers[tempIndex];
-            if (!olVtLayer) continue;
-
-            if (olVtLayer instanceof ol.layer.VectorTile) {
-                olVtLayerVisible = olVtLayer.getVisible();
-                //仅在图层可见的情况下筛选
-                if (!olVtLayerVisible) continue;
-
-                if (!self.curStyleFunction) {
-                    self.curStyleFunction = olVtLayer.getStyleFunction();
-                }
-
-                var defaultStyles = self.curStyleFunction;
-
-                var styleFunction = function(feature, resolution) {
-                    let styleStatus = true;
-                    if (fieldNames.length > 0 && fieldValues.length > 0) {
-                        let featureProperties = feature.getProperties();
-                        for (let fieldNameIndex = 0; fieldNameIndex < fieldNames.length; fieldNameIndex++) {
-                            let tempFieldName = fieldNames[fieldNameIndex];
-
-                            if (!tempFieldName) continue;
-
-                            let tempFieldValue = fieldValues[fieldNameIndex];
-                            if (!tempFieldValue) continue;
-
-                            if (featureProperties && featureProperties[tempFieldName] && featureProperties[tempFieldName] == tempFieldValue) {
-                                continue;
-                            } else {
-                                styleStatus = false;
-                                break;
-                            }
-
-                        }
-                        if (styleStatus) {
-                            return defaultStyles(feature, resolution);
-                        }
-
-                    } else {
-                        return defaultStyles(feature, resolution);
-                    }
-                };
-                olVtLayer.setStyle(null);
-                olVtLayer.setStyle(styleFunction);
-            }
-        }
-    }
-
+   
       /**
      * 通过属性筛选 
      * 字段名称和字段值必须都有值，否则不进行筛选
@@ -961,17 +890,14 @@ export class VectorTileLayerItem extends LayerCatalogItem {
      * @param {*} fieldValue 
      */
       filterOLLayerByAttributesEx(fieldNames, fieldValues) {
-
         //如果当前是不可见的，不执行矢量切片的筛选
         if (!this.defaultVisible) return;
         // ;
-
         if (!this.ollayers || this.ollayers.length == 0) {
             this.ollayers = this.createOLLayers();
         };
 
         let self = this;
-
 
 
 
@@ -988,12 +914,13 @@ export class VectorTileLayerItem extends LayerCatalogItem {
 
                 if (!self.curStyleFunction) {
                     self.curStyleFunction = olVtLayer.getStyleFunction();
+                }else if( self.curStyleFunction.length ==  0){
+                    self.curStyleFunction =  olVtLayer.getStyle();
                 }
 
-                var defaultStyles = self.curStyleFunction;
+                var defaultStyles = self.curStyleFunction 
 
                 var styleFunction = function(feature, resolution) {
-                    debugger
                     let styleStatus = true;
                     if (fieldNames.length > 0 && fieldValues.length > 0) {
                         let featureProperties = feature.getProperties();
@@ -1037,8 +964,9 @@ export class VectorTileLayerItem extends LayerCatalogItem {
                     } else {
                         // return defaultStyles(feature, resolution);
                     }
+                  
                 };
-                olVtLayer.setStyle(null);
+                // olVtLayer.setStyle(null);
                 olVtLayer.setStyle(styleFunction);
             }
         }
