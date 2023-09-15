@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-14 21:21:00
+ * @LastEditTime: 2023-09-15 08:43:17
  * @input: no param
  * @out: no param
 -->
@@ -355,7 +355,6 @@ export default {
     refrshLeg(legs){
       this.curLegs =[];
       _.each(legs,(leg)=>{
-        debugger
         if(leg.img){
           let imgs = leg.img.split(",")
           _.each(imgs,(img)=>{
@@ -958,8 +957,7 @@ export default {
       .itemContent {
         padding: 10px;
         width: 100%;
-        display: flex;
-    flex-wrap: wrap;
+    
         .titleType{
           text-align: left;
     height: 30px;
@@ -969,6 +967,8 @@ export default {
         .imgbox{
           overflow:hidden;
           margin-top:5px;
+          display: flex;
+    flex-wrap: wrap;
         }
         .legendItem {
           // margin-bottom: 5px;

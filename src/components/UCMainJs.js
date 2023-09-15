@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-14 21:55:44
+ * @LastEditTime: 2023-09-15 14:01:06
  * @input: no param
  * @out: no param
  */
@@ -805,7 +805,8 @@ export class UCMainEventManager {
     }
     let feature = features[0];
     let properties = feature.getProperties();
-    if (properties.layer == window.BASE_CONFIG.pointLayerName && properties.gid) {
+    debugger
+    if (properties.layer == window.BASE_CONFIG.pointLayerName && properties.__gid) {
       this.ucMap.clearOverlays('countOverlay', false);
       let overlay = new MapOverlayInfo();
       overlay.position = coordinate;
@@ -815,7 +816,7 @@ export class UCMainEventManager {
         return -field.index;
       })
       let params = {
-        gid: properties.gid
+        gid: properties.__gid
       }
       this.ucMain.loading = true;
       this.curFeatrue = feature;
