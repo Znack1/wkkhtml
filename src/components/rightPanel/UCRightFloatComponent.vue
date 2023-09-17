@@ -24,7 +24,7 @@
           </el-collapse-item>
         </el-collapse> -->
       <div class="topContent echartbox" style="display:none">
-        <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <UCPanel :count="firstCount" style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
           <UCBarYComponent v-if="!isX" ref="ucBarYComponent"></UCBarYComponent>
           <UCBarXComponent v-if="isX" ref="ucBarXComponent"></UCBarXComponent>
@@ -32,7 +32,7 @@
 
       </div>
       <div class="bottomContent tableContent">
-        <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <UCPanel :count="firstCount" :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
         <UCDistributionTable style="width: 100%; height: calc(100% - 50px);" ref="ucDistributionTable" class="table">
         </UCDistributionTable>
@@ -57,6 +57,8 @@ export default {
       isX: true,
       firstName: "监管等级",
       secondName: '数据统计',
+      firstCount:1,
+      secondCount:10,
       // ucsetting: {
       //   tabelName: "图表统计", // 项目分布表格名称
       //   tableNameYear: "数据统计", // 历年表格名称

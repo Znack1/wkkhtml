@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-15 14:01:06
+ * @LastEditTime: 2023-09-17 23:23:17
  * @input: no param
  * @out: no param
  */
@@ -805,7 +805,6 @@ export class UCMainEventManager {
     }
     let feature = features[0];
     let properties = feature.getProperties();
-    debugger
     if (properties.layer == window.BASE_CONFIG.pointLayerName && properties.__gid) {
       this.ucMap.clearOverlays('countOverlay', false);
       let overlay = new MapOverlayInfo();
@@ -897,7 +896,7 @@ export class UCMainEventManager {
       var d = self.datas[i];
       // var pt = new ol.proj.fromLonLat([d.x, d.y]);
       var domid = "chart" + self.guid();    //生成不同的id
-      html += "<div id='" + domid + "' style='margin-left: -20px;margin-bottom: -30px;display: flex;flex-direction: column;align-items: center;'><div style='color:#323232;font-size:16px'>" + d.name + "</div><div style='padding: 8px;background: rgba(0,97 ,255 ,0.3);border-radius: 50%;'><div style='width: 40px;height: 40px;background:#0061ff;border-radius: 50%;color: white;line-height: 40px;font-size:12px;font-weight:600'>" + d.count + "</div></div></div>"
+      html += "<div id='" + domid + "' style='margin-left: -20px;margin-bottom: -30px;display: flex;flex-direction: column;align-items: center;'><div style='color:#323232;font-size:16px'>" + d.name + "</div><div style='padding: 8px;background: rgba(0,97 ,255 ,0.3);border-radius: 50%;'><div style='width: 30px;height: 30px;background:#0061ff;border-radius: 50%;color: white;line-height: 30px;font-size:12px;font-weight:600'>" + d.count + "</div></div></div>"
       self.ucMain.chart.innerHTML = html;    //self.chart为HTML里的柱状图容器，
 
       //将柱状图添加到指定点位上去
@@ -932,6 +931,7 @@ export class UCMainEventManager {
       // this.ucMap.layerMgr.poiLayer.clear();
       this.showType = 'count';
       this.addColumnChart();
+      this.backCountryReset(true)
     }
     if (this.ucMain.curStat.value !== window.BASE_CONFIG.statTypes[0].value) return;
     //0-7级显示市、8级显示市县、8级以上显示县
@@ -981,7 +981,7 @@ export class UCMainEventManager {
 
 
   // 返回全国数据
-  backCountryReset() {
+  backCountryReset(isZoomChange) {
     this.curCityInfo = {
       cityLevel: 1,
       sheng: null,
@@ -999,8 +999,13 @@ export class UCMainEventManager {
     })
     // 清空选中
     LayerCatalogItems.visibleItems.clearSelectedFeatures();
-    this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);
-    this.ucMap.curMap.getView().setCenter(window.BASE_CONFIG.map_view_init_centerPoint);
+    if(isZoomChange){
+
+    }else{
+      this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);
+      this.ucMap.curMap.getView().setCenter(window.BASE_CONFIG.map_view_init_centerPoint);
+    }
+   
     this.getRightPanel();
 
   }

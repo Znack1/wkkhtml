@@ -246,7 +246,6 @@ export default function(olLayer, glStyle, source, resolutions = defaultResolutio
         let  ffgeo = feature.getGeometry();            
         let  ffgeotype = ffgeo.getType();            
         // let  ffgeoLayout  =  ffgeo.getLayout();
-debugger
 
 
         const properties = feature.getProperties();

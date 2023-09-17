@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2023-05-23 20:52:09
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-07 09:40:54
+ * @LastEditTime: 2023-09-17 22:13:08
  <el-collapse v-model="activeNames" @change="handleChange">
       <el-collapse-item v-for="item in panelDatas" :key="item.id" :title="item.name" :name="item.id">
         <template slot="title">
@@ -65,6 +65,7 @@
               >{{ data.name }}</span
             >
             <div class="rightSwitch" @click.stop="">
+              <el-button @click="_showOnly(data)"  type="text" size="small" class="showBtn">单独显示</el-button>
               <el-switch
                 :width="18"
                 v-show="data.type == 'leaf'"
@@ -260,11 +261,23 @@ export default {
             return findItem;
           });
         }
-
+        debugger
         console.log(this.curChecked);
         this.$emit(EventManageCode.treeCheckChange, this.curChecked);
       }
     },
+
+    // 单独显示
+    _showOnly(data){
+     
+      _.each(this.curChecked,(cur)=>{
+        cur.checked = false;
+      })
+      data.checked = true;
+      this.curChecked = [data];
+      this.$emit(EventManageCode.treeCheckChange, this.curChecked);
+    },
+
     // 点击选中节点
     on_checkLayer(callback) {
       if (callback) {
@@ -419,6 +432,16 @@ export default {
     .rightSwitch {
       display: inline-block;
       margin-left: auto;
+      .showBtn{
+        display: none;
+        margin-right: 5px;
+      }
+      &:hover{
+        .showBtn{
+          display: inline-block;
+
+      }
+      }
     }
   }
 }

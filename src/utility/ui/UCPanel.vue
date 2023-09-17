@@ -1,7 +1,7 @@
 <!--
  * @Author: your name
  * @Date: 2020-04-12 21:10:29
- * @LastEditTime: 2023-08-15 22:43:27
+ * @LastEditTime: 2023-09-17 23:22:32
  * @LastEditors: zkc
  * @Description: In User Settings Edit
  * @FilePath: \html\src\utility\ui\UCPanel.vue
@@ -9,7 +9,8 @@
 <template>
   <div class="divPanel">
     <el-row type="flex" class="rowBg">
-      <el-col :span="24" class="panel-title"><i class="iconfont" :class="iconClass"></i>{{ Title }}</el-col>
+      <el-col :span="21" class="panel-title"><i class="iconfont" :class="iconClass"></i>{{ Title }}</el-col>
+      <el-col :span="3" v-if="count !=0">{{ count }}</el-col>
     </el-row>
   </div>
 </template>
@@ -21,7 +22,7 @@ export default {
 
     };
   },
-  props: ['Title','iconClass'],
+  props: ['Title','iconClass',"count"],
   methods: {},
   computed: {
    

@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-15 08:43:17
+ * @LastEditTime: 2023-09-17 23:21:30
  * @input: no param
  * @out: no param
 -->
@@ -31,7 +31,7 @@
         {{ ucSetting.rightPanelVisiable ? "关闭列表" : "展开列表" }}
       </div> -->
       <div class="topContent echartbox" :style="{ right: ucSetting.rightPanelVisiable ? '10px' : '-310px' }">
-        <UCPanel style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <UCPanel :count="firstCount" style="border-radius: 5px 5px 0 0;" :Title="firstName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <div style="width: 100%; height: calc(100% - 50px);margin-top:5px">
           <UCBarYComponent v-if="!isX" ref="ucBarYComponent"></UCBarYComponent>
           <UCBarXComponent v-if="isX" ref="ucBarXComponent"></UCBarXComponent>
@@ -40,7 +40,7 @@
       </div>
       <div class="bottomContent tableContent"
         :style="{ right: ucSetting.rightPanelTableVisiable ? '10px' : '-310px', top: ucSetting.rightPanelVisiable ? '360px' : '10px' }">
-        <UCPanel :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <UCPanel :count="secondCount"  :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
         <UCDistributionTable style="width: 100%; height: calc(100% - 50px); padding: 10px;" ref="ucDistributionTable"
           class="table">
@@ -327,6 +327,8 @@ export default {
       isX: true,
       firstName: "监管等级",
       secondName: '数据统计',
+      firstCount:1,
+      secondCount:0,
       staticsTable: true, // 是否可以展开表格统计
       detailInfo: null,
       dialogVisible: false,// 更多详情弹框
@@ -385,6 +387,7 @@ export default {
     updateChart(datas, curStat, isX) {
       this.isX = isX;
       this.$nextTick(() => {
+        this.firstCount = 0;
         if (!datas) {
           let barObj = {
             data: [],
@@ -397,6 +400,9 @@ export default {
 
           return;
         }
+        this.firstCount = _.sumBy(datas,(e)=>{
+          return parseFloat(e.value);
+        });
         let barObj = {
           data: [],
           color: ['#3d81ef', '#9fc3ff']

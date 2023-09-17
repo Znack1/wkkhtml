@@ -891,7 +891,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
      */
       filterOLLayerByAttributesEx(fieldNames, fieldValues) {
         //如果当前是不可见的，不执行矢量切片的筛选
-        if (!this.defaultVisible) return;
+        // if (!this.defaultVisible) return;
         // ;
         if (!this.ollayers || this.ollayers.length == 0) {
             this.ollayers = this.createOLLayers();
@@ -910,7 +910,7 @@ export class VectorTileLayerItem extends LayerCatalogItem {
             if (olVtLayer instanceof ol.layer.VectorTile) {
                 olVtLayerVisible = olVtLayer.getVisible();
                 //仅在图层可见的情况下筛选
-                if (!olVtLayerVisible) continue;
+                // if (!olVtLayerVisible) continue;
 
                 if (!self.curStyleFunction) {
                     self.curStyleFunction = olVtLayer.getStyleFunction();
