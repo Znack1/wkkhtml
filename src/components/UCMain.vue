@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2022-07-26 17:27:22
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-17 23:21:30
+ * @LastEditTime: 2023-09-19 18:01:11
  * @input: no param
  * @out: no param
 -->
@@ -40,7 +40,7 @@
       </div>
       <div class="bottomContent tableContent"
         :style="{ right: ucSetting.rightPanelTableVisiable ? '10px' : '-310px', top: ucSetting.rightPanelVisiable ? '360px' : '10px' }">
-        <UCPanel :count="secondCount"  :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
+        <UCPanel :count="firstCount"  :Title="secondName" iconClass="icon-weikuangkulogo1"></UCPanel>
         <!-- <vuescroll style="width: 100%; height: calc(100% - 50px);margin-top:5px"> -->
         <UCDistributionTable style="width: 100%; height: calc(100% - 50px); padding: 10px;" ref="ucDistributionTable"
           class="table">
@@ -87,7 +87,6 @@
         <i @click="_togglePanel" :class="ucSetting.rightPanelVisiable ? 'active' : ''" class="allCity ">柱图统计</i>
         <i @click="_togglePanel1" v-if="staticsTable" :class="ucSetting.rightPanelTableVisiable ? 'active' : ''" class="allCity ">表格统计</i>
       </div>
-
 
       <el-dialog class="detailMore" v-if="detailInfo" :title="detailInfo.mc" fullscreen :visible.sync="dialogVisible"
         width="100%" :before-close="handleClose" :destroy-on-close="true">
@@ -385,6 +384,7 @@ export default {
 
     // 更新数据
     updateChart(datas, curStat, isX) {
+      debugger
       this.isX = isX;
       this.$nextTick(() => {
         this.firstCount = 0;
@@ -627,7 +627,7 @@ export default {
     // 创建要素
     _createFeature(tempPoiItem) {
       let tempFeature = null;
-      let newPoints = GeometryUtility.transformPoints([[tempPoiItem.zxjd, tempPoiItem.zxwd]], "EPSG:4326", "EPSG:3857")
+      let newPoints = GeometryUtility.transformPoints([[parseFloat(tempPoiItem.zxjd),parseFloat(tempPoiItem.zxwd)]], "EPSG:4326", "EPSG:3857")
       let tempCoordinate = newPoints[0];
       let iconStyle = new ol.style.Style({
         image: new ol.style.Icon(({

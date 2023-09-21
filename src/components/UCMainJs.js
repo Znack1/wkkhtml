@@ -4,7 +4,7 @@
  * @Author: zkc
  * @Date: 2021-03-23 16:00:48
  * @LastEditors: zkc
- * @LastEditTime: 2023-09-17 23:23:17
+ * @LastEditTime: 2023-09-21 10:07:47
  * @input: no param
  * @out: no param
  */
@@ -227,7 +227,6 @@ export class UCMainEventManager {
 
       }
     }
-
     this.getRightEechart(this.chartParams)
     // 更新table数据
     if (this.curCityInfo.cityLevel >= 4) {
@@ -377,7 +376,6 @@ export class UCMainEventManager {
         return;
       }
 
-
       let pixel = self.ucMap.curMap.getEventPixel(e.originalEvent);
       let features = self.ucMap.curMap.getFeaturesAtPixel(pixel);
       if (!features || features.length == 0) return;
@@ -411,10 +409,9 @@ export class UCMainEventManager {
         this.chartParams = {
           type: this.checkedNodes[0].parentId,
           twoType: _.map(this.checkedNodes, "name"),
-          'qvbie': properties['liuyu'],
-          "rank": this.ucMain.curStat.value == 'ssly' ? null : properties.layer,
           "shengName": this.ucMain.curStat.value == 'ssly' ? null : properties['sheng'],
-          "shiName": this.ucMain.curStat.value == 'ssly' ? null : properties['shi']
+          "shiName": this.ucMain.curStat.value == 'ssly' ? null : properties['shi'],
+          "xianName": this.ucMain.curStat.value == 'ssly' ? null : properties['xian']
         }
         this.getRightEechart(this.chartParams)
         if (this.curCityInfo.cityLevel >= 4) {
@@ -1005,7 +1002,9 @@ export class UCMainEventManager {
       this.ucMap.curMap.getView().setZoom(window.BASE_CONFIG.map_view_init_initLevel);
       this.ucMap.curMap.getView().setCenter(window.BASE_CONFIG.map_view_init_centerPoint);
     }
-   
+    this.chartParams.shengName = null; 
+    this.chartParams.shiName = null;
+    this.chartParams.xianName = null;
     this.getRightPanel();
 
   }
